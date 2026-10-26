@@ -1,0 +1,34 @@
+openapi: 3.1.0
+info:
+  title: CodeStrike API
+  version: 0.1.0
+  description: Phase 1 contract containing only the database-independent health endpoint.
+servers:
+  - url: /api/v1
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      tags: [system]
+      responses:
+        "200":
+          description: The API process is ready to serve requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service, api_version]
+      properties:
+        status:
+          type: string
+          const: ok
+        service:
+          type: string
+        api_version:
+          type: string
+          const: v1
+

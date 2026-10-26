@@ -1,0 +1,12 @@
+{
+  "pages": [{
+    "path": "pages/index/index",
+    "style": { "navigationBarTitleText": "CodeStrike" }
+  }],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "CodeStrike",
+    "navigationBarBackgroundColor": "#F7F9FC",
+    "backgroundColor": "#F7F9FC"
+  }
+}

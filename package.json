@@ -1,0 +1,17 @@
+{
+  "name": "codestrike-campus-community",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.24.0",
+  "scripts": {
+    "build": "pnpm build:student:h5 && pnpm build:student:mp-weixin && pnpm build:admin",
+    "build:student:h5": "pnpm --filter @codestrike/student-app build:h5",
+    "build:student:mp-weixin": "pnpm --filter @codestrike/student-app build:mp-weixin",
+    "build:admin": "pnpm --filter @codestrike/admin-web build",
+    "type-check": "pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check",
+    "dev:student:h5": "pnpm --filter @codestrike/student-app dev:h5",
+    "dev:student:mp-weixin": "pnpm --filter @codestrike/student-app dev:mp-weixin",
+    "dev:admin": "pnpm --filter @codestrike/admin-web dev"
+  }
+}
+
