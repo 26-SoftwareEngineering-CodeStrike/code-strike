@@ -16,9 +16,11 @@ packages/
 docs/
   architecture/adr/ architecture decisions and deferred database constraints
   design/            Assignment 4 prototype specification
+  evidence/          retained local prototype screenshots and evidence notes
   requirements/      Assignment 3 final SRS
 prototype/           reserved prototype exports and assets
 log/                 factual execution logs
+scripts/             dependency-free local prototype QA helpers
 ```
 
 ## Prerequisites
@@ -50,8 +52,20 @@ pnpm.cmd build:student:mp-weixin
 ```
 
 The WeChat build output is `apps/student-app/dist/build/mp-weixin` and can be imported into WeChat
-Developer Tools. The startup page uses fictional competition data through `MockTransport`; it does
-not call the backend.
+Developer Tools. Assignment 4 Wave 1 implements the Mock-only path from Competition Hub to
+Competition Detail / Community, its public Recruitment list and Recruitment Detail. Reusable
+student components live in `apps/student-app/src/components`; all displayed competition, team and
+state data is fictional and comes through `MockTransport`. No student page calls the backend.
+
+Wave 1 includes explicit Published, expired-registration, skill-match, full, manually closed and
+revision-delisted scenarios. The Delisted fixture is excluded from the public list and is reachable
+only from a clearly labelled prototype moderation preview.
+
+## Prototype browser evidence
+
+Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1`. The repository-local
+scripts `scripts/capture-h5.mjs` and `scripts/verify-h5-flow.mjs` use the browser DevTools protocol
+without adding a package dependency. They are QA utilities, not application runtime code.
 
 ## Administration web app
 
@@ -95,5 +109,6 @@ Set-Location apps\server
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-No command in this Phase 1 setup performs an Alembic migration or creates database tables.
+No command in the Phase 1 or Assignment 4 Wave 1 setup performs an Alembic migration or creates
+database tables.
 

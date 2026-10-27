@@ -19,6 +19,51 @@ export interface CompetitionSummary {
   category: string
   registrationDeadline: string
   deadlineStatus: CompetitionDeadlineStatus
+  eligibilitySummary: string
+  coverTone: 'Cobalt' | 'Amber' | 'Forest'
+}
+
+export interface CompetitionDetail extends CompetitionSummary {
+  description: string
+  eligibility: string
+  maximumTeamSize: number
+  officialSourceUrl: string
+  community: {
+    discussionCount: number
+    resourceCount: number
+    publishedRecruitmentCount: number
+  }
+}
+
+export type SkillMatchStatus = 'Matched' | 'NotMatched'
+export type RecruitmentAvailability =
+  | 'Open'
+  | 'Full'
+  | 'ManuallyClosed'
+  | 'RegistrationClosed'
+  | 'Delisted'
+
+export interface RecruitmentSummary extends TeamStateSummary {
+  competitionId: string
+  captainUsername: string
+  summary: string
+  requiredSkills: string[]
+  matchStatus: SkillMatchStatus
+  availability: RecruitmentAvailability
+  isPubliclyListed: boolean
+}
+
+export interface RecruitmentRevisionDraft {
+  teamName: string
+  summary: string
+  capacity: number
+  requiredSkills: string[]
+}
+
+export interface RecruitmentDetail extends RecruitmentSummary {
+  competitionTitle: string
+  competitionDeadline: string
+  revisionDraft?: RecruitmentRevisionDraft
 }
 
 export interface ApplicationSummary {
