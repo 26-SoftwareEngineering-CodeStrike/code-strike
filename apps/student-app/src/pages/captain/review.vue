@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onShow } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { CaptainPendingApplication, PrototypeActor } from '@codestrike/contracts'
 import { createStudentApiClient } from '../../api/client'
@@ -15,20 +15,31 @@ const queue = ref<CaptainPendingApplication[]>([])
 const loading = ref(true)
 const errorMessage = ref('')
 const feedback = ref('')
+const targetTeamId = ref('')
+const hasExplicitTeam = ref(false)
 
+onLoad((options) => { if (typeof options?.id === 'string') { targetTeamId.value = options.id; hasExplicitTeam.value = true } })
 onShow(initialize)
 async function initialize() {
   const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
   actors.value = available.filter((actor) => ['visitor', 'captain-alpha', 'captain-delta', 'former-captain-alpha', 'admin-reviewer'].includes(actor.id))
   actorId.value = current.id
+  if (!targetTeamId.value && current.captainTeamId) targetTeamId.value = current.captainTeamId
   await loadQueue()
 }
 async function selectActor(id: string) {
-  const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; feedback.value = result.message; await loadQueue()
+  const result = await api.selectPrototypeActor(id)
+  if (result.ok) {
+    actorId.value = id
+    if (!hasExplicitTeam.value) targetTeamId.value = result.data?.captainTeamId || ''
+  }
+  feedback.value = result.message
+  await loadQueue()
 }
 async function loadQueue() {
   loading.value = true; errorMessage.value = ''
-  const result = await api.listCaptainApplications()
+  if (!targetTeamId.value) { queue.value = []; errorMessage.value = 'Choose a team from My Teams before reviewing applications.'; loading.value = false; return }
+  const result = await api.listCaptainApplications(targetTeamId.value)
   if (result.ok) queue.value = result.data || []
   else { queue.value = []; errorMessage.value = result.message }
   loading.value = false
@@ -40,7 +51,7 @@ function process(item: CaptainPendingApplication, decision: 'approve' | 'reject'
     feedback.value = result.message; await loadQueue()
   } })
 }
-function openRevisionReview() { uni.navigateTo({ url: '/pages/prototype/recruitment-review?id=team-delta' }) }
+function openRevisionReview() { uni.navigateTo({ url: `/pages/prototype/recruitment-review?id=${targetTeamId.value}` }) }
 </script>
 
 <template>
@@ -48,7 +59,7 @@ function openRevisionReview() { uni.navigateTo({ url: '/pages/prototype/recruitm
     <view class="content">
       <PersonaSwitcher :actors="actors" :selected-id="actorId" @select="selectActor" />
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
-      <view v-if="actorId === 'captain-delta' || actorId === 'admin-reviewer'" class="review-lab"><text class="review-lab__label">ISOLATED DESIGN REVIEW</text><text class="review-lab__copy">This explicit scoped persona may inspect Team Delta's effective and draft recruitment versions.</text><button @click="openRevisionReview">Inspect revision differences</button></view>
+      <view v-if="targetTeamId === 'team-delta' && (actorId === 'captain-delta' || actorId === 'admin-reviewer')" class="review-lab"><text class="review-lab__label">ISOLATED DESIGN REVIEW</text><text class="review-lab__copy">This explicit scoped persona may inspect the target team's effective and draft recruitment versions.</text><button @click="openRevisionReview">Inspect revision differences</button></view>
       <StatePanel v-if="loading" title="Loading Pending queue" message="Applying current-captain scope to a sanitized Mock response." />
       <StatePanel v-else-if="errorMessage" title="Captain access denied" :message="errorMessage" />
       <StatePanel v-else-if="queue.length === 0" title="No Pending applications" message="Only active Pending records for the current captain's team appear here." />

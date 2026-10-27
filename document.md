@@ -185,3 +185,48 @@ The corrected final-SRS traceability for the remediated Wave 3 pages is:
 | UI-12 Recruitment Management | FR-07, FR-14 |
 | UI-15 Team Operations | FR-12, BR-10, BR-11 |
 
+# Assignment 4 Phase 2 Wave 4 engineering notes
+
+## Standalone HTML handoff
+
+UI-04, UI-05 and UI-09 now have standalone HTML renderings under
+`prototype/html/wave4-pilot`. Each file contains complete DOM, inline styling and fictional local
+data, and has no runtime dependency on Vue, Vite, Node, a server, a remote image or a network API.
+The accompanying page, interaction, token and import guides describe manual MoDao conversion and
+the navigation/state connections that the user must verify or recreate. Status is
+`HTML_EXPORT_READY / MODAO_MANUAL_IMPORT_PENDING`; no MoDao operation was performed.
+
+## Multi-team captain scope
+
+Captain queue reads now accept an explicit team identifier and reauthorize against that team's
+current Active Captain Membership. UI-11 supplies the selected team ID and UI-14 preserves an
+explicit target across persona changes. Its no-ID compatibility route follows the explicitly
+selected captain persona instead of silently retaining a different team's queue. Transfer removes
+the old captain's target-team authority immediately and grants it to the new captain. Pending
+applicant DTOs remain restricted to Name, College, Sex, Skill tags and Brief CV.
+
+## Planner behavior and privacy
+
+The planner reuses the existing Mock actor identity and keeps occurrence rows in a separate
+in-memory state module. UI-16 Day and Week views query the same rows. UI-17 creates finite weekly
+course occurrences from the actual start week and uses the exact duplicate key Course Name +
+Actual Date + Start Time + End Time. UI-18 permits overlapping Timed Plans and no-deadline To-dos.
+UI-19 edits, deletes or completes only the selected stable occurrence ID.
+
+Planner access follows FR-02 and FR-16 through FR-19: signed-in students, including the incomplete
+profile persona, can access only their own data; Visitor and Admin reviewer personas are denied.
+No automatic competition task, reminder or notification is generated. The period table is labelled
+Example / Mock and is not represented as an official Fuzhou University schedule.
+
+## Wave 4 verification boundary
+
+The deterministic suite has 21 business-state and 14 planner-state tests. Final contracts, student
+and admin type checks passed. H5 and `mp-weixin` production builds passed with the existing DCloud
+circular-dependency warning. Existing FastAPI tests reported 2 passed with one known TestClient
+deprecation warning. Browser regression passed the Wave 1/2 flow, the Wave 3 flow and the Wave 4
+Planner flow; production-build screenshots cover 320, 390, 430 and 680 CSS pixels. The WeChat output was
+not opened in Developer Tools or tested on a physical device.
+
+The Mock checks do not prove real authentication, server authorization, database transactions,
+concurrency behavior or persistence. MySQL and Alembic were not accessed.
+

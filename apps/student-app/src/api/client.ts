@@ -14,6 +14,14 @@ import type {
   RecruitmentSettings,
   RecruitmentSummary,
   TeamOperationsView,
+  PlannerView,
+  PlannerViewMode,
+  PlannerOccurrence,
+  SchoolPeriod,
+  CreateCourseInput,
+  CreatePlannerItemInput,
+  UpdateOccurrenceInput,
+  CourseCreationResult,
 } from '@codestrike/contracts'
 import { MockTransport } from './mock-transport'
 import type { ApiTransport } from './transport'
@@ -31,7 +39,7 @@ export interface StudentApiClient {
   applyToTeam(teamId: string): Promise<MockCommandResult<ApplicationHistoryItem>>
   withdrawApplication(id: string): Promise<MockCommandResult>
   reapply(id: string): Promise<MockCommandResult<ApplicationHistoryItem>>
-  listCaptainApplications(): Promise<MockCommandResult<CaptainPendingApplication[]>>
+  listCaptainApplications(teamId?: string): Promise<MockCommandResult<CaptainPendingApplication[]>>
   approveApplication(id: string): Promise<MockCommandResult>
   rejectApplication(id: string): Promise<MockCommandResult>
   createTeam(input: CreateTeamInput): Promise<MockCommandResult<MyTeamItem>>
@@ -46,6 +54,14 @@ export interface StudentApiClient {
   removeMember(teamId: string, membershipId: string): Promise<MockCommandResult>
   transferCaptain(teamId: string, membershipId: string): Promise<MockCommandResult>
   dissolveTeam(teamId: string): Promise<MockCommandResult>
+  getPlannerView(date: string, mode: PlannerViewMode): Promise<MockCommandResult<PlannerView>>
+  listSchoolPeriods(): Promise<SchoolPeriod[]>
+  createCourse(input: CreateCourseInput): Promise<MockCommandResult<CourseCreationResult>>
+  createPlannerItem(input: CreatePlannerItemInput): Promise<MockCommandResult<PlannerOccurrence[]>>
+  getPlannerOccurrence(id: string): Promise<MockCommandResult<PlannerOccurrence>>
+  updatePlannerOccurrence(id: string, input: UpdateOccurrenceInput): Promise<MockCommandResult<PlannerOccurrence>>
+  deletePlannerOccurrence(id: string): Promise<MockCommandResult>
+  togglePlannerTodo(id: string): Promise<MockCommandResult<PlannerOccurrence>>
 }
 
 export function createStudentApiClient(transport: ApiTransport = new MockTransport()): StudentApiClient {
@@ -80,8 +96,8 @@ export function createStudentApiClient(transport: ApiTransport = new MockTranspo
       transport.request<MockCommandResult>({ path: `/applications/${id}/withdraw`, method: 'POST' }),
     reapply: (id) =>
       transport.request<MockCommandResult<ApplicationHistoryItem>>({ path: `/applications/${id}/reapply`, method: 'POST' }),
-    listCaptainApplications: () =>
-      transport.request<MockCommandResult<CaptainPendingApplication[]>>({ path: '/captain/applications' }),
+    listCaptainApplications: (teamId) =>
+      transport.request<MockCommandResult<CaptainPendingApplication[]>>({ path: teamId ? `/captain/teams/${teamId}/applications` : '/captain/applications' }),
     approveApplication: (id) =>
       transport.request<MockCommandResult>({ path: `/captain/applications/${id}/approve`, method: 'POST' }),
     rejectApplication: (id) =>
@@ -110,5 +126,14 @@ export function createStudentApiClient(transport: ApiTransport = new MockTranspo
       transport.request<MockCommandResult>({ path: `/teams/${teamId}/captain/transfer`, method: 'POST', body: { membershipId } }),
     dissolveTeam: (teamId) =>
       transport.request<MockCommandResult>({ path: `/teams/${teamId}/dissolve`, method: 'POST' }),
+    getPlannerView: (date, mode) =>
+      transport.request<MockCommandResult<PlannerView>>({ path: `/planner/views/${mode}/${date}` }),
+    listSchoolPeriods: () => transport.request<SchoolPeriod[]>({ path: '/planner/periods' }),
+    createCourse: (input) => transport.request<MockCommandResult<CourseCreationResult>>({ path: '/planner/courses', method: 'POST', body: input }),
+    createPlannerItem: (input) => transport.request<MockCommandResult<PlannerOccurrence[]>>({ path: '/planner/items', method: 'POST', body: input }),
+    getPlannerOccurrence: (id) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}` }),
+    updatePlannerOccurrence: (id, input) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}`, method: 'PUT', body: input }),
+    deletePlannerOccurrence: (id) => transport.request<MockCommandResult>({ path: `/planner/occurrences/${id}`, method: 'DELETE' }),
+    togglePlannerTodo: (id) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}/complete`, method: 'POST' }),
   }
 }

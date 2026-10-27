@@ -241,7 +241,7 @@ export class MockBusinessState {
 
   canReviewRecruitment(teamId: string): boolean {
     const actor = this.getActor()
-    return actor.role === 'Admin' || (actor.role === 'CurrentCaptain' && actor.captainTeamId === teamId)
+    return actor.role === 'Admin' || this.authorizeCaptain(teamId).ok
   }
 
   listApplicationHistory(): MockResult<Array<Record<string, unknown>>> {
@@ -286,8 +286,8 @@ export class MockBusinessState {
     return this.apply(previous.teamId)
   }
 
-  listCaptainQueue(): MockResult<Array<Record<string, unknown>>> {
-    const auth = this.authorizeCaptain()
+  listCaptainQueue(teamId?: string): MockResult<Array<Record<string, unknown>>> {
+    const auth = this.authorizeCaptain(teamId)
     if (!auth.ok || !auth.team) return failure(auth.code, auth.message)
     const team = auth.team
     const data = this.applications.filter((item) => item.teamId === team.id && item.status === 'Pending').map((item) => {
@@ -608,10 +608,10 @@ export class MockBusinessState {
   }
 
   private authorizeCaptainApplication(applicationId: string): { ok: boolean; code: string; message: string; application?: MockApplicationRecord; team?: MockTeamRecord } {
-    const auth = this.authorizeCaptain()
-    if (!auth.ok || !auth.team) return auth
     const item = this.applications.find((record) => record.id === applicationId)
-    if (!item || item.teamId !== auth.team.id) return { ok: false, code: 'OUT_OF_SCOPE', message: 'This application is outside the captain\'s current team.' }
+    if (!item) return { ok: false, code: 'OUT_OF_SCOPE', message: 'This application is outside the captain\'s current team.' }
+    const auth = this.authorizeCaptain(item.teamId)
+    if (!auth.ok || !auth.team) return auth
     return { ...auth, application: item }
   }
 

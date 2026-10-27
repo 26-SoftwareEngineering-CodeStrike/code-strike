@@ -75,11 +75,20 @@ separate; Delisted, Private and Pending content is denied by public operations. 
 member departure/removal and dissolution update Mock memberships and permissions immediately.
 These flows reset on full reload and do not represent production authorization or persistence.
 
+Wave 4 adds UI-16 Planner Day/Week, UI-17 Manual Course Entry, UI-18 Timed Plan/To-do and UI-19
+single-occurrence actions. Planner data is private to the selected signed-in Mock student; an
+incomplete profile may use it, while Visitor and Admin personas cannot borrow student data. Course,
+plan and to-do occurrences support finite weekly repetition, intentional overlaps and isolated
+edit/delete/complete operations. The example school-period mapping is explicitly fictional.
+
+Standalone, dependency-free HTML exports for UI-04, UI-05 and UI-09 are under
+`prototype/html/wave4-pilot`. They are manual MoDao handoff inputs, not another application and not
+evidence of a successful MoDao import. No MoDao account, API or editor was accessed.
+
 ## Prototype browser evidence
 
-Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1`, `phase2-wave2` and
-`phase2-wave3`. The repository-local
-scripts `scripts/capture-h5.mjs` and `scripts/verify-h5-flow.mjs` use the browser DevTools protocol
+Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1` through
+`docs/evidence/phase2-wave4`. The repository-local browser scripts use the DevTools protocol
 without adding a package dependency. They are QA utilities, not application runtime code.
 
 ## Administration web app

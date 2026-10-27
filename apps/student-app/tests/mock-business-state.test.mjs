@@ -263,6 +263,37 @@ test('captain role is scoped per competition rather than blocking all student pa
   assert.equal(creationState.getRecruitmentManagement(crossCompetitionTeam.data.id).ok, true)
 })
 
+test('one student can scope captain queues independently across two competitions', () => {
+  const state = new MockBusinessState()
+  state.applyNamedScenario('cross-competition-open')
+  select(state, 'captain-alpha')
+  const created = state.createTeam({ competitionId: 'competition-demo-2', name: 'Cross Scope Team', summary: 'A second captain scope in another competition.', capacity: 3, requiredSkills: ['Python'], submitRecruitment: true })
+  assert.equal(created.ok, true)
+  const secondTeamId = created.data.id
+  select(state, 'admin-reviewer')
+  assert.equal(state.moderateRecruitment(secondTeamId, 'Approve').ok, true)
+  select(state, 'student-alex')
+  assert.equal(state.apply(secondTeamId).ok, true)
+
+  select(state, 'captain-alpha')
+  const alphaQueue = state.listCaptainQueue('team-alpha')
+  const secondQueue = state.listCaptainQueue(secondTeamId)
+  assert.equal(alphaQueue.ok, true)
+  assert.equal(alphaQueue.data.every((item) => item.teamId === 'team-alpha'), true)
+  assert.equal(secondQueue.ok, true)
+  assert.equal(secondQueue.data.length, 1)
+  assert.equal(secondQueue.data[0].teamId, secondTeamId)
+  assert.equal(state.listCaptainQueue('team-delta').code, 'OUT_OF_SCOPE')
+  assert.equal(state.listCaptainQueue('team-does-not-exist').code, 'OUT_OF_SCOPE')
+
+  assert.equal(state.transferCaptain('team-alpha', 'membership-alpha-member').ok, true)
+  assert.equal(state.listCaptainQueue('team-alpha').ok, false)
+  assert.equal(state.listCaptainQueue(secondTeamId).ok, true)
+  select(state, 'alpha-successor')
+  assert.equal(state.listCaptainQueue('team-alpha').ok, true)
+  assert.equal(state.listCaptainQueue(secondTeamId).ok, false)
+})
+
 test('manual closure still allows approval of an existing eligible Pending application', () => {
   const state = new MockBusinessState()
   select(state, 'captain-alpha')

@@ -69,6 +69,22 @@
         "navigationBarTitleText": "Design Review",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/planner/index",
+      "style": { "navigationBarTitleText": "Planner", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/planner/course",
+      "style": { "navigationBarTitleText": "Manual Course", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/planner/item",
+      "style": { "navigationBarTitleText": "Plan or To-do", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/planner/occurrence",
+      "style": { "navigationBarTitleText": "Occurrence", "navigationStyle": "custom" }
     }
   ],
   "globalStyle": {

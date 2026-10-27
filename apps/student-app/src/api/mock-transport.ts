@@ -4,6 +4,7 @@ import {
 } from '@codestrike/contracts/mock'
 import type { ApiRequest, ApiTransport } from './transport'
 import { mockBusinessState } from '../mock/business-state'
+import { plannerMockState } from '../mock/planner-state'
 
 export class MockTransport implements ApiTransport {
   async request<T>(request: ApiRequest): Promise<T> {
@@ -43,6 +44,11 @@ export class MockTransport implements ApiTransport {
 
     if (method === 'GET' && request.path === '/captain/applications') {
       return mockBusinessState.listCaptainQueue() as T
+    }
+
+    const captainTeamApplicationsMatch = request.path.match(/^\/captain\/teams\/([^/]+)\/applications$/)
+    if (method === 'GET' && captainTeamApplicationsMatch) {
+      return mockBusinessState.listCaptainQueue(captainTeamApplicationsMatch[1]) as T
     }
 
     const approveMatch = request.path.match(/^\/captain\/applications\/([^/]+)\/approve$/)
@@ -116,6 +122,18 @@ export class MockTransport implements ApiTransport {
     if (method === 'POST' && dissolveMatch) {
       return mockBusinessState.dissolveTeam(dissolveMatch[1]) as T
     }
+
+    const plannerViewMatch = request.path.match(/^\/planner\/views\/(Day|Week)\/(\d{4}-\d{2}-\d{2})$/)
+    if (method === 'GET' && plannerViewMatch) return plannerMockState.getView(plannerViewMatch[2], plannerViewMatch[1] as 'Day' | 'Week') as T
+    if (method === 'GET' && request.path === '/planner/periods') return plannerMockState.listPeriods() as T
+    if (method === 'POST' && request.path === '/planner/courses') return plannerMockState.createCourse(readObjectBody(request.body) as never) as T
+    if (method === 'POST' && request.path === '/planner/items') return plannerMockState.createItem(readObjectBody(request.body) as never) as T
+    const plannerCompleteMatch = request.path.match(/^\/planner\/occurrences\/([^/]+)\/complete$/)
+    if (method === 'POST' && plannerCompleteMatch) return plannerMockState.toggleTodo(plannerCompleteMatch[1]) as T
+    const plannerOccurrenceMatch = request.path.match(/^\/planner\/occurrences\/([^/]+)$/)
+    if (plannerOccurrenceMatch && method === 'GET') return plannerMockState.getOccurrence(plannerOccurrenceMatch[1]) as T
+    if (plannerOccurrenceMatch && method === 'PUT') return plannerMockState.updateOccurrence(plannerOccurrenceMatch[1], readObjectBody(request.body) as never) as T
+    if (plannerOccurrenceMatch && method === 'DELETE') return plannerMockState.deleteOccurrence(plannerOccurrenceMatch[1]) as T
 
     if (method === 'GET' && request.path === '/competitions?scenario=error') {
       throw new Error('The prototype competition feed is unavailable.')

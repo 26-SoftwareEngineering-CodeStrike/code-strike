@@ -215,3 +215,46 @@ scope.
 - The corrected page mapping is UI-11 → FR-07/FR-12, UI-12 → FR-07/FR-14, and UI-15 →
   FR-12/BR-10/BR-11.
 
+# Phase 2 Wave 4 completion report
+
+## Delivered scope
+
+- Exported standalone HTML versions of UI-04, UI-05 and UI-09 with manual MoDao handoff maps and
+  no external runtime resources. These files are ready for user import; import success and native
+  MoDao connections remain pending.
+- Corrected captain queue and recruitment-review targeting so a student captaining teams in
+  different competitions is authorized per explicit team, not by one implicit global team.
+- Implemented UI-16 through UI-19 with shared private Mock occurrence state, Day/Week views, manual
+  finite course repetition, Timed Plans, To-dos and single-occurrence actions.
+- Added shared planner contracts and routed all page operations through Student API Client and
+  MockTransport rather than direct page access to internal state.
+
+## SRS traceability
+
+| Prototype page or boundary | Final SRS mapping |
+| --- | --- |
+| Multi-team captain correction | FR-07-FR-12, BR-01, BR-10 |
+| UI-16 Planner Day / Week | FR-18, BR-12 |
+| UI-17 Manual Course Entry | FR-16, FR-19, BR-12 |
+| UI-18 Timed Plan / To-do | FR-17, FR-18, FR-19, BR-12 |
+| UI-19 Single Occurrence Actions | FR-19, BR-12 |
+| Incomplete-profile planner access | FR-02 |
+
+## Verified outcomes and limits
+
+All 35 Mock tests passed, including 14 planner cases and the multi-team captain case. Contracts,
+student and admin TypeScript checks passed. H5 and `mp-weixin` builds completed. Existing FastAPI
+tests reported 2 passed. Standalone HTML checks passed at 320/390/430px; H5 Planner checks passed
+at 320/390/430/680px, and retained screenshots were visually reviewed.
+
+The root pnpm wrapper again requested an interactive modules-directory purge and was not allowed to
+modify installed dependencies; repository-local executables were used. DCloud retained its known
+non-fatal circular-dependency warning. HTML generation is not MoDao import, H5 success is not a
+WeChat real-device result, and Mock authorization is not production server authorization.
+
+## Remaining Assignment 4 gaps
+
+Pages outside the authorized Wave 1-Wave 4 scope, UI-20 Notifications, real authentication,
+production APIs, persistence, database transaction/concurrency enforcement, WeChat Developer Tools
+QA, physical-device QA and manual MoDao import/linking remain unimplemented or unverified.
+

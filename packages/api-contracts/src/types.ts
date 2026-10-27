@@ -195,6 +195,76 @@ export interface TeamOperationsView {
   contacts?: ActiveMemberContact[]
 }
 
+export type PlannerItemType = 'Course' | 'TimedPlan' | 'Todo'
+export type PlannerViewMode = 'Day' | 'Week'
+
+export interface SchoolPeriod {
+  period: number
+  startTime: string
+  endTime: string
+}
+
+export interface PlannerOccurrence {
+  id: string
+  batchId: string
+  type: PlannerItemType
+  title: string
+  actualDate: string
+  startTime?: string
+  endTime?: string
+  room?: string
+  description?: string
+  deadline?: string
+  completed: boolean
+  occurrenceNumber: number
+  occurrenceCount: number
+}
+
+export interface PlannerView {
+  mode: PlannerViewMode
+  selectedDate: string
+  rangeStart: string
+  rangeEnd: string
+  occurrences: PlannerOccurrence[]
+}
+
+export interface CreateCourseInput {
+  name: string
+  actualStartWeek: string
+  weekday: number
+  startPeriod: number
+  endPeriod: number
+  room?: string
+  repeatCount: number
+}
+
+export interface CreatePlannerItemInput {
+  type: 'TimedPlan' | 'Todo'
+  title: string
+  description?: string
+  assignedDate: string
+  startTime?: string
+  endTime?: string
+  deadline?: string
+  repeatCount: number
+}
+
+export interface UpdateOccurrenceInput {
+  title: string
+  actualDate: string
+  startTime?: string
+  endTime?: string
+  room?: string
+  description?: string
+  deadline?: string
+}
+
+export interface CourseCreationResult {
+  createdCount: number
+  skippedDuplicateCount: number
+  occurrences: PlannerOccurrence[]
+}
+
 export interface MockCommandResult<T = undefined> {
   ok: boolean
   code: string

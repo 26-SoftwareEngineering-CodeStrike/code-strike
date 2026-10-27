@@ -34,7 +34,7 @@ async function loadTeams() {
   loading.value = false
 }
 function openRecruitment(teamId: string) { uni.navigateTo({ url: `/pages/teams/recruitment?id=${teamId}` }) }
-function openReview() { uni.navigateTo({ url: '/pages/captain/review' }) }
+function openReview(teamId: string) { uni.navigateTo({ url: `/pages/captain/review?id=${teamId}` }) }
 function openOperations(teamId: string) { uni.navigateTo({ url: `/pages/teams/operations?id=${teamId}` }) }
 function openCreate() { uni.navigateTo({ url: '/pages/teams/create' }) }
 function openApplications() { uni.navigateTo({ url: '/pages/applications/history' }) }
@@ -54,7 +54,7 @@ function publicationTone(status: string): 'positive' | 'warning' | 'danger' | 'n
           <view class="team-card__top"><view><text class="competition">{{ team.competitionTitle }}</text><text class="team-name">{{ team.name }}</text></view><StatusBadge :label="team.membershipRole.toUpperCase()" :tone="team.membershipRole === 'Captain' ? 'info' : 'neutral'" /></view>
           <view class="badges"><StatusBadge :label="team.lifecycle.toUpperCase()" :tone="team.lifecycle === 'Active' ? 'positive' : 'danger'" /><StatusBadge :label="team.publication.toUpperCase()" :tone="publicationTone(team.publication)" /><StatusBadge :label="`RECRUITMENT ${team.recruitmentSwitch.toUpperCase()}`" :tone="team.recruitmentSwitch === 'Open' ? 'positive' : 'warning'" /></view>
           <view class="facts"><view><text class="fact__label">CAPTAIN</text><text class="fact__value">@{{ team.captainUsername }}</text></view><view><text class="fact__label">MEMBERS</text><text class="fact__value">{{ team.memberCount }} / {{ team.capacity }}</text></view></view>
-          <view class="actions"><button v-if="team.canManageRecruitment" class="manage-recruitment" @click="openRecruitment(team.id)">Manage recruitment</button><button v-if="team.canReviewApplications" class="review-applications" @click="openReview">Review applications</button><button class="manage-members" @click="openOperations(team.id)">{{ team.canManageMembers ? 'Manage members' : 'View team / Leave' }}</button></view>
+          <view class="actions"><button v-if="team.canManageRecruitment" class="manage-recruitment" @click="openRecruitment(team.id)">Manage recruitment</button><button v-if="team.canReviewApplications" class="review-applications" @click="openReview(team.id)">Review applications</button><button class="manage-members" @click="openOperations(team.id)">{{ team.canManageMembers ? 'Manage members' : 'View team / Leave' }}</button></view>
         </view>
 
         <view class="section-head history-head"><view><text class="section-head__label">OWNER-SPECIFIC HISTORY</text><text class="section-head__title">Past teams</text></view><text class="section-head__count">{{ historyTeams.length }}</text></view>
