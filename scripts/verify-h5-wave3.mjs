@@ -87,6 +87,26 @@ check(await evaluate("document.body.innerText.includes('PUBLISHED') && !document
 await clickText('.public-check', 'Open public detail'); await pause(1300)
 check(await evaluate("document.body.innerText.includes('Team Delta Studio') && document.body.innerText.includes('PUBLISHED')"), 'approved effective version is immediately consistent in public detail')
 
+// Rejected recruitment cannot be approved again until the current captain resubmits it.
+await hardNavigate('/pages/teams/recruitment?id=team-alpha')
+await clickText('.persona__button', 'Team Alpha captain'); await pause(700)
+await setField('input', 'Rejected Browser Draft'); await setField('textarea', 'This rejected draft must require a new captain submission.')
+await clickText('.submit', 'Submit for Review'); check(await confirmModal(), 'rejection-path draft submission is interactive')
+await evaluate("location.hash = '#/pages/prototype/recruitment-review?id=team-alpha'"); await pause(1400)
+await clickText('.persona__button', 'Admin reviewer'); await pause(700)
+await clickText('.moderation .reject', 'Reject Draft'); check(await confirmModal(), 'admin rejection confirmation is interactive')
+check(await evaluate("document.body.innerText.includes('REJECTED') && document.body.innerText.includes('Rejected Browser Draft')"), 'rejected draft and decision remain visible in isolated review')
+check(await evaluate("!document.body.innerText.includes('Approve Draft') && document.body.innerText.includes('must resubmit')"), 'rejected revision has no direct approval action')
+await clickText('.persona__button', 'Team Alpha captain'); await pause(600)
+await evaluate("location.hash = '#/pages/teams/recruitment?id=team-alpha'"); await pause(1400)
+await setField('input', 'Resubmitted Browser Draft'); await setField('textarea', 'A new reviewable revision submitted by the current captain.')
+await clickText('.submit', 'Submit for Review'); check(await confirmModal(), 'captain resubmission after rejection is interactive')
+await evaluate("location.hash = '#/pages/prototype/recruitment-review?id=team-alpha'"); await pause(1400)
+await clickText('.persona__button', 'Admin reviewer'); await pause(700)
+check(await evaluate("document.body.innerText.includes('Approve Draft') && document.body.innerText.includes('Resubmitted Browser Draft')"), 'resubmitted revision enters a new reviewable state')
+await clickText('.moderation .approve', 'Approve Draft'); check(await confirmModal(), 'resubmitted revision approval is interactive')
+check(await evaluate("document.body.innerText.includes('PUBLISHED') && document.body.innerText.includes('Resubmitted Browser Draft')"), 'resubmitted revision can be approved successfully')
+
 // Critical bottom actions remain reachable at required responsive widths.
 for (const width of [320, 390, 430, 680]) {
   await send('Emulation.setDeviceMetricsOverride', { width, height: 900, screenWidth: width, screenHeight: 900, deviceScaleFactor: 1, mobile: true })

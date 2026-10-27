@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { PrototypeActor, RecruitmentDetail } from '@codestrike/contracts'
 import { createStudentApiClient } from '../../api/client'
 import CsHeader from '../../components/CsHeader.vue'
@@ -16,6 +16,7 @@ const actorId = ref('visitor')
 const loading = ref(true)
 const errorMessage = ref('')
 const feedback = ref('')
+const canModerate = computed(() => actorId.value === 'admin-reviewer' && Boolean(recruitment.value?.revisionDraft) && ['Pending', 'Delisted'].includes(recruitment.value?.publication || ''))
 
 onLoad((options) => { if (typeof options?.id === 'string' && options.id) recruitmentId.value = options.id; initialize() })
 async function initialize() {
@@ -53,8 +54,8 @@ function openPublicDetail() { uni.navigateTo({ url: `/pages/recruitment/detail?i
         <view class="badges"><StatusBadge :label="recruitment.publication.toUpperCase()" :tone="recruitment.publication === 'Published' ? 'positive' : recruitment.publication === 'Rejected' || recruitment.publication === 'Delisted' ? 'danger' : 'warning'" /><StatusBadge v-if="recruitment.revisionDraft" label="DRAFT ISOLATED" tone="warning" /></view>
         <text class="team">{{ recruitment.name }}</text><text class="copy">{{ recruitment.publication === 'Published' ? 'The approved Effective version is public; no draft values are returned by public DTOs.' : 'This recruitment stays absent from public list and public detail responses.' }}</text>
         <view v-if="recruitment.revisionDraft" class="versions"><view><text class="version__label">EFFECTIVE</text><text class="version__title">{{ recruitment.name }}</text><text class="version__copy">{{ recruitment.summary }}</text><text class="version__copy">{{ recruitment.capacity }} people · {{ recruitment.requiredSkills.join(', ') }}</text></view><view><text class="version__label">DRAFT</text><text class="version__title">{{ recruitment.revisionDraft.teamName }}</text><text class="version__copy">{{ recruitment.revisionDraft.summary }}</text><text class="version__copy">{{ recruitment.revisionDraft.capacity }} people · {{ recruitment.revisionDraft.requiredSkills.join(', ') }}</text></view></view>
-        <view v-if="actorId === 'admin-reviewer' && recruitment.revisionDraft" class="moderation"><text>ISOLATED ADMIN MOCK DECISION</text><view><button class="reject" @click="moderate('Reject')">Reject Draft</button><button class="approve" @click="moderate('Approve')">Approve Draft</button></view></view>
-        <text v-else-if="recruitment.revisionDraft" class="captain-limit">Current captain may inspect differences but cannot approve their own draft.</text>
+        <view v-if="canModerate" class="moderation"><text>ISOLATED ADMIN MOCK DECISION</text><view><button class="reject" @click="moderate('Reject')">Reject Draft</button><button class="approve" @click="moderate('Approve')">Approve Draft</button></view></view>
+        <text v-else-if="recruitment.revisionDraft" class="captain-limit">{{ recruitment.publication === 'Rejected' ? 'Rejected draft retained for review history. The current captain must resubmit before another Admin decision.' : 'Current captain may inspect differences but cannot approve their own draft.' }}</text>
       </view>
       <button v-if="recruitment" class="public-check" @click="openPublicDetail">Open public detail boundary</button><text class="disclaimer">This is a UI design-review simulation, not backend authentication or authorization.</text>
     </view></view>

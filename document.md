@@ -164,3 +164,24 @@ under `docs/evidence/phase2-wave3`. The `mp-weixin` output is build-checked only
 Tools and physical-device behavior remain unverified. No MySQL connection, migration, real
 authentication, backend team endpoint or durable data was added.
 
+## Wave 3 targeted boundary remediation
+
+Fresh applications now recheck both profile completeness and target-competition eligibility before
+creating a Pending record. A current captain remains a student identity for a different
+competition; the one-current-team rule is evaluated within the target competition rather than from
+the actor's global display role.
+
+Recruitment drafts carry an internal revision identifier and retain an isolated moderation history.
+A Rejected draft remains unavailable publicly and cannot be approved directly. The current captain
+must resubmit it as a new Pending revision before another Admin decision. Immediately before
+promotion, approval rechecks the current revision state, Active team lifecycle, unexpired
+competition deadline, current captain membership, active-member count and competition capacity.
+
+The corrected final-SRS traceability for the remediated Wave 3 pages is:
+
+| Prototype page | Final SRS mapping |
+| --- | --- |
+| UI-11 My Teams | FR-07, FR-12 |
+| UI-12 Recruitment Management | FR-07, FR-14 |
+| UI-15 Team Operations | FR-12, BR-10, BR-11 |
+

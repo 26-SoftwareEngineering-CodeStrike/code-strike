@@ -189,9 +189,9 @@ FR-14 without claiming a complete moderator workflow.
 | Requirement/rule | Wave 3 prototype evidence |
 | --- | --- |
 | FR-07, UI-10 | Team form validates Mock identity, profile, competition eligibility/deadline, current membership and captain-inclusive capacity. |
-| FR-12–FR-13, UI-11 | Current and historical memberships are separate from application history; captain/member actions depend on live membership. |
-| FR-14, BR-07–BR-08, UI-12 | Effective values and revision draft remain separate; revision Delists public content; only isolated Admin review can approve/reject. |
-| FR-15–FR-18, BR-10–BR-11, UI-15 | Leave/remove/transfer/dissolve update membership, count and authorization; Pending records are invalidated when required, not deleted. |
+| FR-07, FR-12, UI-11 | Current and historical memberships are separate from application history; captain/member actions depend on live membership. |
+| FR-07, FR-14, BR-07–BR-08, UI-12 | Effective values and revision draft remain separate; revision Delists public content; only isolated Admin review can approve/reject. |
+| FR-12, BR-10–BR-11, UI-15 | Leave/remove/transfer/dissolve update membership, count and authorization; Pending records are invalidated when required, not deleted. |
 | BR-04–BR-06 | New applications require a visible/open/non-full team; valid existing Pending approval survives manual closure but rechecks capacity and lifecycle. |
 | BR-09 | Public and Pending DTOs omit private contacts; current-captain Active-member contacts use a distinct response. |
 
@@ -202,4 +202,16 @@ explicit design-review persona, not production authentication or a complete admi
 There is no database, transaction/concurrency proof, server-side team API, email, deployment,
 WeChat Developer Tools run or physical-device verification. UI-20, Planner and Wave 4 remain out of
 scope.
+
+## Targeted remediation after external review
+
+- Fresh application eligibility now includes profile completeness and the target competition's
+  eligibility list without treating `CurrentCaptain` as a non-student global role.
+- Rejected recruitment revisions retain their draft and review result but are not reviewable again
+  until the current captain submits a new revision identifier.
+- Recruitment approval now rejects a dissolved team, an expired competition, a missing current
+  captain membership, stale capacity below active membership and capacity above the competition
+  maximum before changing Effective or Published state.
+- The corrected page mapping is UI-11 → FR-07/FR-12, UI-12 → FR-07/FR-14, and UI-15 →
+  FR-12/BR-10/BR-11.
 

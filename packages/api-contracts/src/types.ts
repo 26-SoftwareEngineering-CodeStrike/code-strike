@@ -142,6 +142,12 @@ export interface RecruitmentSettings {
   requiredSkills: string[]
 }
 
+export interface RecruitmentModerationHistoryItem {
+  revisionId: string
+  decision: 'Approved' | 'Rejected'
+  settings: RecruitmentSettings
+}
+
 export interface RecruitmentManagementView {
   teamId: string
   competitionId: string
@@ -153,6 +159,8 @@ export interface RecruitmentManagementView {
   recruitmentSwitch: RecruitmentSwitch
   effective: RecruitmentSettings
   draft?: RecruitmentSettings
+  draftRevisionId?: string
+  reviewHistory: RecruitmentModerationHistoryItem[]
   canModerateInPrototype: boolean
 }
 

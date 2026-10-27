@@ -51,6 +51,17 @@ test('one Pending per student/team is enforced while different-team Pending is a
   assert.deepEqual(new Set(pending.map((item) => item.teamId)), new Set(['team-alpha', 'team-beta']))
 })
 
+test('incomplete profile cannot create a Pending application or alter history', () => {
+  const state = new MockBusinessState()
+  select(state, 'student-incomplete')
+  const before = state.listApplicationHistory().data
+  assert.equal(before.filter((item) => item.status === 'Pending').length, 0)
+  assert.equal(state.apply('team-beta').code, 'PROFILE_INCOMPLETE')
+  const after = state.listApplicationHistory().data
+  assert.deepEqual(after, before)
+  assert.equal(after.filter((item) => item.status === 'Pending').length, 0)
+})
+
 test('approval creates membership and invalidates same-competition Pending only', () => {
   const state = new MockBusinessState()
   select(state, 'captain-alpha')
@@ -169,6 +180,87 @@ test('recruitment draft stays separate until isolated admin approval', () => {
   const publicAfter = state.getPublicRecruitment('team-alpha').data
   assert.equal(publicAfter.name, 'Alpha Revised')
   assert.equal(publicAfter.capacity, 3)
+})
+
+test('rejected recruitment revision requires captain resubmission before a later approval', () => {
+  const state = new MockBusinessState()
+  select(state, 'captain-alpha')
+  assert.equal(state.submitRecruitmentRevision('team-alpha', { teamName: 'Rejected Alpha', summary: 'First proposed revision.', capacity: 4, requiredSkills: ['Python'] }).ok, true)
+  select(state, 'admin-reviewer')
+  const rejected = state.moderateRecruitment('team-alpha', 'Reject')
+  assert.equal(rejected.ok, true)
+  assert.equal(rejected.data.publication, 'Rejected')
+  assert.equal(rejected.data.draft.teamName, 'Rejected Alpha')
+  assert.equal(rejected.data.reviewHistory.length, 1)
+  assert.equal(rejected.data.reviewHistory[0].decision, 'Rejected')
+  assert.equal(state.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+  assert.equal(state.moderateRecruitment('team-alpha', 'Approve').code, 'NO_REVIEWABLE_DRAFT')
+
+  select(state, 'captain-alpha')
+  const resubmitted = state.submitRecruitmentRevision('team-alpha', { teamName: 'Resubmitted Alpha', summary: 'Corrected proposed revision.', capacity: 4, requiredSkills: ['Python', 'Research'] })
+  assert.equal(resubmitted.ok, true)
+  assert.equal(resubmitted.data.publication, 'Delisted')
+  assert.equal(resubmitted.data.reviewHistory.length, 1)
+  assert.notEqual(resubmitted.data.draftRevisionId, rejected.data.draftRevisionId)
+  assert.equal(state.moderateRecruitment('team-alpha', 'Approve').code, 'ADMIN_REQUIRED')
+  select(state, 'admin-reviewer')
+  const approved = state.moderateRecruitment('team-alpha', 'Approve')
+  assert.equal(approved.ok, true)
+  assert.equal(approved.data.effective.teamName, 'Resubmitted Alpha')
+  assert.equal(approved.data.reviewHistory.length, 2)
+  assert.deepEqual(approved.data.reviewHistory.map((item) => item.decision), ['Rejected', 'Approved'])
+})
+
+test('moderation approval revalidates dissolution, deadline and changed capacity conditions', () => {
+  const dissolved = new MockBusinessState()
+  select(dissolved, 'captain-alpha')
+  assert.equal(dissolved.submitRecruitmentRevision('team-alpha', { teamName: 'Dissolved Draft', summary: 'Must never publish.', capacity: 4, requiredSkills: ['Python'] }).ok, true)
+  assert.equal(dissolved.dissolveTeam('team-alpha').ok, true)
+  select(dissolved, 'admin-reviewer')
+  assert.equal(dissolved.moderateRecruitment('team-alpha', 'Approve').code, 'TEAM_DISSOLVED')
+  assert.equal(dissolved.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+
+  const expired = new MockBusinessState()
+  select(expired, 'captain-alpha')
+  assert.equal(expired.submitRecruitmentRevision('team-alpha', { teamName: 'Expired Draft', summary: 'Deadline changes before review.', capacity: 4, requiredSkills: ['Python'] }).ok, true)
+  expired.applyNamedScenario('deadline-expired')
+  select(expired, 'admin-reviewer')
+  assert.equal(expired.moderateRecruitment('team-alpha', 'Approve').code, 'DEADLINE_PASSED')
+  assert.equal(expired.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+
+  const capacity = new MockBusinessState()
+  select(capacity, 'captain-alpha')
+  assert.equal(capacity.submitRecruitmentRevision('team-alpha', { teamName: 'Capacity Draft', summary: 'Capacity becomes stale.', capacity: 2, requiredSkills: ['Python'] }).ok, true)
+  assert.equal(capacity.approve('application-maya-alpha').ok, true)
+  select(capacity, 'admin-reviewer')
+  assert.equal(capacity.moderateRecruitment('team-alpha', 'Approve').code, 'CAPACITY_BELOW_MEMBERS')
+  assert.equal(capacity.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+})
+
+test('captain role is scoped per competition rather than blocking all student participation', () => {
+  const unmatchedSkills = new MockBusinessState()
+  select(unmatchedSkills, 'former-captain-alpha')
+  const unmatchedApplication = unmatchedSkills.apply('team-beta')
+  assert.equal(unmatchedApplication.ok, true)
+  assert.equal(unmatchedApplication.data.status, 'Pending')
+
+  const applicationState = new MockBusinessState()
+  applicationState.applyNamedScenario('cross-competition-open')
+  select(applicationState, 'captain-alpha')
+  assert.equal(applicationState.apply('team-beta').code, 'MEMBERSHIP_EXISTS')
+  const crossCompetitionApplication = applicationState.apply('team-archive')
+  assert.equal(crossCompetitionApplication.ok, true)
+  assert.equal(crossCompetitionApplication.data.competitionId, 'competition-demo-2')
+
+  const creationState = new MockBusinessState()
+  creationState.applyNamedScenario('cross-competition-open')
+  select(creationState, 'captain-alpha')
+  assert.equal(creationState.createTeam({ competitionId: 'competition-demo-1', name: 'Duplicate Scope', summary: 'Must remain blocked in the current competition.', capacity: 4, requiredSkills: ['Python'], submitRecruitment: false }).code, 'MEMBERSHIP_EXISTS')
+  const crossCompetitionTeam = creationState.createTeam({ competitionId: 'competition-demo-2', name: 'Independent Scope', summary: 'Allowed in an independent competition.', capacity: 3, requiredSkills: ['Python'], submitRecruitment: false })
+  assert.equal(crossCompetitionTeam.ok, true)
+  assert.equal(crossCompetitionTeam.data.competitionId, 'competition-demo-2')
+  assert.equal(crossCompetitionTeam.data.membershipRole, 'Captain')
+  assert.equal(creationState.getRecruitmentManagement(crossCompetitionTeam.data.id).ok, true)
 })
 
 test('manual closure still allows approval of an existing eligible Pending application', () => {

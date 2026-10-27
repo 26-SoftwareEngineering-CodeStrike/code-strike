@@ -40,6 +40,12 @@ interface RecruitmentSettingsRecord {
   requiredSkills: string[]
 }
 
+interface RecruitmentReviewRecord {
+  revisionId: string
+  decision: 'Approved' | 'Rejected'
+  settings: RecruitmentSettingsRecord
+}
+
 interface MockTeamRecord {
   id: string
   competitionId: string
@@ -49,6 +55,8 @@ interface MockTeamRecord {
   recruitmentSwitch: 'Open' | 'Closed'
   effective: RecruitmentSettingsRecord
   draft?: RecruitmentSettingsRecord
+  draftRevisionId?: string
+  reviewHistory: RecruitmentReviewRecord[]
   hasApprovedRecruitment: boolean
   demoMatchStatus: 'Matched' | 'NotMatched'
 }
@@ -110,7 +118,7 @@ const actorSeeds: MockActorRecord[] = [
 const profileSeeds: ApplicantProfileSource[] = [
   profile('student-alex', 'student-alex', 'alex_demo', 'Alex Lin', 'College of Computing', 'Male', ['Python', 'Java'], 'Built two small campus service prototypes.', true, ['competition-demo-1', 'competition-demo-2'], 'alex'),
   profile('student-incomplete', 'student-incomplete', 'profile_todo', 'Taylor Sun', 'College of Computing', 'Female', ['Vue'], 'Profile completion is intentionally unfinished.', false, ['competition-demo-1'], 'taylor'),
-  profile('student-captain-alpha', 'captain-alpha', 'orbit_captain', 'Jordan Lee', 'College of Engineering', 'Female', ['Python', 'Java'], 'Captain of Team Alpha.', true, ['competition-demo-1'], 'jordan'),
+  profile('student-captain-alpha', 'captain-alpha', 'orbit_captain', 'Jordan Lee', 'College of Engineering', 'Female', ['Python', 'Java'], 'Captain of Team Alpha.', true, ['competition-demo-1', 'competition-demo-2'], 'jordan'),
   profile('student-alpha-successor', 'alpha-successor', 'nova_member', 'Nova Zhou', 'College of Design', 'Female', ['Product Design'], 'Active Team Alpha member.', true, ['competition-demo-1'], 'nova'),
   profile('student-captain-delta', 'captain-delta', 'delta_captain', 'Kai Xu', 'College of Computing', 'Male', ['Python'], 'Captain of Team Delta.', true, ['competition-demo-1'], 'kai'),
   profile('student-delta-member', 'delta-member', 'delta_member', 'Riley Gu', 'College of Science', 'Female', ['Data Visualization'], 'Active Team Delta member.', true, ['competition-demo-1'], 'riley'),
@@ -133,13 +141,13 @@ function initialTeams(): MockTeamRecord[] {
     team('team-beta', 'competition-demo-1', 'captain-beta', 'Published', 'Open', settings('Team Beta', 'Exploring a modular product concept and looking for a teammate comfortable with CAD.', 4, ['CAD']), true, 'NotMatched'),
     team('team-gamma', 'competition-demo-1', 'captain-gamma', 'Published', 'Closed', settings('Team Gamma', 'A complete four-person team researching low-energy campus services.', 4, ['Research', 'Vue']), true, 'Matched'),
     team('team-epsilon', 'competition-demo-1', 'captain-epsilon', 'Published', 'Closed', settings('Team Epsilon', 'Recruitment is paused manually while the captain reviews existing applications.', 4, ['Product Design']), true, 'NotMatched'),
-    { ...team('team-delta', 'competition-demo-1', 'captain-delta', 'Delisted', 'Open', settings('Team Delta', 'Effective approved summary retained while a recruitment revision is reviewed.', 4, ['Python']), true, 'Matched'), draft: settings('Team Delta Studio', 'Draft revision adding a data visualization focus.', 4, ['Python', 'Data Visualization']) },
+    { ...team('team-delta', 'competition-demo-1', 'captain-delta', 'Delisted', 'Open', settings('Team Delta', 'Effective approved summary retained while a recruitment revision is reviewed.', 4, ['Python']), true, 'Matched'), draft: settings('Team Delta Studio', 'Draft revision adding a data visualization focus.', 4, ['Python', 'Data Visualization']), draftRevisionId: 'recruitment-revision-delta-1' },
     team('team-archive', 'competition-demo-2', 'captain-archive', 'Published', 'Open', settings('Archive Team', 'An existing team retained for community reference after registration closed.', 3, ['Python', 'Mathematical Modeling']), true, 'Matched'),
   ]
 }
 
 function team(id: string, competitionId: string, captainActorId: string, publication: MockPublication, recruitmentSwitch: 'Open' | 'Closed', effective: RecruitmentSettingsRecord, hasApprovedRecruitment: boolean, demoMatchStatus: 'Matched' | 'NotMatched'): MockTeamRecord {
-  return { id, competitionId, captainActorId, lifecycle: 'Active', publication, recruitmentSwitch, effective, hasApprovedRecruitment, demoMatchStatus }
+  return { id, competitionId, captainActorId, lifecycle: 'Active', publication, recruitmentSwitch, effective, reviewHistory: [], hasApprovedRecruitment, demoMatchStatus }
 }
 
 function initialMemberships(): MockMembershipRecord[] {
@@ -250,7 +258,7 @@ export class MockBusinessState {
 
   apply(teamId: string): MockResult<Record<string, unknown>> {
     const actor = this.getActor()
-    if (actor.role !== 'Student' || !actor.studentId) return failure('STUDENT_REQUIRED', 'Select an eligible student persona before applying.')
+    if (!this.isStudentActor(actor)) return failure('STUDENT_REQUIRED', 'Select an eligible student persona before applying.')
     const guard = this.checkFreshApplication(actor.studentId, teamId)
     if (!guard.ok) return failure(guard.code, guard.message)
     const team = this.teams.find((item) => item.id === teamId)!
@@ -322,7 +330,7 @@ export class MockBusinessState {
 
   createTeam(command: CreateTeamCommand): MockResult<Record<string, unknown>> {
     const actor = this.getActor()
-    if (actor.role !== 'Student' || !actor.studentId) return failure('STUDENT_REQUIRED', 'Select a logged-in student who is not already a captain.')
+    if (!this.isStudentActor(actor)) return failure('STUDENT_REQUIRED', 'Select a logged-in student persona.')
     const student = this.profile(actor.studentId)
     if (!student.profileComplete) return failure('PROFILE_INCOMPLETE', 'Complete the student profile before creating a team.')
     const competition = this.competitions.find((item) => item.id === command.competitionId)
@@ -338,7 +346,9 @@ export class MockBusinessState {
     const created: MockTeamRecord = {
       id: teamId, competitionId: competition.id, captainActorId: actor.id, lifecycle: 'Active',
       publication: command.submitRecruitment ? 'Pending' : 'Private', recruitmentSwitch: 'Open', effective,
-      draft: command.submitRecruitment ? cloneSettings(effective) : undefined, hasApprovedRecruitment: false, demoMatchStatus: 'Matched',
+      draft: command.submitRecruitment ? cloneSettings(effective) : undefined,
+      draftRevisionId: command.submitRecruitment ? `recruitment-revision-${this.sequence}` : undefined,
+      reviewHistory: [], hasApprovedRecruitment: false, demoMatchStatus: 'Matched',
     }
     this.teams.push(created)
     this.memberships.push(membership(`membership-${teamId}-captain`, competition.id, teamId, student.studentId, 'Active', 'Captain'))
@@ -386,7 +396,9 @@ export class MockBusinessState {
     const competition = this.competition(team.competitionId)
     const validation = this.validateSettings({ name: command.teamName, summary: command.summary, capacity: command.capacity, requiredSkills: command.requiredSkills }, this.memberCount(team.id), competition.maximumTeamSize)
     if (!validation.ok) return failure(validation.code, validation.message)
+    this.sequence += 1
     team.draft = settings(command.teamName.trim(), command.summary.trim(), command.capacity, unique(command.requiredSkills))
+    team.draftRevisionId = `recruitment-revision-${this.sequence}`
     team.publication = team.hasApprovedRecruitment ? 'Delisted' : 'Pending'
     return success('RECRUITMENT_SUBMITTED', team.hasApprovedRecruitment ? 'Revision submitted. The public recruitment is now Delisted.' : 'Initial recruitment submitted for Mock review.', this.recruitmentManagement(team))
   }
@@ -395,16 +407,22 @@ export class MockBusinessState {
     const actor = this.getActor()
     if (actor.role !== 'Admin') return failure('ADMIN_REQUIRED', 'Only the explicitly selected Admin reviewer can moderate a recruitment version.')
     const team = this.teams.find((item) => item.id === teamId)
-    if (!team || !team.draft || !['Pending', 'Delisted', 'Rejected'].includes(team.publication)) return failure('NO_REVIEWABLE_DRAFT', 'No reviewable recruitment draft is available.')
+    if (!team || !team.draft || !team.draftRevisionId || !['Pending', 'Delisted'].includes(team.publication)) return failure('NO_REVIEWABLE_DRAFT', 'No current Pending recruitment revision is available. A rejected revision must be resubmitted by the current captain.')
     if (decision === 'Reject') {
+      team.reviewHistory.push({ revisionId: team.draftRevisionId, decision: 'Rejected', settings: cloneSettings(team.draft) })
       team.publication = 'Rejected'
       return success('RECRUITMENT_REJECTED', 'Draft rejected. Recruitment remains unavailable publicly.', this.recruitmentManagement(team))
     }
     const competition = this.competition(team.competitionId)
+    if (team.lifecycle !== 'Active') return failure('TEAM_DISSOLVED', 'Cannot approve draft: the team is no longer active.')
+    if (competition.deadlineStatus === 'AfterDeadline') return failure('DEADLINE_PASSED', 'Cannot approve draft: competition registration has closed.')
+    if (!this.hasCurrentCaptain(team)) return failure('CAPTAIN_MEMBERSHIP_MISSING', 'Cannot approve draft: the team no longer has its current active captain membership.')
     const validation = this.validateSettings({ name: team.draft.teamName, summary: team.draft.summary, capacity: team.draft.capacity, requiredSkills: team.draft.requiredSkills }, this.memberCount(team.id), competition.maximumTeamSize)
     if (!validation.ok) return failure(validation.code, `Cannot approve draft: ${validation.message}`)
+    team.reviewHistory.push({ revisionId: team.draftRevisionId, decision: 'Approved', settings: cloneSettings(team.draft) })
     team.effective = cloneSettings(team.draft)
     team.draft = undefined
+    team.draftRevisionId = undefined
     team.publication = 'Published'
     team.hasApprovedRecruitment = true
     return success('RECRUITMENT_APPROVED', 'Draft approved and promoted to the effective Published version. Recruitment switch was not changed.', this.recruitmentManagement(team))
@@ -477,10 +495,10 @@ export class MockBusinessState {
     return success('TEAM_DISSOLVED', 'Team dissolved. Pending applications were invalidated and owner-specific history was retained.')
   }
 
-  applyNamedScenario(name: 'manual-closed' | 'revision-delisted' | 'full' | 'deadline-expired' | 'dissolved' | 'captain-transferred' | 'former-member'): MockResult {
+  applyNamedScenario(name: 'manual-closed' | 'revision-delisted' | 'full' | 'deadline-expired' | 'dissolved' | 'captain-transferred' | 'former-member' | 'cross-competition-open'): MockResult {
     const alpha = this.team('team-alpha')
     if (name === 'manual-closed') alpha.recruitmentSwitch = 'Closed'
-    if (name === 'revision-delisted') { alpha.draft = settings('Team Alpha Revision', 'Pending revision fixture.', 4, ['Python']); alpha.publication = 'Delisted' }
+    if (name === 'revision-delisted') { alpha.draft = settings('Team Alpha Revision', 'Pending revision fixture.', 4, ['Python']); alpha.draftRevisionId = 'recruitment-revision-alpha-scenario'; alpha.publication = 'Delisted' }
     if (name === 'full') {
       while (this.memberCount(alpha.id) < alpha.effective.capacity) {
         this.sequence += 1
@@ -493,6 +511,7 @@ export class MockBusinessState {
     if (name === 'dissolved') { alpha.lifecycle = 'Dissolved'; alpha.publication = 'Delisted'; alpha.recruitmentSwitch = 'Closed'; this.invalidateWhere((record) => record.teamId === alpha.id, 'Team was dissolved.') }
     if (name === 'captain-transferred') { this.selectedActorId = 'captain-alpha'; return this.transferCaptain(alpha.id, 'membership-alpha-member') }
     if (name === 'former-member' && !this.memberships.some((item) => item.studentId === 'student-alex' && item.competitionId === 'competition-demo-1')) this.memberships.push(membership('membership-ended-alex', 'competition-demo-1', 'team-alpha', 'student-alex', 'Ended', 'Member'))
+    if (name === 'cross-competition-open') this.competition('competition-demo-2').deadlineStatus = 'BeforeDeadline'
     return success('SCENARIO_APPLIED', `Named Mock scenario applied: ${name}.`)
   }
 
@@ -539,6 +558,8 @@ export class MockBusinessState {
       teamId: teamItem.id, competitionId: competition.id, competitionTitle: competition.title, competitionMaximumTeamSize: competition.maximumTeamSize,
       memberCount: this.memberCount(teamItem.id), lifecycle: teamItem.lifecycle, publication: teamItem.publication, recruitmentSwitch: teamItem.recruitmentSwitch,
       effective: cloneSettings(teamItem.effective), draft: teamItem.draft ? cloneSettings(teamItem.draft) : undefined,
+      draftRevisionId: teamItem.draftRevisionId,
+      reviewHistory: teamItem.reviewHistory.map((item) => ({ revisionId: item.revisionId, decision: item.decision, settings: cloneSettings(item.settings) })),
       canModerateInPrototype: this.getActor().role === 'Admin',
     }
   }
@@ -560,7 +581,10 @@ export class MockBusinessState {
   private checkFreshApplication(studentId: string, teamId: string): MockResult {
     const teamItem = this.teams.find((item) => item.id === teamId)
     if (!teamItem) return failure('TEAM_NOT_FOUND', 'Recruitment not found.')
+    const student = this.profile(studentId)
     const competition = this.competition(teamItem.competitionId)
+    if (!student.profileComplete) return failure('PROFILE_INCOMPLETE', 'Complete the student profile before applying to a team.')
+    if (!student.eligibleCompetitionIds.includes(competition.id)) return failure('COMPETITION_INELIGIBLE', 'The selected student is not eligible for this competition.')
     if (this.hasActiveMembership(studentId, teamItem.competitionId)) return failure('MEMBERSHIP_EXISTS', 'You already have a current team in this competition.')
     if (this.applications.some((item) => item.studentId === studentId && item.teamId === teamId && item.status === 'Pending')) return failure('PENDING_EXISTS', 'A Pending application already exists for this team.')
     if (teamItem.lifecycle !== 'Active') return failure('TEAM_DISSOLVED', 'This team is dissolved.')
@@ -574,8 +598,11 @@ export class MockBusinessState {
   private authorizeCaptain(teamId?: string): { ok: boolean; code: string; message: string; team?: MockTeamRecord } {
     const actor = this.getActor()
     if (actor.role !== 'CurrentCaptain' || !actor.captainTeamId) return { ok: false, code: 'CAPTAIN_REQUIRED', message: 'Only the current captain can perform this operation.' }
-    if (teamId && actor.captainTeamId !== teamId) return { ok: false, code: 'OUT_OF_SCOPE', message: 'This team is outside the captain\'s current scope.' }
-    const teamItem = this.teams.find((item) => item.id === actor.captainTeamId && item.captainActorId === actor.id && item.lifecycle === 'Active')
+    const scopedTeamId = teamId || actor.captainTeamId
+    const teamItem = this.teams.find((item) => item.id === scopedTeamId && item.captainActorId === actor.id && item.lifecycle === 'Active')
+    if (teamId && !teamItem) return { ok: false, code: 'OUT_OF_SCOPE', message: 'This team is outside the captain\'s current scope.' }
+    const captainMembership = actor.studentId ? this.activeMembership(scopedTeamId, actor.studentId) : undefined
+    if (!captainMembership || captainMembership.role !== 'Captain') return { ok: false, code: 'CAPTAIN_SCOPE_CHANGED', message: 'Captain authorization is no longer current for this team.' }
     if (!teamItem) return { ok: false, code: 'CAPTAIN_SCOPE_CHANGED', message: 'Captain authorization is no longer current for this team.' }
     return { ok: true, code: 'AUTHORIZED', message: 'Authorized.', team: teamItem }
   }
@@ -605,6 +632,11 @@ export class MockBusinessState {
   private activeMembership(teamId: string, studentId: string): MockMembershipRecord | undefined { return this.memberships.find((item) => item.teamId === teamId && item.studentId === studentId && item.status === 'Active') }
   private activeMemberships(teamId: string): MockMembershipRecord[] { return this.memberships.filter((item) => item.teamId === teamId && item.status === 'Active') }
   private memberCount(teamId: string): number { return this.activeMemberships(teamId).length }
+  private hasCurrentCaptain(teamItem: MockTeamRecord): boolean {
+    const captainActor = actorSeeds.find((item) => item.id === teamItem.captainActorId)
+    return Boolean(captainActor?.studentId && this.memberships.some((item) => item.teamId === teamItem.id && item.studentId === captainActor.studentId && item.status === 'Active' && item.role === 'Captain'))
+  }
+  private isStudentActor(actor: MockActorRecord): actor is MockActorRecord & { studentId: string } { return Boolean(actor.studentId && actor.role !== 'Visitor' && actor.role !== 'Admin') }
   private team(teamId: string): MockTeamRecord { const item = this.teams.find((teamItem) => teamItem.id === teamId); if (!item) throw new Error(`Unknown team ${teamId}`); return item }
   private competition(competitionId: string): MockCompetitionRecord { const item = this.competitions.find((competitionItem) => competitionItem.id === competitionId); if (!item) throw new Error(`Unknown competition ${competitionId}`); return item }
   private profiles(): ApplicantProfileSource[] { return profileSeeds }
