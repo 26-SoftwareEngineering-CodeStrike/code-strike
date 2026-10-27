@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 
-const [webSocketUrl, widthValue, heightValue, pageUrl, outputPath] = process.argv.slice(2)
+const [webSocketUrl, widthValue, heightValue, pageUrl, outputPath, personaLabel] = process.argv.slice(2)
 
 if (!webSocketUrl || !widthValue || !heightValue || !pageUrl || !outputPath) {
   throw new Error(
@@ -48,7 +48,17 @@ await send('Emulation.setDeviceMetricsOverride', {
   mobile: true,
 })
 await send('Page.navigate', { url: pageUrl })
-await new Promise((resolve) => setTimeout(resolve, 1400))
+await new Promise((resolve) => setTimeout(resolve, 350))
+await send('Page.reload', { ignoreCache: true })
+await new Promise((resolve) => setTimeout(resolve, 1500))
+
+if (personaLabel) {
+  await send('Runtime.evaluate', {
+    expression: `(() => { const item = Array.from(document.querySelectorAll('.persona__button')).find((node) => node.textContent.trim().includes(${JSON.stringify(personaLabel)})); if (!item) throw new Error('Persona button not found'); item.click() })()`,
+    returnByValue: true,
+  })
+  await new Promise((resolve) => setTimeout(resolve, 900))
+}
 
 const screenshot = await send('Page.captureScreenshot', {
   format: 'png',

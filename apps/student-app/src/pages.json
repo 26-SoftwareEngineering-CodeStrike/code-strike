@@ -20,6 +20,27 @@
         "navigationBarTitleText": "Recruitment Detail",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/applications/history",
+      "style": {
+        "navigationBarTitleText": "My Applications",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/captain/review",
+      "style": {
+        "navigationBarTitleText": "Captain Review",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/prototype/recruitment-review",
+      "style": {
+        "navigationBarTitleText": "Design Review",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {

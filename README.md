@@ -57,9 +57,16 @@ Competition Detail / Community, its public Recruitment list and Recruitment Deta
 student components live in `apps/student-app/src/components`; all displayed competition, team and
 state data is fictional and comes through `MockTransport`. No student page calls the backend.
 
-Wave 1 includes explicit Published, expired-registration, skill-match, full, manually closed and
-revision-delisted scenarios. The Delisted fixture is excluded from the public list and is reachable
-only from a clearly labelled prototype moderation preview.
+Wave 1 includes explicit Published, expired-registration, skill-match, full and manually closed
+public scenarios. Wave 2 corrected the original prototype preview boundary: Delisted recruitment is
+excluded from both public lists and public detail lookup.
+
+Wave 2 adds UI-13 My Applications, UI-14 Captain Review and an isolated recruitment design-review
+flow. Application and membership state persists in memory while the prototype is open. Explicit
+Mock personas demonstrate owner/captain scope, five application states, approval invalidation and
+the exact five-field Pending applicant DTO. Only the explicitly selected scoped Team Delta captain
+or admin reviewer persona can request the Delisted revision comparison. These are client-side Mock
+checks, not real authentication or server authorization.
 
 ## Prototype browser evidence
 
@@ -76,6 +83,15 @@ pnpm.cmd build:admin
 
 The app provides a basic responsive administration shell, router, dashboard placeholder and
 MockTransport. No real administrator login is implemented.
+
+## Wave 2 Mock tests
+
+```powershell
+pnpm.cmd --filter @codestrike/student-app test:mock
+```
+
+The zero-dependency Node tests exercise deterministic Mock business scenarios. They do not prove
+database constraints, concurrent correctness or production authorization.
 
 ## FastAPI server
 

@@ -116,11 +116,55 @@ The root `pnpm type-check` wrapper initially stopped before compilation because 
 interactive `node_modules` purge in a non-TTY session. No reinstall was performed; the installed
 workspace executables were invoked directly and all three type checks passed.
 
-## Remaining Wave 2 work
+## Wave 1 handoff recorded at that time
 
 - UI-13 application history and the full Pending / Approved / Rejected / Withdrawn / Invalidated lifecycle.
 - UI-14 captain review with exactly the five permitted pre-admission applicant fields.
 - Approval-side capacity, deadline, membership and invalidation demonstrations.
 - WeChat Developer Tools and physical-device visual verification.
 - Other Assignment 4 pages outside UI-04, UI-05 and UI-09.
+
+The first three items above are completed by the Wave 2 report below. Device QA and pages outside
+the approved Wave 2 scope remain open.
+
+# Phase 2 Wave 2 completion report
+
+## Scope delivered
+
+- Corrected the Wave 1 Delisted-detail leak by separating public and privileged Mock operations.
+- Implemented UI-13 owner application history with Pending, Approved, Rejected, Withdrawn and
+  Invalidated kept as distinct records.
+- Implemented UI-14 current-captain review with a sanitized five-field applicant DTO, advisory skill
+  matching and manual Approve/Reject controls.
+- Added an isolated recruitment revision comparison requiring an explicitly selected, correctly
+  scoped current-captain or admin design-review persona.
+- Added a deterministic shared Mock business state machine and Node unit tests for the relevant
+  BR-01 through BR-11 prototype scenarios.
+
+## Deliberate limits
+
+State is coherent across student pages only for the lifetime of the loaded prototype and resets on
+a full reload. No backend endpoint, durable storage, authentication, database transaction or
+concurrency guarantee was added. The prototype does not expose member contact details; its separate
+post-admission contact contract is only a boundary definition for later work.
+
+Responsive H5 evidence is retained under `docs/evidence/phase2-wave2`. WeChat production output was
+built, but WeChat Developer Tools and a physical device were not used.
+
+## Wave 2 traceability summary
+
+| Rule | Prototype evidence |
+| --- | --- |
+| BR-01–03 | One active membership per competition; immutable history; approval invalidates other same-competition Pending records. |
+| BR-04 | Fresh application guard checks publication, switch, capacity, deadline, lifecycle, membership and duplicate Pending. |
+| BR-05 | Existing Pending approval rechecks validity/capacity/deadline/lifecycle but permits manual-close or revision-delisted scenarios. |
+| BR-06 | Capacity includes captain; reaching full invalidates Pending without reviving old records later. |
+| BR-07–08 | Delisted revision stays out of public DTOs; isolated review shows effective and draft versions separately. Full moderation workflow remains out of scope. |
+| BR-09 | UI-14 returns exactly Name, College, Sex, Skill tags and Brief CV for the current captain's active Pending queue. |
+| BR-10 | Captain transfer test removes the old captain's access and grants the successor access immediately. |
+| BR-11 | Deadline/dissolution invalidate Pending and block admission; Wave 1 community remains readable. |
+
+UI-13 traces FR-09, FR-12 and the owner-history portion of FR-13. UI-14 traces FR-08 through FR-11.
+The isolated revision flow supports the Wave 2 correction and the recruitment-version aspect of
+FR-14 without claiming a complete moderator workflow.
 

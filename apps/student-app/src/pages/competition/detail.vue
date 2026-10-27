@@ -73,10 +73,6 @@ function showPostBoundary() {
   })
 }
 
-function previewDelistedRecruitment() {
-  uni.navigateTo({ url: '/pages/recruitment/detail?id=team-delta&prototypePreview=1' })
-}
-
 function formatDate(value: string) {
   return value.slice(0, 10)
 }
@@ -188,12 +184,6 @@ function formatDate(value: string) {
             :recruitment="item"
             @open="openRecruitment"
           />
-          <view v-if="competition.id === 'competition-demo-1'" class="prototype-preview">
-            <text class="prototype-preview__label">PROTOTYPE-ONLY MODERATION PREVIEW</text>
-            <text class="prototype-preview__title">Pending revision · Delisted</text>
-            <text class="prototype-preview__copy">Team Delta is excluded from the public list above. Open this controlled preview to inspect effective and draft values.</text>
-            <button class="prototype-preview__button" @click="previewDelistedRecruitment">Preview delisted state</button>
-          </view>
         </view>
       </template>
     </view>
@@ -239,12 +229,6 @@ function formatDate(value: string) {
 .section-title { display: flex; align-items: flex-end; justify-content: space-between; margin: 8rpx 2rpx 4rpx; }
 .section-title__text { display: block; margin-top: 7rpx; color: #0a1830; font-size: 34rpx; font-weight: 850; }
 .section-title__count { color: #a0aaba; font-size: 36rpx; font-weight: 850; }
-.prototype-preview { padding: 28rpx; color: #dce6f5; background: #13233e; border-radius: 26rpx; }
-.prototype-preview__label,.prototype-preview__title,.prototype-preview__copy { display: block; }
-.prototype-preview__label { color: #ff9b83; font-size: 17rpx; font-weight: 900; letter-spacing: 2rpx; }
-.prototype-preview__title { margin-top: 12rpx; color: #fff; font-size: 28rpx; font-weight: 850; }
-.prototype-preview__copy { margin-top: 10rpx; font-size: 20rpx; line-height: 1.55; }
-.prototype-preview__button { margin: 24rpx 0 0; padding: 17rpx 20rpx; color: #0a1830; background: #fff; border-radius: 15rpx; font-size: 20rpx; font-weight: 850; line-height: 1.2; }
 @media (min-width: 680px) {
   .content { padding: 40px 40px 150px; }
   .identity-card__stats { max-width: 560px; }

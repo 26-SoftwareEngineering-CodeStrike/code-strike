@@ -84,3 +84,37 @@ The `mp-weixin` production build passed, but no WeChat Developer Tools or physic
 was performed. DOCX requirement content was extracted with Pandoc; DOCX visual rendering was not
 available because the local document-rendering dependencies were absent.
 
+# Assignment 4 Phase 2 Wave 2 engineering notes
+
+## Public and design-review boundaries
+
+Public recruitment list and detail operations return only publicly listed fixtures. Delisted Team
+Delta and its draft revision are available through a separate design-review operation that checks
+the explicitly selected in-memory actor. The actor must be Admin or the current captain scoped to
+that team. Route query values are ignored for actor selection. The public operation stays denied
+even after a privileged design-review persona has been selected.
+
+This is deliberately a UI prototype boundary. It does not implement or claim backend authentication
+or authorization. A production server must independently derive identity and scope for every
+request.
+
+## Shared Mock state
+
+The student application owns one in-memory state machine shared by UI-09, UI-13, UI-14 and the
+isolated review page. It models application status, active/ended membership, team lifecycle,
+recruitment publication, recruitment switch, competition deadline, capacity including captain and
+the selected actor independently. Named scenarios cover manual close, revision delisting, full,
+deadline expiry, dissolution, captain transfer and former membership.
+
+Fresh applications require a public/open/active/not-full recruitment before the deadline and no
+current membership or duplicate Pending record. Approval of an existing Pending record deliberately
+does not require the recruitment to remain public/open, but rechecks Pending validity, active team,
+deadline, current membership and capacity. Approval creates a Mock current membership and
+invalidates other Pending applications for that student in the same competition. Reaching capacity,
+deadline expiry and dissolution invalidate affected Pending records without rewriting history.
+
+Pending captain responses use `CaptainPendingApplication` with the nested
+`PendingApplicantProfile`. That profile can carry only Name, College, Sex, Skill tags and Brief CV.
+The separate `ActiveMemberContact` contract prevents a Pending response model from accidentally
+growing contact fields.
+
