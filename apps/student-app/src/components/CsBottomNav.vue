@@ -9,7 +9,7 @@ function openItem(item: (typeof items)[number]) {
     return
   }
   if (item === 'Teams') {
-    uni.navigateTo({ url: '/pages/applications/history' })
+    uni.reLaunch({ url: '/pages/teams/index' })
     return
   }
   uni.showToast({ title: `${item} is planned for a later wave`, icon: 'none' })

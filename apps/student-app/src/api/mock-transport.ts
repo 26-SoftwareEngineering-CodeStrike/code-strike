@@ -1,9 +1,7 @@
 import {
   mockCompetitionDetails,
   mockCompetitions,
-  mockRecruitments,
 } from '@codestrike/contracts/mock'
-import type { RecruitmentDetail } from '@codestrike/contracts'
 import type { ApiRequest, ApiTransport } from './transport'
 import { mockBusinessState } from '../mock/business-state'
 
@@ -57,6 +55,68 @@ export class MockTransport implements ApiTransport {
       return mockBusinessState.reject(rejectMatch[1]) as T
     }
 
+    if (method === 'POST' && request.path === '/teams') {
+      return mockBusinessState.createTeam(readObjectBody(request.body) as never) as T
+    }
+
+    if (method === 'GET' && request.path === '/teams/mine') {
+      return mockBusinessState.listMyTeams() as T
+    }
+
+    const recruitmentManagementMatch = request.path.match(/^\/teams\/([^/]+)\/recruitment$/)
+    if (method === 'GET' && recruitmentManagementMatch) {
+      return mockBusinessState.getRecruitmentManagement(recruitmentManagementMatch[1]) as T
+    }
+
+    const recruitmentSwitchMatch = request.path.match(/^\/teams\/([^/]+)\/recruitment-switch$/)
+    if (method === 'PUT' && recruitmentSwitchMatch) {
+      const value = readObjectBody(request.body).value
+      if (value !== 'Open' && value !== 'Closed') throw new Error('Invalid recruitment switch.')
+      return mockBusinessState.setRecruitmentSwitch(recruitmentSwitchMatch[1], value) as T
+    }
+
+    const recruitmentRevisionMatch = request.path.match(/^\/teams\/([^/]+)\/recruitment-revision$/)
+    if (method === 'POST' && recruitmentRevisionMatch) {
+      return mockBusinessState.submitRecruitmentRevision(recruitmentRevisionMatch[1], readObjectBody(request.body) as never) as T
+    }
+
+    const moderationMatch = request.path.match(/^\/prototype\/recruitment-reviews\/([^/]+)\/moderate$/)
+    if (method === 'POST' && moderationMatch) {
+      const decision = readObjectBody(request.body).decision
+      if (decision !== 'Approve' && decision !== 'Reject') throw new Error('Invalid moderation decision.')
+      return mockBusinessState.moderateRecruitment(moderationMatch[1], decision) as T
+    }
+
+    const operationsMatch = request.path.match(/^\/teams\/([^/]+)\/operations$/)
+    if (method === 'GET' && operationsMatch) {
+      return mockBusinessState.getTeamOperations(operationsMatch[1]) as T
+    }
+
+    const contactsMatch = request.path.match(/^\/teams\/([^/]+)\/member-contacts$/)
+    if (method === 'GET' && contactsMatch) {
+      return mockBusinessState.getActiveMemberContacts(contactsMatch[1]) as T
+    }
+
+    const leaveMatch = request.path.match(/^\/teams\/([^/]+)\/leave$/)
+    if (method === 'POST' && leaveMatch) {
+      return mockBusinessState.leaveTeam(leaveMatch[1]) as T
+    }
+
+    const removeMemberMatch = request.path.match(/^\/teams\/([^/]+)\/members\/([^/]+)\/remove$/)
+    if (method === 'POST' && removeMemberMatch) {
+      return mockBusinessState.removeMember(removeMemberMatch[1], removeMemberMatch[2]) as T
+    }
+
+    const transferMatch = request.path.match(/^\/teams\/([^/]+)\/captain\/transfer$/)
+    if (method === 'POST' && transferMatch) {
+      return mockBusinessState.transferCaptain(transferMatch[1], readBodyId(request.body, 'membershipId')) as T
+    }
+
+    const dissolveMatch = request.path.match(/^\/teams\/([^/]+)\/dissolve$/)
+    if (method === 'POST' && dissolveMatch) {
+      return mockBusinessState.dissolveTeam(dissolveMatch[1]) as T
+    }
+
     if (method === 'GET' && request.path === '/competitions?scenario=error') {
       throw new Error('The prototype competition feed is unavailable.')
     }
@@ -70,12 +130,7 @@ export class MockTransport implements ApiTransport {
     )
     if (method === 'GET' && competitionRecruitmentMatch) {
       const competitionId = competitionRecruitmentMatch[1]
-      return mockRecruitments
-        .filter(
-          (recruitment) =>
-            recruitment.competitionId === competitionId && recruitment.isPubliclyListed,
-        )
-        .map(cloneRecruitment) as T
+      return mockBusinessState.listPublicRecruitments(competitionId) as T
     }
 
     const competitionMatch = request.path.match(/^\/competitions\/([^/]+)$/)
@@ -86,26 +141,25 @@ export class MockTransport implements ApiTransport {
       if (!competition) throw new Error('Competition not found.')
       return {
         ...competition,
-        community: { ...competition.community },
+        community: {
+          ...competition.community,
+          publishedRecruitmentCount: mockBusinessState.listPublicRecruitments(competition.id).length,
+        },
       } as T
     }
 
     const recruitmentMatch = request.path.match(/^\/recruitments\/([^/]+)$/)
     if (method === 'GET' && recruitmentMatch) {
-      const recruitment = mockRecruitments.find((item) => item.id === recruitmentMatch[1])
-      if (!recruitment || !recruitment.isPubliclyListed) {
-        throw new Error('Recruitment not found in the public listing.')
-      }
-      return withCurrentTeamState(recruitment) as T
+      const result = mockBusinessState.getPublicRecruitment(recruitmentMatch[1])
+      if (!result.ok || !result.data) throw new Error(result.message)
+      return result.data as T
     }
 
     const reviewMatch = request.path.match(/^\/prototype\/recruitment-reviews\/([^/]+)$/)
     if (method === 'GET' && reviewMatch) {
-      const recruitment = mockRecruitments.find((item) => item.id === reviewMatch[1])
-      if (!recruitment || !mockBusinessState.canReviewRecruitment(recruitment.id)) {
-        throw new Error('Design review denied for the selected prototype persona.')
-      }
-      return cloneRecruitment(recruitment) as T
+      const result = mockBusinessState.getRecruitmentReview(reviewMatch[1])
+      if (!result.ok || !result.data) throw new Error(result.message)
+      return result.data as T
     }
 
     throw new Error(`No mock registered for ${request.path}`)
@@ -116,34 +170,14 @@ function waitForMockLatency(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 240))
 }
 
-function cloneRecruitment(item: RecruitmentDetail): RecruitmentDetail {
-  return {
-    ...item,
-    requiredSkills: [...item.requiredSkills],
-    revisionDraft: item.revisionDraft
-      ? {
-          ...item.revisionDraft,
-          requiredSkills: [...item.revisionDraft.requiredSkills],
-        }
-      : undefined,
-  }
-}
-
-function withCurrentTeamState(item: RecruitmentDetail): RecruitmentDetail {
-  const clone = cloneRecruitment(item)
-  const current = mockBusinessState.getTeamSnapshot(item.id)
-  if (!current) return clone
-  clone.memberCount = current.memberCount
-  clone.lifecycle = current.lifecycle
-  clone.publication = current.publication
-  clone.recruitmentSwitch = current.recruitmentSwitch
-  if (current.memberCount >= current.capacity) clone.availability = 'Full'
-  return clone
-}
-
 function readBodyId(body: unknown, key: string): string {
   if (!body || typeof body !== 'object') throw new Error(`Missing ${key}.`)
   const value = (body as Record<string, unknown>)[key]
   if (typeof value !== 'string' || !value) throw new Error(`Missing ${key}.`)
   return value
+}
+
+function readObjectBody(body: unknown): Record<string, unknown> {
+  if (!body || typeof body !== 'object') throw new Error('Missing request body.')
+  return body as Record<string, unknown>
 }

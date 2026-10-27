@@ -3,10 +3,17 @@ import type {
   CompetitionSummary,
   ApplicationHistoryItem,
   CaptainPendingApplication,
+  CreateTeamInput,
+  ActiveMemberContact,
+  MyTeamItem,
+  MyTeamsView,
   MockCommandResult,
   PrototypeActor,
   RecruitmentDetail,
+  RecruitmentManagementView,
+  RecruitmentSettings,
   RecruitmentSummary,
+  TeamOperationsView,
 } from '@codestrike/contracts'
 import { MockTransport } from './mock-transport'
 import type { ApiTransport } from './transport'
@@ -27,6 +34,18 @@ export interface StudentApiClient {
   listCaptainApplications(): Promise<MockCommandResult<CaptainPendingApplication[]>>
   approveApplication(id: string): Promise<MockCommandResult>
   rejectApplication(id: string): Promise<MockCommandResult>
+  createTeam(input: CreateTeamInput): Promise<MockCommandResult<MyTeamItem>>
+  listMyTeams(): Promise<MockCommandResult<MyTeamsView>>
+  getRecruitmentManagement(teamId: string): Promise<MockCommandResult<RecruitmentManagementView>>
+  setRecruitmentSwitch(teamId: string, value: 'Open' | 'Closed'): Promise<MockCommandResult<RecruitmentManagementView>>
+  submitRecruitmentRevision(teamId: string, input: RecruitmentSettings): Promise<MockCommandResult<RecruitmentManagementView>>
+  moderateRecruitment(teamId: string, decision: 'Approve' | 'Reject'): Promise<MockCommandResult<RecruitmentManagementView>>
+  getTeamOperations(teamId: string): Promise<MockCommandResult<TeamOperationsView>>
+  getActiveMemberContacts(teamId: string): Promise<MockCommandResult<ActiveMemberContact[]>>
+  leaveTeam(teamId: string): Promise<MockCommandResult>
+  removeMember(teamId: string, membershipId: string): Promise<MockCommandResult>
+  transferCaptain(teamId: string, membershipId: string): Promise<MockCommandResult>
+  dissolveTeam(teamId: string): Promise<MockCommandResult>
 }
 
 export function createStudentApiClient(transport: ApiTransport = new MockTransport()): StudentApiClient {
@@ -67,5 +86,29 @@ export function createStudentApiClient(transport: ApiTransport = new MockTranspo
       transport.request<MockCommandResult>({ path: `/captain/applications/${id}/approve`, method: 'POST' }),
     rejectApplication: (id) =>
       transport.request<MockCommandResult>({ path: `/captain/applications/${id}/reject`, method: 'POST' }),
+    createTeam: (input) =>
+      transport.request<MockCommandResult<MyTeamItem>>({ path: '/teams', method: 'POST', body: input }),
+    listMyTeams: () =>
+      transport.request<MockCommandResult<MyTeamsView>>({ path: '/teams/mine' }),
+    getRecruitmentManagement: (teamId) =>
+      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment` }),
+    setRecruitmentSwitch: (teamId, value) =>
+      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment-switch`, method: 'PUT', body: { value } }),
+    submitRecruitmentRevision: (teamId, input) =>
+      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment-revision`, method: 'POST', body: input }),
+    moderateRecruitment: (teamId, decision) =>
+      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/prototype/recruitment-reviews/${teamId}/moderate`, method: 'POST', body: { decision } }),
+    getTeamOperations: (teamId) =>
+      transport.request<MockCommandResult<TeamOperationsView>>({ path: `/teams/${teamId}/operations` }),
+    getActiveMemberContacts: (teamId) =>
+      transport.request<MockCommandResult<ActiveMemberContact[]>>({ path: `/teams/${teamId}/member-contacts` }),
+    leaveTeam: (teamId) =>
+      transport.request<MockCommandResult>({ path: `/teams/${teamId}/leave`, method: 'POST' }),
+    removeMember: (teamId, membershipId) =>
+      transport.request<MockCommandResult>({ path: `/teams/${teamId}/members/${membershipId}/remove`, method: 'POST' }),
+    transferCaptain: (teamId, membershipId) =>
+      transport.request<MockCommandResult>({ path: `/teams/${teamId}/captain/transfer`, method: 'POST', body: { membershipId } }),
+    dissolveTeam: (teamId) =>
+      transport.request<MockCommandResult>({ path: `/teams/${teamId}/dissolve`, method: 'POST' }),
   }
 }

@@ -168,3 +168,38 @@ UI-13 traces FR-09, FR-12 and the owner-history portion of FR-13. UI-14 traces F
 The isolated revision flow supports the Wave 2 correction and the recruitment-version aspect of
 FR-14 without claiming a complete moderator workflow.
 
+# Phase 2 Wave 3 completion report
+
+## Scope delivered
+
+- Replaced remaining static public-recruitment reads with dynamic projections from the shared Mock
+  business state. Published-to-Delisted changes now remove an item from both list and direct detail
+  immediately, without exposing its draft.
+- Implemented UI-10 team creation with eligibility checks, captain-inclusive capacity and immediate
+  captain membership. Optional recruitment submission enters review rather than publishing.
+- Implemented UI-11 current/captained/historical team views and made Teams navigation open My Teams
+  before linking to My Applications.
+- Implemented UI-12 captain recruitment management with separate Effective and Draft values,
+  switch control and isolated Admin review actions.
+- Implemented UI-15 departure, removal, captain transfer and dissolution with immediate Mock
+  authorization changes, retained history and a separate captain-only Active-member contact DTO.
+
+## SRS traceability summary
+
+| Requirement/rule | Wave 3 prototype evidence |
+| --- | --- |
+| FR-07, UI-10 | Team form validates Mock identity, profile, competition eligibility/deadline, current membership and captain-inclusive capacity. |
+| FR-12–FR-13, UI-11 | Current and historical memberships are separate from application history; captain/member actions depend on live membership. |
+| FR-14, BR-07–BR-08, UI-12 | Effective values and revision draft remain separate; revision Delists public content; only isolated Admin review can approve/reject. |
+| FR-15–FR-18, BR-10–BR-11, UI-15 | Leave/remove/transfer/dissolve update membership, count and authorization; Pending records are invalidated when required, not deleted. |
+| BR-04–BR-06 | New applications require a visible/open/non-full team; valid existing Pending approval survives manual closure but rechecks capacity and lifecycle. |
+| BR-09 | Public and Pending DTOs omit private contacts; current-captain Active-member contacts use a distinct response. |
+
+## Deliberate limits
+
+All state is fictional and in memory. Reloading the application resets it. The Admin reviewer is an
+explicit design-review persona, not production authentication or a complete administrator UI.
+There is no database, transaction/concurrency proof, server-side team API, email, deployment,
+WeChat Developer Tools run or physical-device verification. UI-20, Planner and Wave 4 remain out of
+scope.
+

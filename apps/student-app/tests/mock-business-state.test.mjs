@@ -6,6 +6,29 @@ function select(state, actorId) {
   assert.equal(state.selectActor(actorId).ok, true)
 }
 
+test('dynamic Published to Delisted transition immediately closes public list and detail', () => {
+  const state = new MockBusinessState()
+  assert.equal(state.listPublicRecruitments('competition-demo-1').some((item) => item.id === 'team-alpha'), true)
+  const publicBefore = state.getPublicRecruitment('team-alpha')
+  assert.equal(publicBefore.ok, true)
+  assert.equal('revisionDraft' in publicBefore.data, false)
+
+  select(state, 'captain-alpha')
+  const submitted = state.submitRecruitmentRevision('team-alpha', {
+    teamName: 'Team Alpha Next', summary: 'Draft settings must remain isolated.', capacity: 4, requiredSkills: ['Python'],
+  })
+  assert.equal(submitted.ok, true)
+  assert.equal(state.listPublicRecruitments('competition-demo-1').some((item) => item.id === 'team-alpha'), false)
+  assert.equal(state.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+  const review = state.getRecruitmentReview('team-alpha')
+  assert.equal(review.ok, true)
+  assert.equal(review.data.name, 'Team Alpha')
+  assert.equal(review.data.revisionDraft.teamName, 'Team Alpha Next')
+
+  select(state, 'student-alex')
+  assert.equal(state.getRecruitmentReview('team-alpha').code, 'REVIEW_DENIED')
+})
+
 test('owner history keeps all five states distinct and historical approval is not membership', () => {
   const state = new MockBusinessState()
   select(state, 'student-alex')
@@ -112,4 +135,105 @@ test('captain scope changes immediately and privileged revision review is explic
   select(transfer, 'alpha-successor')
   assert.equal(transfer.listCaptainQueue().ok, true)
   assert.equal(transfer.approve('application-maya-alpha').ok, true)
+})
+
+test('team creation validates profile and deadline then creates captain membership', () => {
+  const state = new MockBusinessState()
+  select(state, 'student-incomplete')
+  assert.equal(state.createTeam({ competitionId: 'competition-demo-1', name: 'Incomplete', summary: 'Blocked', capacity: 3, requiredSkills: ['Vue'], submitRecruitment: false }).code, 'PROFILE_INCOMPLETE')
+  select(state, 'student-alex')
+  assert.equal(state.createTeam({ competitionId: 'competition-demo-2', name: 'Late', summary: 'Blocked', capacity: 3, requiredSkills: ['Python'], submitRecruitment: false }).code, 'DEADLINE_PASSED')
+  const created = state.createTeam({ competitionId: 'competition-demo-1', name: 'Signal Forge', summary: 'A fictional cross-major prototype team.', capacity: 4, requiredSkills: ['Python', 'Research'], submitRecruitment: true })
+  assert.equal(created.ok, true)
+  assert.equal(created.data.membershipRole, 'Captain')
+  assert.equal(created.data.membershipStatus, 'Active')
+  assert.equal(created.data.publication, 'Pending')
+  assert.equal(created.data.memberCount, 1)
+  assert.equal(state.getActor().role, 'CurrentCaptain')
+  const history = state.listApplicationHistory().data
+  assert.equal(history.filter((item) => item.competitionId === 'competition-demo-1' && item.status === 'Pending').length, 0)
+})
+
+test('recruitment draft stays separate until isolated admin approval', () => {
+  const state = new MockBusinessState()
+  select(state, 'captain-alpha')
+  assert.equal(state.submitRecruitmentRevision('team-alpha', { teamName: 'Alpha Revised', summary: 'New draft copy.', capacity: 3, requiredSkills: ['Research'] }).ok, true)
+  const captainView = state.getRecruitmentManagement('team-alpha').data
+  assert.equal(captainView.effective.teamName, 'Team Alpha')
+  assert.equal(captainView.effective.capacity, 4)
+  assert.equal(captainView.draft.teamName, 'Alpha Revised')
+  assert.equal(captainView.publication, 'Delisted')
+  assert.equal(state.moderateRecruitment('team-alpha', 'Approve').code, 'ADMIN_REQUIRED')
+  select(state, 'admin-reviewer')
+  assert.equal(state.moderateRecruitment('team-alpha', 'Approve').ok, true)
+  const publicAfter = state.getPublicRecruitment('team-alpha').data
+  assert.equal(publicAfter.name, 'Alpha Revised')
+  assert.equal(publicAfter.capacity, 3)
+})
+
+test('manual closure still allows approval of an existing eligible Pending application', () => {
+  const state = new MockBusinessState()
+  select(state, 'captain-alpha')
+  assert.equal(state.setRecruitmentSwitch('team-alpha', 'Closed').ok, true)
+  assert.equal(state.approve('application-maya-alpha').ok, true)
+  assert.equal(state.getPublicRecruitment('team-alpha').data.availability, 'ManuallyClosed')
+})
+
+test('member leave and captain removal end access and reduce derived member count without reopening', () => {
+  const leave = new MockBusinessState()
+  select(leave, 'alpha-successor')
+  assert.equal(leave.getTeamOperations('team-alpha').data.members.length, 2)
+  assert.equal(leave.leaveTeam('team-alpha').ok, true)
+  assert.equal(leave.getTeamOperations('team-alpha').code, 'MEMBERSHIP_REQUIRED')
+  assert.equal(leave.getPublicRecruitment('team-alpha').data.memberCount, 1)
+
+  const removal = new MockBusinessState()
+  select(removal, 'captain-alpha')
+  assert.equal(removal.setRecruitmentSwitch('team-alpha', 'Closed').ok, true)
+  assert.equal(removal.removeMember('team-alpha', 'membership-alpha-member').ok, true)
+  assert.equal(removal.getPublicRecruitment('team-alpha').data.memberCount, 1)
+  assert.equal(removal.getPublicRecruitment('team-alpha').data.recruitmentSwitch, 'Closed')
+  select(removal, 'alpha-successor')
+  assert.equal(removal.getTeamOperations('team-alpha').code, 'MEMBERSHIP_REQUIRED')
+})
+
+test('captain cannot leave and transfer changes both roles and permissions immediately', () => {
+  const state = new MockBusinessState()
+  select(state, 'captain-alpha')
+  assert.equal(state.leaveTeam('team-alpha').code, 'CAPTAIN_CANNOT_LEAVE')
+  assert.equal(state.transferCaptain('team-alpha', 'membership-alpha-member').ok, true)
+  assert.equal(state.getRecruitmentManagement('team-alpha').code, 'CAPTAIN_REQUIRED')
+  assert.equal(state.getActiveMemberContacts('team-alpha').code, 'CAPTAIN_REQUIRED')
+  select(state, 'alpha-successor')
+  assert.equal(state.getRecruitmentManagement('team-alpha').ok, true)
+  assert.equal(state.getActiveMemberContacts('team-alpha').ok, true)
+})
+
+test('dissolution invalidates Pending while retaining application and membership history', () => {
+  const state = new MockBusinessState()
+  select(state, 'captain-alpha')
+  assert.equal(state.dissolveTeam('team-alpha').ok, true)
+  assert.equal(state.getPublicRecruitment('team-alpha').code, 'PUBLIC_RECRUITMENT_NOT_FOUND')
+  assert.equal(state.listCaptainQueue().code, 'CAPTAIN_REQUIRED')
+  select(state, 'student-alex')
+  const applications = state.listApplicationHistory().data
+  assert.equal(applications.find((item) => item.id === 'application-alex-alpha').status, 'Invalidated')
+  select(state, 'captain-alpha')
+  const teams = state.listMyTeams().data
+  assert.equal(teams.current.length, 0)
+  assert.equal(teams.history.some((item) => item.id === 'team-alpha' && item.lifecycle === 'Dissolved'), true)
+})
+
+test('team member and contact responses stay separated by current captain authorization', () => {
+  const state = new MockBusinessState()
+  select(state, 'alpha-successor')
+  const operations = state.getTeamOperations('team-alpha')
+  assert.equal(operations.ok, true)
+  assert.equal('contacts' in operations.data, false)
+  assert.deepEqual(Object.keys(operations.data.members[0]).sort(), ['membershipId', 'role', 'status', 'username'].sort())
+  assert.equal(state.getActiveMemberContacts('team-alpha').code, 'CAPTAIN_REQUIRED')
+  select(state, 'captain-alpha')
+  const contacts = state.getActiveMemberContacts('team-alpha')
+  assert.equal(contacts.ok, true)
+  assert.deepEqual(Object.keys(contacts.data[0]).sort(), ['memberName', 'membershipId', 'qqId', 'wechatId'].sort())
 })

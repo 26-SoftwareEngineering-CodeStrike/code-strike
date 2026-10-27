@@ -68,9 +68,17 @@ the exact five-field Pending applicant DTO. Only the explicitly selected scoped 
 or admin reviewer persona can request the Delisted revision comparison. These are client-side Mock
 checks, not real authentication or server authorization.
 
+Wave 3 adds UI-10 Create Team, UI-11 My Teams, UI-12 Recruitment Management and UI-15 Team Member
+Operations. Public recruitment list/detail data is derived on every read from the same in-memory
+team state used by captain operations. Effective approved settings and draft revisions are
+separate; Delisted, Private and Pending content is denied by public operations. Captain transfer,
+member departure/removal and dissolution update Mock memberships and permissions immediately.
+These flows reset on full reload and do not represent production authorization or persistence.
+
 ## Prototype browser evidence
 
-Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1`. The repository-local
+Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1`, `phase2-wave2` and
+`phase2-wave3`. The repository-local
 scripts `scripts/capture-h5.mjs` and `scripts/verify-h5-flow.mjs` use the browser DevTools protocol
 without adding a package dependency. They are QA utilities, not application runtime code.
 
@@ -84,7 +92,7 @@ pnpm.cmd build:admin
 The app provides a basic responsive administration shell, router, dashboard placeholder and
 MockTransport. No real administrator login is implemented.
 
-## Wave 2 Mock tests
+## Mock state tests
 
 ```powershell
 pnpm.cmd --filter @codestrike/student-app test:mock
@@ -125,6 +133,6 @@ Set-Location apps\server
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-No command in the Phase 1 or Assignment 4 Wave 1 setup performs an Alembic migration or creates
+No command in Phase 1 or the Assignment 4 prototype waves performs an Alembic migration or creates
 database tables.
 

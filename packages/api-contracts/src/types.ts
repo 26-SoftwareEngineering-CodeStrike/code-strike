@@ -126,6 +126,67 @@ export interface ActiveMemberContact {
   qqId?: string
 }
 
+export interface CreateTeamInput {
+  competitionId: string
+  name: string
+  summary: string
+  capacity: number
+  requiredSkills: string[]
+  submitRecruitment: boolean
+}
+
+export interface RecruitmentSettings {
+  teamName: string
+  summary: string
+  capacity: number
+  requiredSkills: string[]
+}
+
+export interface RecruitmentManagementView {
+  teamId: string
+  competitionId: string
+  competitionTitle: string
+  competitionMaximumTeamSize: number
+  memberCount: number
+  lifecycle: TeamLifecycle
+  publication: RecruitmentPublicationStatus
+  recruitmentSwitch: RecruitmentSwitch
+  effective: RecruitmentSettings
+  draft?: RecruitmentSettings
+  canModerateInPrototype: boolean
+}
+
+export interface MyTeamItem extends TeamStateSummary {
+  competitionId: string
+  competitionTitle: string
+  membershipId: string
+  membershipStatus: MembershipStatus
+  membershipRole: 'Captain' | 'Member'
+  captainUsername: string
+  canManageRecruitment: boolean
+  canReviewApplications: boolean
+  canManageMembers: boolean
+  canLeave: boolean
+}
+
+export interface MyTeamsView {
+  current: MyTeamItem[]
+  history: MyTeamItem[]
+}
+
+export interface TeamMemberView {
+  membershipId: string
+  username: string
+  role: 'Captain' | 'Member'
+  status: MembershipStatus
+}
+
+export interface TeamOperationsView {
+  team: MyTeamItem
+  members: TeamMemberView[]
+  contacts?: ActiveMemberContact[]
+}
+
 export interface MockCommandResult<T = undefined> {
   ok: boolean
   code: string

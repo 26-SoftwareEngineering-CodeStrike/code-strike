@@ -118,3 +118,49 @@ Pending captain responses use `CaptainPendingApplication` with the nested
 The separate `ActiveMemberContact` contract prevents a Pending response model from accidentally
 growing contact fields.
 
+# Assignment 4 Phase 2 Wave 3 engineering notes
+
+## One Mock source of truth
+
+The public recruitment list, public detail, captain review, team creation, My Teams, recruitment
+management and member operations now read and mutate `mockBusinessState`. Public recruitment DTOs
+are derived at request time only when the team is Active and its publication is Published. Draft
+revision values are returned only by the isolated, permission-checked review operation; they are
+not fields of the public DTO. A Published recruitment submitted for revision becomes Delisted
+immediately while its previously approved Effective settings remain available for evaluating an
+already Pending application.
+
+The selected prototype persona is still only an in-memory demonstration identity. Every state
+operation rechecks its role, current captain/member relationship and team scope; route parameters
+do not grant authority. A production API must repeat these checks using authenticated server-side
+identity and transactional persistence.
+
+## Team lifecycle rules represented
+
+UI-10 validates the Mock login/profile/eligibility/deadline/current-membership constraints and
+capacity including the captain. A successful creation establishes an Active captain membership;
+optional initial recruitment submission is Pending, not automatically public.
+
+UI-11 derives current and historical teams from membership records rather than application
+history. UI-12 keeps lifecycle, publication and recruitment switch distinct, validates capacity
+against active members and competition limits, and uses an isolated Admin reviewer for prototype
+approval/rejection. Manual closure blocks only new applications, so a still-valid existing Pending
+record can be approved. Approval at capacity closes the switch and invalidates competing Pending
+records without deleting history.
+
+UI-15 supports ordinary-member departure, captain removal of another member, captain transfer to
+an existing Active member and team dissolution. A captain cannot leave directly. Transfer changes
+authorization immediately; dissolution ends active memberships and invalidates Pending
+applications. Departure, removal and capacity changes do not reopen recruitment or revive old
+applications. Member contacts use a separate DTO available only to the current captain for Active
+members.
+
+## Verification boundary
+
+The deterministic state tests cover the required transitions and privacy DTOs. H5 browser checks
+exercise the public-state correction and the four Wave 3 pages, including direct-URL permission
+denial and fixed-navigation clearance at 320, 390, 430 and 680 CSS pixels. Screenshots are retained
+under `docs/evidence/phase2-wave3`. The `mp-weixin` output is build-checked only; WeChat Developer
+Tools and physical-device behavior remain unverified. No MySQL connection, migration, real
+authentication, backend team endpoint or durable data was added.
+
