@@ -325,3 +325,21 @@ metadata-size label. The Competitions glyph remains dependency-free but now read
 glass rather than a crossed circle. No route, handler, contract, state transition or permission
 condition changed.
 
+# Design Wave D2 product UI consistency
+
+D2 upgrades the nine remaining implemented student/prototype pages in place. UI-10, UI-12 and
+UI-15 use the D1 form, status, membership and destructive-action patterns while retaining all
+MockBusinessState validations and role conditions. UI-13 keeps all five application states and
+separates historical approval from current membership. UI-14 renders only the original five-field
+Pending applicant DTO and preserves explicit team-scoped captain authorization.
+
+UI-17 through UI-19 now share the Planner typography, fields and actions. Their API calls, finite
+repeat behavior and single-occurrence mutations are unchanged. The known Actual Start Week
+normalization limitation remains and is not represented as fixed. Stable occurrence IDs remain in
+a low-priority reference line for regression evidence rather than the primary hierarchy.
+
+Actor selection and isolated revision inspection use the existing header Prototype Lab sheet.
+URL parameters still do not grant authority, a captain cannot approve their own draft, and a
+Rejected revision still requires resubmission before a new decision. D2 adds no routes, contracts,
+state transitions, dependencies, HTML copies or backend behavior.
+

@@ -89,8 +89,10 @@ Design Wave D1 upgrades UI-04, UI-05, UI-09, UI-11 and UI-16 in place with share
 compact navigation, readable mobile typography and a collapsed Prototype Lab for local actor/state
 controls. The project-specific design skill is under `.agents/skills/codestrike-product-ui`, the
 design system is under `docs/design`, and representative production screenshots are under
-`docs/evidence/design-wave-d1`. Remaining student pages and the Wave 4 HTML handoff retain their
-prior visual scope pending approval of this pilot direction.
+`docs/evidence/design-wave-d1`. Design Wave D2 applies the same frozen system in place to UI-10,
+UI-12 through UI-15, UI-17 through UI-19 and the isolated recruitment review page. Representative
+D2 production screenshots are under `docs/evidence/design-wave-d2`. The Wave 4 HTML handoff remains
+unchanged pending separate approval.
 
 ## Prototype browser evidence
 

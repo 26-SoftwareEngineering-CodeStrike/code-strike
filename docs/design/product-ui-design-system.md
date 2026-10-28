@@ -33,3 +33,7 @@ Product screens do not lead with persona, scenario, Stable ID, or test-assertion
 ## D1.1 browser acceptance
 
 For every pilot page and required viewport, the production H5 review measures the content container padding and major element rectangles as well as the final product element against the fixed navigation rectangle after scrolling to the bottom. UI-05 additionally requires all four complete tab labels to fit and remain clickable at 320 px. Navigation acceptance checks both the visible text labels and rendered icon bounds; Prototype Lab acceptance covers open, explicit actor selection, disclaimer, and close behavior.
+
+## D2 form and workflow consistency
+
+Long forms use one white bordered surface, sentence-case labels, 46 px fields, short adjacent hints and a 48 px primary action. Status history uses restrained semantic labels rather than full-card status colors. Effective and draft recruitment versions use white or softly tinted surfaces with distinct left borders. Destructive membership and occurrence actions use explicit labels, separated placement and confirmation dialogs. Demo actor controls remain in the header-level Prototype Lab and do not leave persona-selection feedback on the product screen.

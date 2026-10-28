@@ -272,3 +272,20 @@ lists and action groups. UI-05 keeps four complete tab labels and 44 px targets 
 a presentation-only correction; Mock, planner, API, lifecycle, authorization and navigation logic
 were not changed.
 
+# Design Wave D2 implementation coverage
+
+D2 applies the frozen D1 product system to UI-10, UI-12, UI-13, UI-14, UI-15, UI-17, UI-18, UI-19
+and the isolated Recruitment Design Review. Existing files and routes were upgraded directly. The
+pages use 16 px mobile content alignment, readable CSS-pixel typography, 44-48 px controls, compact
+status labels, white form surfaces and separated destructive actions.
+
+Prototype actor selection moved from prominent inline panels to the existing header-level Lab on
+pages that require it. Five-state application history, the exact captain applicant privacy DTO,
+team-scoped captain review, Effective/Draft isolation, revision resubmission, team lifecycle and
+planner single-occurrence semantics remain unchanged. The known Actual Start Week normalization
+issue is outside D2 and remains unresolved.
+
+Production H5 evidence for the nine pages is retained under `docs/evidence/design-wave-d2`.
+Automated review covers 320, 390, 430 and 680 px content alignment, overflow, final-action clearance,
+Prototype Lab behavior and touch targets.
+
