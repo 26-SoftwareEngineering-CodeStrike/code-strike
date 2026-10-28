@@ -1,78 +1,32 @@
 <script setup lang="ts">
 import type { CompetitionSummary } from '@codestrike/contracts'
 import StatusBadge from './StatusBadge.vue'
-
 defineProps<{ competition: CompetitionSummary }>()
 defineEmits<{ (event: 'open', id: string): void }>()
-
-function deadlineLabel(value: string) {
-  return value.slice(0, 10)
-}
+const deadlineLabel = (value: string) => value.slice(0, 10)
 </script>
 
 <template>
   <button class="card" @click="$emit('open', competition.id)">
-    <view class="card__cover" :class="`card__cover--${competition.coverTone.toLowerCase()}`">
-      <text class="card__category">{{ competition.category }}</text>
-      <text class="card__number">0{{ competition.id.endsWith('1') ? '1' : '2' }}</text>
-    </view>
+    <view class="card__accent" :class="`card__accent--${competition.coverTone.toLowerCase()}`" />
     <view class="card__body">
-      <view class="card__status">
-        <StatusBadge
-          :label="competition.deadlineStatus === 'BeforeDeadline' ? 'OPEN' : 'REGISTRATION CLOSED'"
-          :tone="competition.deadlineStatus === 'BeforeDeadline' ? 'positive' : 'warning'"
-        />
-      </view>
+      <view class="card__rail"><text class="card__category">{{ competition.category }}</text><StatusBadge :label="competition.deadlineStatus === 'BeforeDeadline' ? 'Open' : 'Registration closed'" :tone="competition.deadlineStatus === 'BeforeDeadline' ? 'positive' : 'warning'" /></view>
       <text class="card__title">{{ competition.title }}</text>
       <text class="card__eligibility">{{ competition.eligibilitySummary }}</text>
-      <view class="card__meta">
-        <view>
-          <text class="card__meta-label">Registration deadline</text>
-          <text class="card__meta-value">{{ deadlineLabel(competition.registrationDeadline) }}</text>
-        </view>
-        <text class="card__arrow">›</text>
-      </view>
+      <view class="card__meta"><view><text class="card__meta-label">Registration deadline</text><text class="card__meta-value">{{ deadlineLabel(competition.registrationDeadline) }}</text></view><text class="card__arrow">›</text></view>
     </view>
   </button>
 </template>
 
 <style scoped>
-.card {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  text-align: left;
-  background: #fff;
-  border: 1rpx solid #dfe6ee;
-  border-radius: 28rpx;
-  box-shadow: 0 14rpx 34rpx rgba(24,40,67,.07);
-}
-.card__cover { position: relative; height: 168rpx; padding: 24rpx; box-sizing: border-box; overflow: hidden; }
-.card__cover::after {
-  content: '';
-  position: absolute;
-  width: 190rpx;
-  height: 190rpx;
-  right: -36rpx;
-  bottom: -92rpx;
-  border: 28rpx solid rgba(255,255,255,.14);
-  border-radius: 50%;
-}
-.card__cover--cobalt { color: #fff; background: #245ac8; }
-.card__cover--amber { color: #291b00; background: #ffc65c; }
-.card__cover--forest { color: #fff; background: #19715d; }
-.card__category { font-size: 20rpx; font-weight: 800; letter-spacing: 2rpx; text-transform: uppercase; }
-.card__number { position: absolute; right: 24rpx; bottom: 2rpx; font-size: 96rpx; font-weight: 900; opacity: .2; }
-.card__body { padding: 28rpx; }
-.card__status { display: flex; }
-.card__title { display: block; margin-top: 20rpx; color: #0a1830; font-size: 31rpx; font-weight: 850; line-height: 1.3; }
-.card__eligibility { display: block; margin-top: 12rpx; min-height: 62rpx; color: #657287; font-size: 22rpx; line-height: 1.45; }
-.card__meta { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 24rpx; padding-top: 22rpx; border-top: 1rpx solid #e7ecf2; }
-.card__meta-label,.card__meta-value { display: block; }
-.card__meta-label { color: #8a95a5; font-size: 18rpx; text-transform: uppercase; letter-spacing: 1rpx; }
-.card__meta-value { margin-top: 6rpx; color: #243149; font-size: 22rpx; font-weight: 750; }
-.card__arrow { color: #245ac8; font-size: 48rpx; line-height: .8; }
+.card { position: relative; display: flex; width: 100%; min-height: 0; margin: 0; padding: 0; overflow: hidden; text-align: left; background: #fff; border: 1px solid #dfe4ea; border-radius: 18px; }
+.card__accent { width: 6px; flex: 0 0 auto; background: #2563eb; }
+.card__accent--amber { background: #d69e2e; }.card__accent--forest { background: #16856b; }
+.card__body { flex: 1; min-width: 0; padding: 18px; }
+.card__rail { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card__category { overflow: hidden; color: #667085; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.card__title { display: block; margin-top: 13px; color: #14213d; font-size: 20px; font-weight: 750; line-height: 1.3; }
+.card__eligibility { display: block; margin-top: 8px; color: #667085; font-size: 15px; line-height: 1.5; }
+.card__meta { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid #e7ebf0; }
+.card__meta-label,.card__meta-value { display: block; }.card__meta-label { color: #8993a4; font-size: 12px; }.card__meta-value { margin-top: 3px; color: #344054; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }.card__arrow { color: #2563eb; font-size: 28px; line-height: 1; }
 </style>

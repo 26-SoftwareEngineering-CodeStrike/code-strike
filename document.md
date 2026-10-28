@@ -230,3 +230,45 @@ not opened in Developer Tools or tested on a physical device.
 The Mock checks do not prove real authentication, server authorization, database transactions,
 concurrency behavior or persistence. MySQL and Alembic were not accessed.
 
+# Design Wave D1 implementation coverage
+
+Design Wave D1 changes only UI-04 Competition Hub, UI-05 Competition Detail / Community, UI-09
+Recruitment Detail, UI-11 My Teams, UI-16 Personal Planner and necessary shared presentation
+components. The original routes, API calls, Mock business state, planner calculations and
+authorization checks remain unchanged.
+
+The product layer now uses a compact app bar and bottom navigation, a consistent token palette,
+15–16 px body typography, limited status badges, 44 px primary controls and product-facing state
+copy. Demo actor and scenario controls remain explicitly selectable but are isolated in a collapsed
+Prototype Lab. URL parameters still do not select a privileged actor, and the UI does not claim
+real authentication or backend authorization.
+
+The production H5 output was checked at 320, 390, 430 and 680 CSS pixels for overflow, wrapping,
+active navigation, CTA presence and fixed-navigation clearance. UI-04 empty/error states and UI-16
+Day/Week selection were exercised. Representative 390 px screenshots are retained under
+`docs/evidence/design-wave-d1`; temporary baseline and extra-width captures were not added to Git.
+
+# Design Wave D1.1 implementation coverage
+
+D1.1 refines the existing D1 pages and shared components in place. Bottom navigation now presents
+meaningful discover, teams, planner and profile icons with persistent labels and safe-area-aware
+clearance. UI-05 exposes Overview, Discussion, Resources and Recruitment simultaneously at 320 px;
+its visible community counts remain values returned by the existing Mock contract. UI-09 reduces
+secondary card fragmentation, UI-11 keeps role-gated actions in a compact group, and UI-16 improves
+chronological scanning without changing calendar calculations or planner mutations.
+
+Demo actors and scenarios open through a consistent header control into Prototype Lab. Selection
+remains explicit, the sheet states that switching is not authentication or server authorization,
+and URL parameters still cannot grant a privileged actor. Production H5 rectangle checks confirm
+that the final card/action/occurrence clears the fixed navigation at 320, 390, 430 and 680 px.
+
+## D1.1 final layout correction
+
+The five pilot page containers now preserve 16 px horizontal padding on 320, 390 and 430 px H5
+viewports by separating top/horizontal padding from legacy and current safe-area bottom fallbacks.
+At 680 px the existing 36-40 px responsive padding remains. Automated production-browser checks
+measure both computed padding and the left/right rectangles of page goals, inputs, tabs, cards,
+lists and action groups. UI-05 keeps four complete tab labels and 44 px targets at 320 px. This was
+a presentation-only correction; Mock, planner, API, lifecycle, authorization and navigation logic
+were not changed.
+

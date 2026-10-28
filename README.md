@@ -85,6 +85,13 @@ Standalone, dependency-free HTML exports for UI-04, UI-05 and UI-09 are under
 `prototype/html/wave4-pilot`. They are manual MoDao handoff inputs, not another application and not
 evidence of a successful MoDao import. No MoDao account, API or editor was accessed.
 
+Design Wave D1 upgrades UI-04, UI-05, UI-09, UI-11 and UI-16 in place with shared product tokens,
+compact navigation, readable mobile typography and a collapsed Prototype Lab for local actor/state
+controls. The project-specific design skill is under `.agents/skills/codestrike-product-ui`, the
+design system is under `docs/design`, and representative production screenshots are under
+`docs/evidence/design-wave-d1`. Remaining student pages and the Wave 4 HTML handoff retain their
+prior visual scope pending approval of this pilot direction.
+
 ## Prototype browser evidence
 
 Responsive H5 screenshots are stored under `docs/evidence/phase2-wave1` through

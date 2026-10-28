@@ -258,3 +258,70 @@ Pages outside the authorized Wave 1-Wave 4 scope, UI-20 Notifications, real auth
 production APIs, persistence, database transaction/concurrency enforcement, WeChat Developer Tools
 QA, physical-device QA and manual MoDao import/linking remain unimplemented or unverified.
 
+# Design Wave D1 product UI architecture
+
+## Shared visual system
+
+The existing uni-app theme file remains the single token source. It now defines the CodeStrike
+canvas, surface, text, primary, lime accent, semantic colors, radii, spacing, touch target and shadow
+values without introducing a second framework. `App.vue` supplies the shared type baseline and
+pressed state. `CsHeader`, `CsBottomNav`, `StatePanel`, `StatusBadge`, `CompetitionCard` and
+`RecruitmentCard` preserve their public props and events while sharing one visual language.
+
+## Product and prototype separation
+
+`PersonaSwitcher` is still the deterministic Mock actor control used by regression tests, but it is
+now a collapsed Prototype Lab. Actor buttons remain available for stable explicit automation and
+still call `selectPrototypeActor`; no route parameter or presentation change grants authority.
+UI-04 error simulation and UI-09 public scenarios follow the same secondary-tooling pattern. Product
+screens no longer lead with UI numbers, Mock disclaimers or test-state explanations.
+
+## Pilot page composition
+
+UI-04 leads with discovery and search. UI-05 preserves the full competition title, overview,
+community tabs, expired-community access and published recruitment boundary. UI-09 places match,
+capacity and the application decision before supporting facts. UI-11 keeps captain/member actions
+derived from the existing DTO. UI-16 keeps the common Day/Week occurrence source and all course,
+plan, to-do and single-occurrence paths.
+
+No new page route, parallel frontend, backend contract, state transition, database object, runtime
+dependency or animation library was added. Detailed guidance is in
+`docs/design/product-ui-design-system.md`, and the reusable project skill is in
+`.agents/skills/codestrike-product-ui/SKILL.md`.
+
+## Design Wave D1.1 refinement
+
+D1.1 retains the same five routes and replaces letter placeholders in `CsBottomNav` with
+dependency-free discover, people, calendar and profile glyphs plus text labels. The active lime
+state, safe-area inset and fixed-navigation clearance remain shared. `CsHeader` exposes the same
+subtle Prototype Lab entry on the four actor/scenario pages; `PersonaSwitcher` renders those tools
+in a dismissible sheet while preserving its existing actor IDs, selection event and Mock-only
+authorization semantics.
+
+UI-05 uses a four-column tab control whose complete labels fit at 320 px, repeats the full title in
+wrapping content, and continues to render community counts from the `CompetitionDetail` Mock DTO.
+UI-09 consolidates captain, deadline and skill facts without changing application eligibility.
+UI-11 groups the existing captain/member actions without changing their conditional rendering.
+UI-16 uses a chronological time/content/action row while keeping the existing occurrence source,
+Day/Week calculations and add/complete handlers.
+
+The D1 browser verifier now audits icon labels and bounds, complete tabs, Prototype Lab
+open/select/close behavior, 44 px controls, and actual last-content versus navigation rectangles at
+320, 390, 430 and 680 px. Representative 390 px evidence files were replaced in place.
+
+### Final horizontal alignment correction
+
+The mobile padding regression came from placing the legacy `constant(safe-area-inset-bottom)`
+function inside each page's complete `padding` shorthand. Browsers that reject that function
+discarded the entire shorthand, including its valid 16 px horizontal values, while the following
+`padding-bottom: env(...)` declaration restored only bottom clearance. The five pilot containers now
+declare top/horizontal padding independently and isolate both safe-area fallbacks to
+`padding-bottom`. The browser verifier measures computed container padding and representative
+element rectangles, so a future declaration-level regression cannot pass solely because the page
+has no document overflow.
+
+UI-05 retains four equal-width tabs at 320 px using its existing 44 px control height and a 12 px
+metadata-size label. The Competitions glyph remains dependency-free but now reads as a magnifying
+glass rather than a crossed circle. No route, handler, contract, state transition or permission
+condition changed.
+

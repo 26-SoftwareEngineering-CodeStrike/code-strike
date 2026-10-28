@@ -85,7 +85,7 @@ check(await evaluate("document.body.innerText.includes('Approve Draft') && docum
 await clickText('.moderation .approve', 'Approve Draft'); check(await confirmModal(), 'admin approval confirmation is interactive')
 check(await evaluate("document.body.innerText.includes('PUBLISHED') && !document.body.innerText.includes('DRAFT ISOLATED')"), 'approved exact draft becomes Effective Published version')
 await clickText('.public-check', 'Open public detail'); await pause(1300)
-check(await evaluate("document.body.innerText.includes('Team Delta Studio') && document.body.innerText.includes('PUBLISHED')"), 'approved effective version is immediately consistent in public detail')
+check(await evaluate("document.body.innerText.includes('Team Delta Studio') && document.body.innerText.includes('Applications open') && document.querySelector('.primary') !== null"), 'approved effective version is immediately public and open for application')
 
 // Rejected recruitment cannot be approved again until the current captain resubmits it.
 await hardNavigate('/pages/teams/recruitment?id=team-alpha')
