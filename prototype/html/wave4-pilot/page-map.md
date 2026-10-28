@@ -6,5 +6,9 @@
 | `ui05-competition-detail.html` | UI-05 | Competition Detail / Community | FR-05 published competition community; deadline does not close browsing | `apps/student-app/src/pages/competition/detail.vue` | `UI-05 / Published / Community` |
 | `ui09-recruitment-detail.html` | UI-09 | Recruitment Detail | FR-07–FR-11 recruitment visibility, advisory match, capacity and application gate | `apps/student-app/src/pages/recruitment/detail.vue` | `UI-09 / Published Open / Recruitment` |
 
-The mapping describes prototype coverage, not completed production APIs.
+The mapping describes prototype coverage, not completed production APIs. D3 synchronizes the
+visual hierarchy with the accepted D1 390px evidence while keeping the original filenames and page
+numbers for manual artboard mapping. No second export set was created.
+
+Status: `HTML_EXPORT_READY / MODAO_MANUAL_IMPORT_PENDING`
 

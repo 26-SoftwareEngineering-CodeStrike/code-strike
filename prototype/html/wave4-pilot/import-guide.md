@@ -7,10 +7,11 @@ No MoDao connection, account access or automatic import was performed by Codex.
    steps may change, so follow the editor UI shown in your own account.
 3. Inspect whether the result is an AI/generated component, grouped vector content or native
    editable layers. Converted content may not preserve semantic HTML, responsive CSS or scripts.
-4. Compare typography, spacing, cards, status chips and fixed navigation against the local HTML.
+4. Compare typography, 16px mobile gutters, cards, status labels, semantic navigation icons and
+   fixed-navigation clearance against the local HTML and frozen D1 screenshots.
 5. At 390px first, then 320px and 430px, check for clipped text and horizontal overflow.
 6. Recreate links listed in `interaction-map.md`; do not assume HTML anchors or JavaScript survived.
-7. Recreate search, tabs, persona choice, alerts and feedback using MoDao-native interactions where
+7. Recreate search, tabs, skill-guidance preview, alerts and application feedback using MoDao-native interactions where
    required.
 8. Confirm that unpublished/Delisted recruitment is absent and that no real contact data appears.
 9. If conversion is incomplete, import pages separately, simplify one component at a time, or use
@@ -19,4 +20,7 @@ No MoDao connection, account access or automatic import was performed by Codex.
 
 `HTML_EXPORT_READY` means only that the repository contains locally reviewable HTML files.
 `MODAO_MANUAL_IMPORT_PENDING` remains true until the user performs and verifies the import.
+
+After import, the user must recheck every page connection and interaction state. No MoDao project,
+artboard, import, link or publication was created by this repository update.
 
