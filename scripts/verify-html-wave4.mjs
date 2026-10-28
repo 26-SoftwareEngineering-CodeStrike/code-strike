@@ -47,8 +47,8 @@ async function waitForReady() {
   }
   throw new Error('Timed out waiting for local HTML')
 }
-async function open(file, width = 390) {
-  await send('Emulation.setDeviceMetricsOverride', { width, height: 900, screenWidth: width, screenHeight: 900, deviceScaleFactor: 1, mobile: true })
+async function open(file, width = 390, height = 900) {
+  await send('Emulation.setDeviceMetricsOverride', { width, height, screenWidth: width, screenHeight: height, deviceScaleFactor: 1, mobile: true })
   await send('Page.navigate', { url: urlFor(file) })
   await waitForReady()
 }
@@ -59,21 +59,36 @@ function check(condition, label) {
 async function checkBottomClearance(selector, label) {
   await evaluate('window.scrollTo(0, document.documentElement.scrollHeight)')
   await pause(100)
-  check(await evaluate(`(() => { const target=document.querySelector(${JSON.stringify(selector)}); const nav=document.querySelector('.bottom-nav'); if(!target||!nav)return false; return target.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top + 1 })()`), label)
+  check(await evaluate(`(() => { const target=document.querySelector(${JSON.stringify(selector)}); const wrap=document.querySelector('.bottom-wrap'); if(!target||!wrap)return false; return target.getBoundingClientRect().bottom <= wrap.getBoundingClientRect().top + 1 })()`), label)
 }
 
 await send('Page.enable')
 await send('Runtime.enable')
 
 const files = ['ui04-competition-hub.html', 'ui05-competition-detail.html', 'ui09-recruitment-detail.html']
+const viewports = [{ width: 320, height: 900 }, { width: 390, height: 900 }, { width: 402, height: 820 }, { width: 430, height: 900 }]
+const finalSelectors = {
+  'ui04-competition-hub.html': '.competition-card:last-of-type',
+  'ui05-competition-detail.html': '.recruitment-card:last-of-type',
+  'ui09-recruitment-detail.html': '#advisoryToggle',
+}
 for (const file of files) {
-  for (const width of [320, 390, 430]) {
-    await open(file, width)
-    check(await evaluate("location.protocol === 'file:' && Boolean(document.querySelector('main h1'))"), `${file} renders from file:// at ${width}px`)
-    check(await evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), `${file} has no horizontal overflow at ${width}px`)
-    check(await evaluate("parseFloat(getComputedStyle(document.querySelector('.content')).paddingLeft) >= 15"), `${file} keeps the mobile content gutter at ${width}px`)
-    check(await evaluate("!document.querySelector('link[rel=stylesheet],script[src],iframe,canvas,img[src]') && ![...document.querySelectorAll('a[href]')].some((node)=>/^https?:/i.test(node.href)) && performance.getEntriesByType('resource').every((entry)=>!/^https?:/i.test(entry.name))"), `${file} has no external dependency at ${width}px`)
-    check(await evaluate("[...document.querySelectorAll('.nav-item')].every((item)=>item.getBoundingClientRect().height >= 52)"), `${file} keeps labelled navigation targets at ${width}px`)
+  for (const { width, height } of viewports) {
+    await open(file, width, height)
+    const viewportLabel = `${width}x${height}`
+    check(await evaluate("location.protocol === 'file:' && Boolean(document.querySelector('main h1'))"), `${file} renders from file:// at ${viewportLabel}`)
+    check(await evaluate("scrollY === 0 && document.querySelector('.app-header').getBoundingClientRect().top === 0 && document.querySelector('main h1').getBoundingClientRect().top < innerHeight"), `${file} opens at the visible page top at ${viewportLabel}`)
+    check(await evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1'), `${file} has no horizontal overflow at ${viewportLabel}`)
+    check(await evaluate("parseFloat(getComputedStyle(document.querySelector('.content')).paddingLeft) >= 15"), `${file} keeps the mobile content gutter at ${viewportLabel}`)
+    check(await evaluate("!document.querySelector('link[rel=stylesheet],script[src],iframe,canvas,img[src]') && ![...document.querySelectorAll('a[href]')].some((node)=>/^https?:/i.test(node.href)) && performance.getEntriesByType('resource').every((entry)=>!/^https?:/i.test(entry.name))"), `${file} has no external dependency at ${viewportLabel}`)
+    check(await evaluate("(() => { const wrap=document.querySelector('.bottom-wrap'); const nav=document.querySelector('.bottom-nav'); const rect=wrap.getBoundingClientRect(); return getComputedStyle(wrap).position === 'fixed' && getComputedStyle(wrap).backgroundColor === 'rgb(245, 247, 250)' && rect.left === 0 && rect.right === innerWidth && Math.abs(rect.bottom-innerHeight) <= 1 && getComputedStyle(nav).pointerEvents === 'auto' })()"), `${file} paints an opaque fixed navigation container at ${viewportLabel}`)
+    check(await evaluate("[...document.querySelectorAll('.nav-item')].every((item)=>item.getBoundingClientRect().height >= 52)"), `${file} keeps labelled navigation targets at ${viewportLabel}`)
+    check(await evaluate("getComputedStyle(document.body).overflowY !== 'hidden' && getComputedStyle(document.documentElement).overflowY !== 'hidden' && document.scrollingElement.scrollHeight > innerHeight"), `${file} retains vertical document scrolling at ${viewportLabel}`)
+    await evaluate('window.scrollTo(0, 120)')
+    await pause(50)
+    check(await evaluate('scrollY > 0'), `${file} can scroll away from the page top at ${viewportLabel}`)
+    if (file === 'ui05-competition-detail.html') await evaluate("document.querySelector('[data-tab=recruitment]').click()")
+    await checkBottomClearance(finalSelectors[file], `${file} final content clears the opaque navigation at ${viewportLabel}`)
   }
 }
 
