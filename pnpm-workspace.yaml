@@ -1,0 +1,9 @@
+packages:
+  - apps/student-app
+  - apps/admin-web
+  - packages/*
+
+allowBuilds:
+  core-js: true
+  core-js-pure: true
+  esbuild: true
