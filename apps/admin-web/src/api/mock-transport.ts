@@ -1,5 +1,5 @@
 import { mockApplications, mockCompetitions, mockTeam } from '@codestrike/contracts/mock'
-import type { ApiRequest, ApiTransport } from './transport'
+import type { ApiRequest, ApiTransport } from '@codestrike/contracts'
 
 const routes: Record<string, unknown> = {
   '/dashboard': {

@@ -2,12 +2,14 @@
 import { onLoad } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import type { CompetitionDetail, RecruitmentSummary } from '@codestrike/contracts'
+import { ApiError } from '@codestrike/contracts/http'
 import CsBottomNav from '../../components/CsBottomNav.vue'
 import CsHeader from '../../components/CsHeader.vue'
 import RecruitmentCard from '../../components/RecruitmentCard.vue'
 import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
 import { createStudentApiClient } from '../../api/client'
+import { toStatePanel } from '../../api/error-presentation'
 
 type CommunityTab = 'Overview' | 'Discussion' | 'Resources' | 'Recruitment'
 const api = createStudentApiClient()
@@ -17,11 +19,12 @@ const recruitments = ref<RecruitmentSummary[]>([])
 const activeTab = ref<CommunityTab>('Overview')
 const loading = ref(true)
 const errorMessage = ref('')
+const errorTitle = ref('')
 const tabs: CommunityTab[] = ['Overview', 'Discussion', 'Resources', 'Recruitment']
 const isExpired = computed(() => competition.value?.deadlineStatus === 'AfterDeadline')
 
 onLoad((options) => { if (typeof options?.id === 'string' && options.id) competitionId.value = options.id; if (options?.tab === 'Recruitment') activeTab.value = 'Recruitment'; loadPage() })
-async function loadPage() { loading.value = true; errorMessage.value = ''; try { const [detail, recruitmentItems] = await Promise.all([api.getCompetition(competitionId.value), api.listRecruitments(competitionId.value)]); competition.value = detail; recruitments.value = recruitmentItems } catch (error) { errorMessage.value = error instanceof Error ? error.message : 'Unable to load this community.' } finally { loading.value = false } }
+async function loadPage() { loading.value = true; errorMessage.value = ''; errorTitle.value = ''; try { const [detail, recruitmentItems] = await Promise.all([api.getCompetition(competitionId.value), api.listRecruitments(competitionId.value)]); competition.value = detail; recruitments.value = recruitmentItems } catch (error) { const panel = toStatePanel(error); errorMessage.value = panel.message; errorTitle.value = error instanceof ApiError ? panel.title : '' } finally { loading.value = false } }
 function selectTab(tab: CommunityTab) { activeTab.value = tab }
 function openRecruitment(id: string) { uni.navigateTo({ url: `/pages/recruitment/detail?id=${id}` }) }
 function copyOfficialSource() { if (!competition.value) return; uni.setClipboardData({ data: competition.value.officialSourceUrl, success: () => uni.showToast({ title: 'Official source link copied', icon: 'none' }) }) }
@@ -34,7 +37,7 @@ const formatDate = (value: string) => value.slice(0, 10)
     <CsHeader back eyebrow="Competition community" :title="competition?.title || 'Competition'" />
     <view class="content">
       <StatePanel v-if="loading" title="Loading competition" message="Getting competition and community details." />
-      <StatePanel v-else-if="errorMessage || !competition" title="Community unavailable" :message="errorMessage || 'Competition not found.'" action-label="Try again" @action="loadPage" />
+      <StatePanel v-else-if="errorMessage || !competition" :title="errorTitle || 'Community unavailable'" :message="errorMessage || 'Competition not found.'" action-label="Try again" @action="loadPage" />
       <template v-else>
         <view v-if="isExpired" class="deadline-banner"><view><text class="deadline-banner__title">Registration has closed</text><text class="deadline-banner__copy">The community, resources and recruitment history remain available.</text></view><StatusBadge label="Closed" tone="warning" /></view>
         <view class="identity">

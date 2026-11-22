@@ -6,6 +6,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@codestrike/contracts": ["../../packages/api-contracts/src/index.ts"],
+      "@codestrike/contracts/http": ["../../packages/api-contracts/src/http/index.ts"],
       "@codestrike/contracts/mock": ["../../packages/api-contracts/src/mock/index.ts"]
     },
     "lib": ["esnext", "dom"],

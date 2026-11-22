@@ -1,0 +1,21 @@
+check      : Live FastAPI health check and error mapping through the real transport
+command    : node --experimental-strip-types --experimental-loader ./scripts/ts-extension-loader.mjs scripts/verify-t2-live-api.mjs
+branch     : feat/2-shared-http
+sha        : c54bcc6244d5b89bf167685ad967144a771cc1f1
+executed   : 2026-11-22T04:19:38Z
+--- output ---
+(node:15100) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+=== T2 LIVE API CHECK: http://127.0.0.1:8000/api/v1 ===
+PASS: GET /health returns the HealthResponse contract
+PASS: a protected route without a token is rejected locally and never reaches the server
+PASS: a protected route without a token is answered by the backend as 401
+PASS: the admin transport maps the backend 401 onto the shared error surface
+PASS: an unavailable database is reported as 503
+PASS: an unknown route keeps the backend error code
+PASS: the served schema still matches the captured OpenAPI document
+--- 7/7 checks passed ---
+--- end of output ---
+exit code  : 0
+result     : PASS
