@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { DashboardData } from '../api/client'
+import { ElMessage } from 'element-plus'
+import type { DashboardData } from '@codestrike/contracts'
 import { createAdminApiClient } from '../api/client'
+import { toElementFeedback } from '../api/error-feedback'
 
 const data = ref<DashboardData | null>(null)
+const loading = ref(true)
 const api = createAdminApiClient()
-onMounted(async () => { data.value = await api.getDashboard() })
+onMounted(async () => {
+  try {
+    data.value = await api.getDashboard()
+  } catch (error) {
+    const feedback = toElementFeedback(error)
+    ElMessage({ type: feedback.type, message: feedback.message })
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <template>
@@ -36,5 +48,5 @@ onMounted(async () => { data.value = await api.getDashboard() })
       </el-card>
     </section>
   </div>
-  <el-skeleton v-else :rows="8" animated />
+  <el-skeleton v-else-if="loading" :rows="8" animated />
 </template>

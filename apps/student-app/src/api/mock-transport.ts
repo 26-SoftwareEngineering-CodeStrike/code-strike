@@ -2,7 +2,7 @@ import {
   mockCompetitionDetails,
   mockCompetitions,
 } from '@codestrike/contracts/mock'
-import type { ApiRequest, ApiTransport } from './transport'
+import type { ApiRequest, ApiTransport } from '@codestrike/contracts'
 import { mockBusinessState } from '../mock/business-state'
 import { plannerMockState } from '../mock/planner-state'
 

@@ -9,6 +9,7 @@
     "build:student:mp-weixin": "pnpm --filter @codestrike/student-app build:mp-weixin",
     "build:admin": "pnpm --filter @codestrike/admin-web build",
     "type-check": "pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check",
+    "test": "pnpm --filter @codestrike/student-app test:mock && pnpm --filter @codestrike/admin-web test",
     "dev:student:h5": "pnpm --filter @codestrike/student-app dev:h5",
     "dev:student:mp-weixin": "pnpm --filter @codestrike/student-app dev:mp-weixin",
     "dev:admin": "pnpm --filter @codestrike/admin-web dev"

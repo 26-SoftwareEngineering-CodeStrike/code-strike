@@ -296,3 +296,11 @@ export interface ApiErrorPayload {
   requestId?: string
 }
 
+export interface DashboardData {
+  competitionCount: number
+  pendingApplicationCount: number
+  activeTeamCount: number
+  moderationCount: number
+  competitions: CompetitionSummary[]
+}
+

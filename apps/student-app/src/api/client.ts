@@ -1,30 +1,43 @@
 import type {
-  CompetitionDetail,
-  CompetitionSummary,
+  ActiveMemberContact,
+  ApiTransport,
   ApplicationHistoryItem,
   CaptainPendingApplication,
+  CompetitionDetail,
+  CompetitionSummary,
+  CreateCourseInput,
+  CreatePlannerItemInput,
   CreateTeamInput,
-  ActiveMemberContact,
+  CourseCreationResult,
+  MockCommandResult,
   MyTeamItem,
   MyTeamsView,
-  MockCommandResult,
+  PlannerOccurrence,
+  PlannerView,
+  PlannerViewMode,
   PrototypeActor,
   RecruitmentDetail,
   RecruitmentManagementView,
   RecruitmentSettings,
   RecruitmentSummary,
-  TeamOperationsView,
-  PlannerView,
-  PlannerViewMode,
-  PlannerOccurrence,
   SchoolPeriod,
-  CreateCourseInput,
-  CreatePlannerItemInput,
+  TeamOperationsView,
+  TransportConfig,
+  TransportMode,
   UpdateOccurrenceInput,
-  CourseCreationResult,
 } from '@codestrike/contracts'
+import {
+  currentTransportConfig,
+  toCompetitionDetail,
+  toCompetitionSummary,
+  toRecruitmentDetail,
+  toRecruitmentSummary,
+} from '@codestrike/contracts'
+import type { CompetitionDetailDto, TeamDto } from '@codestrike/contracts'
+import { ApiError } from '@codestrike/contracts/http'
+import { createStudentHttpTransport } from './http-transport'
 import { MockTransport } from './mock-transport'
-import type { ApiTransport } from './transport'
+import { createUniTokenStore } from './token-store'
 
 export interface StudentApiClient {
   listCompetitions(options?: { simulateFailure?: boolean }): Promise<CompetitionSummary[]>
@@ -64,76 +77,286 @@ export interface StudentApiClient {
   togglePlannerTodo(id: string): Promise<MockCommandResult<PlannerOccurrence>>
 }
 
-export function createStudentApiClient(transport: ApiTransport = new MockTransport()): StudentApiClient {
+export interface StudentApiClientOptions {
+  transport?: ApiTransport
+  mode?: TransportMode
+  config?: TransportConfig
+}
+
+export function createStudentApiClient(options: StudentApiClientOptions = {}): StudentApiClient {
+  const config = options.config ?? currentTransportConfig()
+  const mode = options.mode ?? config.mode
+  const transport =
+    options.transport ??
+    (mode === 'api'
+      ? createStudentHttpTransport({
+          baseUrl: config.baseUrl,
+          timeout: config.timeout,
+          tokenStore: createUniTokenStore(),
+        })
+      : new MockTransport())
+  return buildStudentApiClient(transport, mode)
+}
+
+/**
+ * The prototype operations below are served by the mock transport only. The
+ * backend equivalents are delivered by the later sprint tasks, so API mode
+ * reports them instead of calling an endpoint that does not exist.
+ */
+function unsupportedInApiMode<T>(operation: string): Promise<T> {
+  return Promise.reject(
+    new ApiError(`"${operation}" is a prototype operation and is not served by the API yet.`, {
+      kind: 'config',
+      code: 'NOT_AVAILABLE_IN_API_MODE',
+    }),
+  )
+}
+
+function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): StudentApiClient {
+  const api = mode === 'api'
+
   return {
-    listCompetitions: (options) =>
-      transport.request<CompetitionSummary[]>({
-        path: options?.simulateFailure ? '/competitions?scenario=error' : '/competitions',
-      }),
-    getCompetition: (id) =>
-      transport.request<CompetitionDetail>({ path: `/competitions/${id}` }),
-    listRecruitments: (competitionId) =>
-      transport.request<RecruitmentSummary[]>({
+    listCompetitions: async (options) => {
+      if (!api) {
+        return transport.request<CompetitionSummary[]>({
+          path: options?.simulateFailure ? '/competitions?scenario=error' : '/competitions',
+        })
+      }
+      const response = await transport.request<CompetitionDetailDto[]>({ path: '/competitions' })
+      return response.map((competition) => toCompetitionSummary(competition))
+    },
+    getCompetition: async (id) => {
+      if (!api) {
+        return transport.request<CompetitionDetail>({ path: `/competitions/${id}` })
+      }
+      const competition = await transport.request<CompetitionDetailDto>({
+        path: `/competitions/${id}`,
+      })
+      const recruitments = await transport.request<TeamDto[]>({
+        path: `/competitions/${id}/recruitments`,
+      })
+      return toCompetitionDetail(competition, {
+        publishedRecruitmentCount: recruitments.length,
+      })
+    },
+    listRecruitments: async (competitionId) => {
+      if (!api) {
+        return transport.request<RecruitmentSummary[]>({
+          path: `/competitions/${competitionId}/recruitments`,
+        })
+      }
+      const competition = await transport.request<CompetitionDetailDto>({
+        path: `/competitions/${competitionId}`,
+      })
+      const teams = await transport.request<TeamDto[]>({
         path: `/competitions/${competitionId}/recruitments`,
-      }),
-    getRecruitment: (id) =>
-      transport.request<RecruitmentDetail>({ path: `/recruitments/${id}` }),
+      })
+      const context = { deadlinePassed: competition.deadlineStatus === 'AfterDeadline' }
+      return teams.map((team) => toRecruitmentSummary(team, context))
+    },
+    getRecruitment: async (id) => {
+      if (!api) {
+        return transport.request<RecruitmentDetail>({ path: `/recruitments/${id}` })
+      }
+      const team = await transport.request<TeamDto>({ path: `/teams/${id}` })
+      const competition = await transport.request<CompetitionDetailDto>({
+        path: `/competitions/${team.competitionId}`,
+      })
+      return toRecruitmentDetail(team, {
+        competitionTitle: competition.title,
+        competitionDeadline: competition.registrationDeadline,
+        deadlinePassed: competition.deadlineStatus === 'AfterDeadline',
+      })
+    },
     getRecruitmentDesignReview: (id) =>
-      transport.request<RecruitmentDetail>({ path: `/prototype/recruitment-reviews/${id}` }),
+      api
+        ? unsupportedInApiMode('getRecruitmentDesignReview')
+        : transport.request<RecruitmentDetail>({ path: `/prototype/recruitment-reviews/${id}` }),
     listPrototypeActors: () =>
-      transport.request<PrototypeActor[]>({ path: '/prototype/actors' }),
+      api
+        ? unsupportedInApiMode('listPrototypeActors')
+        : transport.request<PrototypeActor[]>({ path: '/prototype/actors' }),
     getPrototypeActor: () =>
-      transport.request<PrototypeActor>({ path: '/prototype/actor' }),
+      api
+        ? unsupportedInApiMode('getPrototypeActor')
+        : transport.request<PrototypeActor>({ path: '/prototype/actor' }),
     selectPrototypeActor: (actorId) =>
-      transport.request<MockCommandResult<PrototypeActor>>({
-        path: '/prototype/actor', method: 'POST', body: { actorId },
-      }),
+      api
+        ? unsupportedInApiMode('selectPrototypeActor')
+        : transport.request<MockCommandResult<PrototypeActor>>({
+            path: '/prototype/actor',
+            method: 'POST',
+            body: { actorId },
+          }),
     listMyApplications: () =>
-      transport.request<MockCommandResult<ApplicationHistoryItem[]>>({ path: '/applications/mine' }),
+      api
+        ? unsupportedInApiMode('listMyApplications')
+        : transport.request<MockCommandResult<ApplicationHistoryItem[]>>({ path: '/applications/mine' }),
     applyToTeam: (teamId) =>
-      transport.request<MockCommandResult<ApplicationHistoryItem>>({ path: '/applications', method: 'POST', body: { teamId } }),
+      api
+        ? unsupportedInApiMode('applyToTeam')
+        : transport.request<MockCommandResult<ApplicationHistoryItem>>({
+            path: '/applications',
+            method: 'POST',
+            body: { teamId },
+          }),
     withdrawApplication: (id) =>
-      transport.request<MockCommandResult>({ path: `/applications/${id}/withdraw`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('withdrawApplication')
+        : transport.request<MockCommandResult>({ path: `/applications/${id}/withdraw`, method: 'POST' }),
     reapply: (id) =>
-      transport.request<MockCommandResult<ApplicationHistoryItem>>({ path: `/applications/${id}/reapply`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('reapply')
+        : transport.request<MockCommandResult<ApplicationHistoryItem>>({
+            path: `/applications/${id}/reapply`,
+            method: 'POST',
+          }),
     listCaptainApplications: (teamId) =>
-      transport.request<MockCommandResult<CaptainPendingApplication[]>>({ path: teamId ? `/captain/teams/${teamId}/applications` : '/captain/applications' }),
+      api
+        ? unsupportedInApiMode('listCaptainApplications')
+        : transport.request<MockCommandResult<CaptainPendingApplication[]>>({
+            path: teamId ? `/captain/teams/${teamId}/applications` : '/captain/applications',
+          }),
     approveApplication: (id) =>
-      transport.request<MockCommandResult>({ path: `/captain/applications/${id}/approve`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('approveApplication')
+        : transport.request<MockCommandResult>({
+            path: `/captain/applications/${id}/approve`,
+            method: 'POST',
+          }),
     rejectApplication: (id) =>
-      transport.request<MockCommandResult>({ path: `/captain/applications/${id}/reject`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('rejectApplication')
+        : transport.request<MockCommandResult>({
+            path: `/captain/applications/${id}/reject`,
+            method: 'POST',
+          }),
     createTeam: (input) =>
-      transport.request<MockCommandResult<MyTeamItem>>({ path: '/teams', method: 'POST', body: input }),
+      api
+        ? unsupportedInApiMode('createTeam')
+        : transport.request<MockCommandResult<MyTeamItem>>({ path: '/teams', method: 'POST', body: input }),
     listMyTeams: () =>
-      transport.request<MockCommandResult<MyTeamsView>>({ path: '/teams/mine' }),
+      api
+        ? unsupportedInApiMode('listMyTeams')
+        : transport.request<MockCommandResult<MyTeamsView>>({ path: '/teams/mine' }),
     getRecruitmentManagement: (teamId) =>
-      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment` }),
+      api
+        ? unsupportedInApiMode('getRecruitmentManagement')
+        : transport.request<MockCommandResult<RecruitmentManagementView>>({
+            path: `/teams/${teamId}/recruitment`,
+          }),
     setRecruitmentSwitch: (teamId, value) =>
-      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment-switch`, method: 'PUT', body: { value } }),
+      api
+        ? unsupportedInApiMode('setRecruitmentSwitch')
+        : transport.request<MockCommandResult<RecruitmentManagementView>>({
+            path: `/teams/${teamId}/recruitment-switch`,
+            method: 'PUT',
+            body: { value },
+          }),
     submitRecruitmentRevision: (teamId, input) =>
-      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/teams/${teamId}/recruitment-revision`, method: 'POST', body: input }),
+      api
+        ? unsupportedInApiMode('submitRecruitmentRevision')
+        : transport.request<MockCommandResult<RecruitmentManagementView>>({
+            path: `/teams/${teamId}/recruitment-revision`,
+            method: 'POST',
+            body: input,
+          }),
     moderateRecruitment: (teamId, decision) =>
-      transport.request<MockCommandResult<RecruitmentManagementView>>({ path: `/prototype/recruitment-reviews/${teamId}/moderate`, method: 'POST', body: { decision } }),
+      api
+        ? unsupportedInApiMode('moderateRecruitment')
+        : transport.request<MockCommandResult<RecruitmentManagementView>>({
+            path: `/prototype/recruitment-reviews/${teamId}/moderate`,
+            method: 'POST',
+            body: { decision },
+          }),
     getTeamOperations: (teamId) =>
-      transport.request<MockCommandResult<TeamOperationsView>>({ path: `/teams/${teamId}/operations` }),
+      api
+        ? unsupportedInApiMode('getTeamOperations')
+        : transport.request<MockCommandResult<TeamOperationsView>>({
+            path: `/teams/${teamId}/operations`,
+          }),
     getActiveMemberContacts: (teamId) =>
-      transport.request<MockCommandResult<ActiveMemberContact[]>>({ path: `/teams/${teamId}/member-contacts` }),
+      api
+        ? unsupportedInApiMode('getActiveMemberContacts')
+        : transport.request<MockCommandResult<ActiveMemberContact[]>>({
+            path: `/teams/${teamId}/member-contacts`,
+          }),
     leaveTeam: (teamId) =>
-      transport.request<MockCommandResult>({ path: `/teams/${teamId}/leave`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('leaveTeam')
+        : transport.request<MockCommandResult>({ path: `/teams/${teamId}/leave`, method: 'POST' }),
     removeMember: (teamId, membershipId) =>
-      transport.request<MockCommandResult>({ path: `/teams/${teamId}/members/${membershipId}/remove`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('removeMember')
+        : transport.request<MockCommandResult>({
+            path: `/teams/${teamId}/members/${membershipId}/remove`,
+            method: 'POST',
+          }),
     transferCaptain: (teamId, membershipId) =>
-      transport.request<MockCommandResult>({ path: `/teams/${teamId}/captain/transfer`, method: 'POST', body: { membershipId } }),
+      api
+        ? unsupportedInApiMode('transferCaptain')
+        : transport.request<MockCommandResult>({
+            path: `/teams/${teamId}/captain/transfer`,
+            method: 'POST',
+            body: { membershipId },
+          }),
     dissolveTeam: (teamId) =>
-      transport.request<MockCommandResult>({ path: `/teams/${teamId}/dissolve`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('dissolveTeam')
+        : transport.request<MockCommandResult>({ path: `/teams/${teamId}/dissolve`, method: 'POST' }),
     getPlannerView: (date, mode) =>
-      transport.request<MockCommandResult<PlannerView>>({ path: `/planner/views/${mode}/${date}` }),
-    listSchoolPeriods: () => transport.request<SchoolPeriod[]>({ path: '/planner/periods' }),
-    createCourse: (input) => transport.request<MockCommandResult<CourseCreationResult>>({ path: '/planner/courses', method: 'POST', body: input }),
-    createPlannerItem: (input) => transport.request<MockCommandResult<PlannerOccurrence[]>>({ path: '/planner/items', method: 'POST', body: input }),
-    getPlannerOccurrence: (id) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}` }),
-    updatePlannerOccurrence: (id, input) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}`, method: 'PUT', body: input }),
-    deletePlannerOccurrence: (id) => transport.request<MockCommandResult>({ path: `/planner/occurrences/${id}`, method: 'DELETE' }),
-    togglePlannerTodo: (id) => transport.request<MockCommandResult<PlannerOccurrence>>({ path: `/planner/occurrences/${id}/complete`, method: 'POST' }),
+      api
+        ? unsupportedInApiMode('getPlannerView')
+        : transport.request<MockCommandResult<PlannerView>>({
+            path: `/planner/views/${mode}/${date}`,
+          }),
+    listSchoolPeriods: () =>
+      api
+        ? unsupportedInApiMode('listSchoolPeriods')
+        : transport.request<SchoolPeriod[]>({ path: '/planner/periods' }),
+    createCourse: (input) =>
+      api
+        ? unsupportedInApiMode('createCourse')
+        : transport.request<MockCommandResult<CourseCreationResult>>({
+            path: '/planner/courses',
+            method: 'POST',
+            body: input,
+          }),
+    createPlannerItem: (input) =>
+      api
+        ? unsupportedInApiMode('createPlannerItem')
+        : transport.request<MockCommandResult<PlannerOccurrence[]>>({
+            path: '/planner/items',
+            method: 'POST',
+            body: input,
+          }),
+    getPlannerOccurrence: (id) =>
+      api
+        ? unsupportedInApiMode('getPlannerOccurrence')
+        : transport.request<MockCommandResult<PlannerOccurrence>>({
+            path: `/planner/occurrences/${id}`,
+          }),
+    updatePlannerOccurrence: (id, input) =>
+      api
+        ? unsupportedInApiMode('updatePlannerOccurrence')
+        : transport.request<MockCommandResult<PlannerOccurrence>>({
+            path: `/planner/occurrences/${id}`,
+            method: 'PUT',
+            body: input,
+          }),
+    deletePlannerOccurrence: (id) =>
+      api
+        ? unsupportedInApiMode('deletePlannerOccurrence')
+        : transport.request<MockCommandResult>({
+            path: `/planner/occurrences/${id}`,
+            method: 'DELETE',
+          }),
+    togglePlannerTodo: (id) =>
+      api
+        ? unsupportedInApiMode('togglePlannerTodo')
+        : transport.request<MockCommandResult<PlannerOccurrence>>({
+            path: `/planner/occurrences/${id}/complete`,
+            method: 'POST',
+          }),
   }
 }

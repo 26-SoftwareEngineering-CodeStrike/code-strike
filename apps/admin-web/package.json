@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "type-check": "vue-tsc -b",
+    "test": "node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/*.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { CompetitionSummary } from '@codestrike/contracts'
+import { ApiError } from '@codestrike/contracts/http'
 import CompetitionCard from '../../components/CompetitionCard.vue'
 import CsBottomNav from '../../components/CsBottomNav.vue'
 import CsHeader from '../../components/CsHeader.vue'
 import StatePanel from '../../components/StatePanel.vue'
 import { createStudentApiClient } from '../../api/client'
+import { toStatePanel } from '../../api/error-presentation'
 
 const api = createStudentApiClient()
 const query = ref('')
 const competitions = ref<CompetitionSummary[]>([])
 const loading = ref(true)
 const errorMessage = ref('')
+const errorTitle = ref('')
 const labOpen = ref(false)
 const filteredCompetitions = computed(() => { const keyword = query.value.trim().toLowerCase(); return keyword ? competitions.value.filter((item) => item.title.toLowerCase().includes(keyword)) : competitions.value })
 
-async function loadCompetitions(simulateFailure = false) { loading.value = true; errorMessage.value = ''; try { competitions.value = await api.listCompetitions({ simulateFailure }) } catch (error) { competitions.value = []; errorMessage.value = error instanceof Error ? error.message : 'Unable to load competitions.' } finally { loading.value = false } }
+async function loadCompetitions(simulateFailure = false) { loading.value = true; errorMessage.value = ''; errorTitle.value = ''; try { competitions.value = await api.listCompetitions({ simulateFailure }) } catch (error) { competitions.value = []; const panel = toStatePanel(error); errorMessage.value = panel.message; errorTitle.value = error instanceof ApiError ? panel.title : '' } finally { loading.value = false } }
 function openCompetition(id: string) { uni.navigateTo({ url: `/pages/competition/detail?id=${id}` }) }
 function clearSearch() { query.value = '' }
 function submitCompetition() { uni.showModal({ title: 'Not available in this pilot', content: 'Competition submission is outside the current student prototype scope.', showCancel: false }) }
@@ -36,7 +39,7 @@ loadCompetitions()
 
       <view class="section-heading"><text class="section-heading__title">Competitions</text><text class="section-heading__count">{{ filteredCompetitions.length }}</text></view>
       <StatePanel v-if="loading" title="Loading competitions" message="Getting the latest published competitions." />
-      <StatePanel v-else-if="errorMessage" title="Competition feed unavailable" :message="errorMessage" action-label="Try again" @action="loadCompetitions()" />
+      <StatePanel v-else-if="errorMessage" :title="errorTitle || 'Competition feed unavailable'" :message="errorMessage" action-label="Try again" @action="loadCompetitions()" />
       <StatePanel v-else-if="filteredCompetitions.length === 0" title="No matching competitions" message="Try another name or clear your search." action-label="Clear search" @action="clearSearch" />
       <view v-else class="competition-grid"><CompetitionCard v-for="competition in filteredCompetitions" :key="competition.id" :competition="competition" @open="openCompetition" /></view>
 
