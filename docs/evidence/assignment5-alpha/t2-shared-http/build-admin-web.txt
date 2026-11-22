@@ -1,0 +1,26 @@
+check      : Admin web production build
+command    : pnpm build:admin
+branch     : feat/2-shared-http
+sha        : c54bcc6244d5b89bf167685ad967144a771cc1f1
+executed   : 2026-11-22T04:19:31Z
+--- output ---
+$ pnpm --filter @codestrike/admin-web build
+$ vue-tsc -b && vite build
+[36mvite v8.3.5 [32mbuilding client environment for production...[36m[39m
+transforming...
+✓ 1620 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.47 kB │ gzip:   0.30 kB
+dist/assets/index-BtCvFKZy.css    362.76 kB │ gzip:  48.84 kB
+dist/assets/index-vOz2Z3wp.js   1,019.95 kB │ gzip: 328.71 kB
+
+[32m✓ built in 645ms[39m
+[33m[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+--- end of output ---
+exit code  : 0
+result     : PASS

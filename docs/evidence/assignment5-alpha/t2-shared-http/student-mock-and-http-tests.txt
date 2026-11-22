@@ -1,0 +1,429 @@
+check      : Student app mock regression and T2 transport, adapter and switch tests
+command    : pnpm --filter @codestrike/student-app test:mock
+branch     : feat/2-shared-http
+sha        : c54bcc6244d5b89bf167685ad967144a771cc1f1
+executed   : 2026-11-22T04:19:05Z
+--- output ---
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/*.test.mjs
+TAP version 13
+# (node:20284) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a competition DTO becomes a competition summary with a deterministic cover tone
+ok 1 - a competition DTO becomes a competition summary with a deterministic cover tone
+  ---
+  duration_ms: 1.3272
+  type: 'test'
+  ...
+# Subtest: a competition DTO becomes a competition detail and reports the community counts it was given
+ok 2 - a competition DTO becomes a competition detail and reports the community counts it was given
+  ---
+  duration_ms: 1.2257
+  type: 'test'
+  ...
+# Subtest: the backend match spelling is normalised for the view model
+ok 3 - the backend match spelling is normalised for the view model
+  ---
+  duration_ms: 0.2327
+  type: 'test'
+  ...
+# Subtest: recruitment availability follows publication, deadline, switch and capacity
+ok 4 - recruitment availability follows publication, deadline, switch and capacity
+  ---
+  duration_ms: 0.2092
+  type: 'test'
+  ...
+# Subtest: a team DTO becomes a recruitment summary with its skill names
+ok 5 - a team DTO becomes a recruitment summary with its skill names
+  ---
+  duration_ms: 0.2368
+  type: 'test'
+  ...
+# Subtest: a recruitment detail keeps the competition context it was given
+ok 6 - a recruitment detail keeps the competition context it was given
+  ---
+  duration_ms: 0.1693
+  type: 'test'
+  ...
+# Subtest: member, contact and application DTOs become their view models
+ok 7 - member, contact and application DTOs become their view models
+  ---
+  duration_ms: 0.2348
+  type: 'test'
+  ...
+# Subtest: an applicant preview keeps exactly the five permitted fields
+ok 8 - an applicant preview keeps exactly the five permitted fields
+  ---
+  duration_ms: 0.2686
+  type: 'test'
+  ...
+# Subtest: a review DTO becomes a captain pending application
+ok 9 - a review DTO becomes a captain pending application
+  ---
+  duration_ms: 0.3311
+  type: 'test'
+  ...
+# Subtest: a planner item DTO becomes a planner occurrence
+ok 10 - a planner item DTO becomes a planner occurrence
+  ---
+  duration_ms: 0.4029
+  type: 'test'
+  ...
+# Subtest: the dashboard DTO becomes the dashboard view model
+ok 11 - the dashboard DTO becomes the dashboard view model
+  ---
+  duration_ms: 0.172
+  type: 'test'
+  ...
+# (node:23540) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:23540) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/api/http-transport.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a successful GET targets the configured base URL and returns the parsed body
+ok 12 - a successful GET targets the configured base URL and returns the parsed body
+  ---
+  duration_ms: 2.9916
+  type: 'test'
+  ...
+# Subtest: the bearer token is attached to every request once a session exists
+ok 13 - the bearer token is attached to every request once a session exists
+  ---
+  duration_ms: 1.3342
+  type: 'test'
+  ...
+# Subtest: no Authorization header is sent when no token is available
+ok 14 - no Authorization header is sent when no token is available
+  ---
+  duration_ms: 0.8651
+  type: 'test'
+  ...
+# Subtest: a request that requires authentication never reaches the server without a token
+ok 15 - a request that requires authentication never reaches the server without a token
+  ---
+  duration_ms: 1.5362
+  type: 'test'
+  ...
+# Subtest: the backend error envelope is mapped onto the ApiError
+ok 16 - the backend error envelope is mapped onto the ApiError
+  ---
+  duration_ms: 0.9735
+  type: 'test'
+  ...
+# Subtest: the documented status codes map onto their backend codes
+ok 17 - the documented status codes map onto their backend codes
+  ---
+  duration_ms: 1.8777
+  type: 'test'
+  ...
+# Subtest: an unreachable service becomes a network error and a slow service becomes a timeout
+ok 18 - an unreachable service becomes a network error and a slow service becomes a timeout
+  ---
+  duration_ms: 3.189
+  type: 'test'
+  ...
+# Subtest: a JSON body is sent with the JSON content type and query parameters are encoded
+ok 19 - a JSON body is sent with the JSON content type and query parameters are encoded
+  ---
+  duration_ms: 1.321
+  type: 'test'
+  ...
+# Subtest: a 401 response drops the stale token through the unauthorized handler
+ok 20 - a 401 response drops the stale token through the unauthorized handler
+  ---
+  duration_ms: 2.2834
+  type: 'test'
+  ...
+# Subtest: the student transport reads the bearer token from its token store
+ok 21 - the student transport reads the bearer token from its token store
+  ---
+  duration_ms: 0.6283
+  type: 'test'
+  ...
+# (node:18280) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18280) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: dynamic Published to Delisted transition immediately closes public list and detail
+ok 22 - dynamic Published to Delisted transition immediately closes public list and detail
+  ---
+  duration_ms: 5.3147
+  type: 'test'
+  ...
+# Subtest: owner history keeps all five states distinct and historical approval is not membership
+ok 23 - owner history keeps all five states distinct and historical approval is not membership
+  ---
+  duration_ms: 2.1553
+  type: 'test'
+  ...
+# Subtest: one Pending per student/team is enforced while different-team Pending is allowed
+ok 24 - one Pending per student/team is enforced while different-team Pending is allowed
+  ---
+  duration_ms: 0.6494
+  type: 'test'
+  ...
+# Subtest: incomplete profile cannot create a Pending application or alter history
+ok 25 - incomplete profile cannot create a Pending application or alter history
+  ---
+  duration_ms: 0.206
+  type: 'test'
+  ...
+# Subtest: approval creates membership and invalidates same-competition Pending only
+ok 26 - approval creates membership and invalidates same-competition Pending only
+  ---
+  duration_ms: 0.514
+  type: 'test'
+  ...
+# Subtest: manual close and revision delisting block fresh applications but not eligible Pending approval
+ok 27 - manual close and revision delisting block fresh applications but not eligible Pending approval
+  ---
+  duration_ms: 0.4692
+  type: 'test'
+  ...
+# Subtest: capacity, deadline and dissolution use exact invalidation semantics
+ok 28 - capacity, deadline and dissolution use exact invalidation semantics
+  ---
+  duration_ms: 0.6004
+  type: 'test'
+  ...
+# Subtest: an ended membership does not block an otherwise eligible reapplication
+ok 29 - an ended membership does not block an otherwise eligible reapplication
+  ---
+  duration_ms: 0.2424
+  type: 'test'
+  ...
+# Subtest: captain DTO contains exactly the five permitted applicant fields
+ok 30 - captain DTO contains exactly the five permitted applicant fields
+  ---
+  duration_ms: 1.1977
+  type: 'test'
+  ...
+# Subtest: captain scope changes immediately and privileged revision review is explicit
+ok 31 - captain scope changes immediately and privileged revision review is explicit
+  ---
+  duration_ms: 1.0641
+  type: 'test'
+  ...
+# Subtest: team creation validates profile and deadline then creates captain membership
+ok 32 - team creation validates profile and deadline then creates captain membership
+  ---
+  duration_ms: 0.7576
+  type: 'test'
+  ...
+# Subtest: recruitment draft stays separate until isolated admin approval
+ok 33 - recruitment draft stays separate until isolated admin approval
+  ---
+  duration_ms: 0.5849
+  type: 'test'
+  ...
+# Subtest: rejected recruitment revision requires captain resubmission before a later approval
+ok 34 - rejected recruitment revision requires captain resubmission before a later approval
+  ---
+  duration_ms: 0.343
+  type: 'test'
+  ...
+# Subtest: moderation approval revalidates dissolution, deadline and changed capacity conditions
+ok 35 - moderation approval revalidates dissolution, deadline and changed capacity conditions
+  ---
+  duration_ms: 0.49
+  type: 'test'
+  ...
+# Subtest: captain role is scoped per competition rather than blocking all student participation
+ok 36 - captain role is scoped per competition rather than blocking all student participation
+  ---
+  duration_ms: 0.361
+  type: 'test'
+  ...
+# Subtest: one student can scope captain queues independently across two competitions
+ok 37 - one student can scope captain queues independently across two competitions
+  ---
+  duration_ms: 1.1485
+  type: 'test'
+  ...
+# Subtest: manual closure still allows approval of an existing eligible Pending application
+ok 38 - manual closure still allows approval of an existing eligible Pending application
+  ---
+  duration_ms: 0.2999
+  type: 'test'
+  ...
+# Subtest: member leave and captain removal end access and reduce derived member count without reopening
+ok 39 - member leave and captain removal end access and reduce derived member count without reopening
+  ---
+  duration_ms: 0.5122
+  type: 'test'
+  ...
+# Subtest: captain cannot leave and transfer changes both roles and permissions immediately
+ok 40 - captain cannot leave and transfer changes both roles and permissions immediately
+  ---
+  duration_ms: 0.2201
+  type: 'test'
+  ...
+# Subtest: dissolution invalidates Pending while retaining application and membership history
+ok 41 - dissolution invalidates Pending while retaining application and membership history
+  ---
+  duration_ms: 0.2821
+  type: 'test'
+  ...
+# Subtest: team member and contact responses stay separated by current captain authorization
+ok 42 - team member and contact responses stay separated by current captain authorization
+  ---
+  duration_ms: 0.2351
+  type: 'test'
+  ...
+# (node:30712) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30712) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: incomplete signed-in student can use the private planner
+ok 43 - incomplete signed-in student can use the private planner
+  ---
+  duration_ms: 1.9887
+  type: 'test'
+  ...
+# Subtest: visitor cannot read a student private planner
+ok 44 - visitor cannot read a student private planner
+  ---
+  duration_ms: 0.2039
+  type: 'test'
+  ...
+# Subtest: different students have isolated planner data
+ok 45 - different students have isolated planner data
+  ---
+  duration_ms: 0.1881
+  type: 'test'
+  ...
+# Subtest: Day and Week views expose the same stable occurrence
+ok 46 - Day and Week views expose the same stable occurrence
+  ---
+  duration_ms: 7.4662
+  type: 'test'
+  ...
+# Subtest: actual start week includes the first finite weekly occurrence and then stops
+ok 47 - actual start week includes the first finite weekly occurrence and then stops
+  ---
+  duration_ms: 0.8596
+  type: 'test'
+  ...
+# Subtest: course duplicate criterion uses name, actual date, start and end time and skips only duplicate instances
+ok 48 - course duplicate criterion uses name, actual date, start and end time and skips only duplicate instances
+  ---
+  duration_ms: 0.2422
+  type: 'test'
+  ...
+# Subtest: different-name overlapping course is retained
+ok 49 - different-name overlapping course is retained
+  ---
+  duration_ms: 0.1557
+  type: 'test'
+  ...
+# Subtest: timed plan may overlap a course
+ok 50 - timed plan may overlap a course
+  ---
+  duration_ms: 0.3326
+  type: 'test'
+  ...
+# Subtest: to-do without a deadline remains visible on its assigned date
+ok 51 - to-do without a deadline remains visible on its assigned date
+  ---
+  duration_ms: 0.3115
+  type: 'test'
+  ...
+# Subtest: editing one course occurrence keeps its stable ID and leaves adjacent weeks unchanged
+ok 52 - editing one course occurrence keeps its stable ID and leaves adjacent weeks unchanged
+  ---
+  duration_ms: 0.5245
+  type: 'test'
+  ...
+# Subtest: deleting one course occurrence retains the rest of its series
+ok 53 - deleting one course occurrence retains the rest of its series
+  ---
+  duration_ms: 0.2278
+  type: 'test'
+  ...
+# Subtest: completing one repeated to-do leaves the other occurrence unchanged
+ok 54 - completing one repeated to-do leaves the other occurrence unchanged
+  ---
+  duration_ms: 0.309
+  type: 'test'
+  ...
+# Subtest: calendar date arithmetic remains stable across month, year and leap-day boundaries
+ok 55 - calendar date arithmetic remains stable across month, year and leap-day boundaries
+  ---
+  duration_ms: 0.1837
+  type: 'test'
+  ...
+# Subtest: Mock create, read, update, complete and delete operations stay consistent
+ok 56 - Mock create, read, update, complete and delete operations stay consistent
+  ---
+  duration_ms: 0.3384
+  type: 'test'
+  ...
+# (node:21624) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21624) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the transport mode is driven by environment configuration
+ok 57 - the transport mode is driven by environment configuration
+  ---
+  duration_ms: 0.6876
+  type: 'test'
+  ...
+# Subtest: the API base URL and timeout come from the environment
+ok 58 - the API base URL and timeout come from the environment
+  ---
+  duration_ms: 0.0999
+  type: 'test'
+  ...
+# Subtest: mock mode keeps serving the prototype operations unchanged
+ok 59 - mock mode keeps serving the prototype operations unchanged
+  ---
+  duration_ms: 977.562
+  type: 'test'
+  ...
+# Subtest: mock mode still reports the simulated feed failure
+ok 60 - mock mode still reports the simulated feed failure
+  ---
+  duration_ms: 245.4276
+  type: 'test'
+  ...
+# Subtest: API mode calls the backend routes and returns adapted view models
+ok 61 - API mode calls the backend routes and returns adapted view models
+  ---
+  duration_ms: 0.4422
+  type: 'test'
+  ...
+# Subtest: API mode fills the competition detail from the backend routes
+ok 62 - API mode fills the competition detail from the backend routes
+  ---
+  duration_ms: 0.6438
+  type: 'test'
+  ...
+# Subtest: API mode reports the prototype operations the backend does not serve
+ok 63 - API mode reports the prototype operations the backend does not serve
+  ---
+  duration_ms: 0.4521
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1598.9494
+--- end of output ---
+exit code  : 0
+result     : PASS
