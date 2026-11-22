@@ -12,7 +12,7 @@ function openItem(item: (typeof items)[number]['label']) {
   if (item === 'Competitions') return uni.reLaunch({ url: '/pages/index/index' })
   if (item === 'Teams') return uni.reLaunch({ url: '/pages/teams/index' })
   if (item === 'Planner') return uni.reLaunch({ url: '/pages/planner/index' })
-  uni.showToast({ title: `${item} is planned for a later wave`, icon: 'none' })
+  uni.reLaunch({ url: '/pages/profile/index' })
 }
 </script>
 

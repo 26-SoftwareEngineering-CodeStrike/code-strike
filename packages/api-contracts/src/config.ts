@@ -43,8 +43,9 @@ export function currentTransportConfig(): TransportConfig {
 }
 
 function readRuntimeEnv(): EnvRecord {
-  const meta = import.meta as { env?: Record<string, string | undefined> }
-  const env = meta.env
+  // The literal member expression is what the bundler replaces at build time.
+  // Reaching the value through an alias leaves it unresolved at runtime.
+  const env = import.meta.env
   return {
     VITE_USE_MOCK: env?.VITE_USE_MOCK,
     VITE_API_BASE_URL: env?.VITE_API_BASE_URL,

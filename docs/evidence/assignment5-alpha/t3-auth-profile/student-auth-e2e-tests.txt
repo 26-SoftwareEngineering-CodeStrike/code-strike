@@ -1,0 +1,111 @@
+check      : T3 end-to-end account and profile tests against the real backend and MySQL
+command    : pnpm --filter @codestrike/student-app test:e2e
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:34:18Z
+--- output ---
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/e2e/*.test.mjs
+TAP version 13
+# (node:32676) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:32676) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a student registers and receives a session
+ok 1 - a student registers and receives a session
+  ---
+  duration_ms: 191.0873
+  type: 'test'
+  ...
+# Subtest: a duplicate username is rejected by the backend
+ok 2 - a duplicate username is rejected by the backend
+  ---
+  duration_ms: 10.4086
+  type: 'test'
+  ...
+# Subtest: the correct password signs the student in
+ok 3 - the correct password signs the student in
+  ---
+  duration_ms: 185.1939
+  type: 'test'
+  ...
+# Subtest: a wrong password is refused
+ok 4 - a wrong password is refused
+  ---
+  duration_ms: 192.7909
+  type: 'test'
+  ...
+# Subtest: the current user is read back from the API
+ok 5 - the current user is read back from the API
+  ---
+  duration_ms: 4.7465
+  type: 'test'
+  ...
+# Subtest: a fresh profile reports every missing required field
+ok 6 - a fresh profile reports every missing required field
+  ---
+  duration_ms: 8.2301
+  type: 'test'
+  ...
+# Subtest: the profile is saved and read back from the API
+ok 7 - the profile is saved and read back from the API
+  ---
+  duration_ms: 24.5845
+  type: 'test'
+  ...
+# Subtest: skill tags are taken from the administrator catalog
+ok 8 - skill tags are taken from the administrator catalog
+  ---
+  duration_ms: 29.3758
+  type: 'test'
+  ...
+# Subtest: a skill id outside the catalog is rejected
+ok 9 - a skill id outside the catalog is rejected
+  ---
+  duration_ms: 9.1121
+  type: 'test'
+  ...
+# Subtest: a complete profile is reported as complete
+ok 10 - a complete profile is reported as complete
+  ---
+  duration_ms: 6.5592
+  type: 'test'
+  ...
+# Subtest: a student cannot extend the administrator catalog
+ok 11 - a student cannot extend the administrator catalog
+  ---
+  duration_ms: 7.6059
+  type: 'test'
+  ...
+# Subtest: a protected route without a token is refused
+ok 12 - a protected route without a token is refused
+  ---
+  duration_ms: 2.102
+  type: 'test'
+  ...
+# Subtest: an invalid token is refused
+ok 13 - an invalid token is refused
+  ---
+  duration_ms: 3.1851
+  type: 'test'
+  ...
+# Subtest: signing out revokes the token
+ok 14 - signing out revokes the token
+  ---
+  duration_ms: 28.0668
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1103.5092
+--- end of output ---
+exit code  : 0
+result     : PASS

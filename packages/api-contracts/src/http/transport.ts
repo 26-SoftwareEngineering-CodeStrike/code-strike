@@ -87,7 +87,7 @@ export class HttpTransport implements ApiTransport {
     }
 
     const error = toHttpError(response.statusCode, response.data, response.header)
-    if (error.status === 401 && this.options.onUnauthorized) {
+    if (error.status === 401 && request.auth === 'required' && token && this.options.onUnauthorized) {
       this.options.onUnauthorized(error)
     }
     throw error

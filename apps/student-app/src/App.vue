@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { onLaunch } from '@dcloudio/uni-app'
+import { createStudentApiClient } from './api/client'
 
 onLaunch(() => {
-  // Assignment 4 remains deterministic Mock mode. No account or backend is connected.
+  // A stored bearer token is checked against the API so a reload keeps the
+  // session. Mock mode keeps the deterministic Assignment 4 prototype.
+  createStudentApiClient()
+    .restoreSession()
+    .catch(() => undefined)
 })
 </script>
 

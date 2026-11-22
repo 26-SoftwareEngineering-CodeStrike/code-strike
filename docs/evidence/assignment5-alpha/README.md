@@ -1,6 +1,6 @@
 # Assignment 5 — Alpha Sprint evidence
 
-Evidence for the CodeStrike Alpha Sprint (2026-11-21 → 2026-11-28), tasks T1 and T2.
+Evidence for the CodeStrike Alpha Sprint (2026-11-21 → 2026-11-28), tasks T1 to T3.
 
 This directory records what was **actually executed** in this workspace. Every log, screenshot
 and manifest here was produced by a real command on 2026-11-22. Nothing is transcribed by hand
@@ -13,6 +13,7 @@ and no result is asserted that was not observed.
 | `sprint-baseline/` | State inherited into the sprint before this round: the Assignment 4 prototype line and the backend implementation imported by T1. Records *what was carried in*, not what was re-run. |
 | `sprint-new/` | Work performed or re-verified during the sprint: the T1 integration itself and every verification executed against the integrated `sprint/alpha` tree. |
 | `t2-shared-http/` | The T2 round: shared contracts, the HTTP transport for both clients and the verification executed against the `feat/2-shared-http` branch. |
+| `t3-auth-profile/` | The T3 round: the isolated MySQL 8.4 environment, the account and profile integration and the verification executed against the `feat/3-auth-profile` branch. |
 
 `sprint-baseline` is a snapshot of inherited material. `sprint-new` is the output of this
 round's own commands. Re-running a baseline check does not move it into `sprint-new`.
@@ -25,6 +26,8 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 | `eae892a` | `sprint/alpha` | `chore(sprint): record backend branch ancestry for T1 baseline merge` |
 | `15e3b94` | `sprint/alpha` | `feat(sprint): import FastAPI backend into alpha baseline (T1)` |
 | `c54bcc6` | `feat/2-shared-http` | `feat(api): integrate shared contracts and HTTP transport (#2)` |
+| `f36660f` | `sprint/alpha` | Merge pull request #10 from feat/2-shared-http |
+| `5900b11` | `feat/3-auth-profile` | `feat(auth): integrate registration and profile flows (#3)` |
 
 `sprint/alpha` tip at the time of recording: `15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
 (tree `13fac42430e0a5e3fdd52a07e0715e03bc98d422`).

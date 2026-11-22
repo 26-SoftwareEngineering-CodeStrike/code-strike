@@ -15,16 +15,23 @@ import type {
   PlannerOccurrence,
   PlannerView,
   PlannerViewMode,
+  ProfileDto,
+  ProfileUpdateRequest,
   PrototypeActor,
   RecruitmentDetail,
   RecruitmentManagementView,
   RecruitmentSettings,
   RecruitmentSummary,
+  RegisterRequest,
+  LoginRequest,
   SchoolPeriod,
+  SkillDto,
   TeamOperationsView,
+  TokenDto,
   TransportConfig,
   TransportMode,
   UpdateOccurrenceInput,
+  UserDto,
 } from '@codestrike/contracts'
 import {
   currentTransportConfig,
@@ -37,7 +44,13 @@ import type { CompetitionDetailDto, TeamDto } from '@codestrike/contracts'
 import { ApiError } from '@codestrike/contracts/http'
 import { createStudentHttpTransport } from './http-transport'
 import { MockTransport } from './mock-transport'
-import { createUniTokenStore } from './token-store'
+import {
+  applySession,
+  applySessionUser,
+  clearSession,
+  hasStoredToken,
+} from './session'
+import { appTokenStore } from './token-store'
 
 export interface StudentApiClient {
   listCompetitions(options?: { simulateFailure?: boolean }): Promise<CompetitionSummary[]>
@@ -75,6 +88,13 @@ export interface StudentApiClient {
   updatePlannerOccurrence(id: string, input: UpdateOccurrenceInput): Promise<MockCommandResult<PlannerOccurrence>>
   deletePlannerOccurrence(id: string): Promise<MockCommandResult>
   togglePlannerTodo(id: string): Promise<MockCommandResult<PlannerOccurrence>>
+  register(input: RegisterRequest): Promise<TokenDto>
+  login(input: LoginRequest): Promise<TokenDto>
+  logout(): Promise<void>
+  restoreSession(): Promise<UserDto | null>
+  getProfile(): Promise<ProfileDto>
+  saveProfile(input: ProfileUpdateRequest): Promise<ProfileDto>
+  listSkills(): Promise<SkillDto[]>
 }
 
 export interface StudentApiClientOptions {
@@ -92,7 +112,7 @@ export function createStudentApiClient(options: StudentApiClientOptions = {}): S
       ? createStudentHttpTransport({
           baseUrl: config.baseUrl,
           timeout: config.timeout,
-          tokenStore: createUniTokenStore(),
+          tokenStore: appTokenStore,
         })
       : new MockTransport())
   return buildStudentApiClient(transport, mode)
@@ -109,6 +129,19 @@ function unsupportedInApiMode<T>(operation: string): Promise<T> {
       kind: 'config',
       code: 'NOT_AVAILABLE_IN_API_MODE',
     }),
+  )
+}
+
+/**
+ * The account and profile screens talk to the real backend, so they need the
+ * API transport. Mock mode reports that instead of pretending to sign in.
+ */
+function needsApiBackend<T>(operation: string): Promise<T> {
+  return Promise.reject(
+    new ApiError(
+      `"${operation}" needs the CodeStrike API. Start the backend and set VITE_USE_MOCK=false to use accounts and profiles.`,
+      { kind: 'config', code: 'NOT_AVAILABLE_IN_MOCK_MODE' },
+    ),
   )
 }
 
@@ -358,5 +391,68 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
             path: `/planner/occurrences/${id}/complete`,
             method: 'POST',
           }),
+    register: async (input) => {
+      if (!api) return needsApiBackend('register')
+      const token = await transport.request<TokenDto>({
+        path: '/auth/register',
+        method: 'POST',
+        body: input,
+      })
+      applySession(token)
+      return token
+    },
+    login: async (input) => {
+      if (!api) return needsApiBackend('login')
+      const token = await transport.request<TokenDto>({
+        path: '/auth/login',
+        method: 'POST',
+        body: input,
+      })
+      applySession(token)
+      return token
+    },
+    logout: async () => {
+      if (!api) return needsApiBackend('logout')
+      try {
+        await transport.request<{ message: string }>({ path: '/auth/logout', method: 'POST' })
+      } catch (error) {
+        // A session that is already gone is not a failure worth reporting.
+        if (!(error instanceof ApiError && error.status === 401)) throw error
+      } finally {
+        clearSession()
+      }
+    },
+    restoreSession: async () => {
+      if (!api) return null
+      if (!hasStoredToken()) return null
+      try {
+        const user = await transport.request<UserDto>({ path: '/auth/me', auth: 'required' })
+        applySessionUser(user)
+        return user
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          clearSession()
+          return null
+        }
+        throw error
+      }
+    },
+    getProfile: () => {
+      if (!api) return needsApiBackend('getProfile')
+      return transport.request<ProfileDto>({ path: '/profiles/me', auth: 'required' })
+    },
+    saveProfile: (input) => {
+      if (!api) return needsApiBackend('saveProfile')
+      return transport.request<ProfileDto>({
+        path: '/profiles/me',
+        method: 'PATCH',
+        body: input,
+        auth: 'required',
+      })
+    },
+    listSkills: () => {
+      if (!api) return needsApiBackend('listSkills')
+      return transport.request<SkillDto[]>({ path: '/skills' })
+    },
   }
 }

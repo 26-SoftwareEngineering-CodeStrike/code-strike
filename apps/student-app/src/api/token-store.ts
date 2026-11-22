@@ -35,3 +35,6 @@ export function createUniTokenStore(): TokenStore {
     },
   }
 }
+
+/** One store for the whole app, so every screen reads the same session. */
+export const appTokenStore = createUniTokenStore()

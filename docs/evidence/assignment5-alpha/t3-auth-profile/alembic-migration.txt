@@ -1,0 +1,14 @@
+check      : Alembic upgrade head and alembic check against MySQL 8.4
+command    : alembic_report
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:32:30Z
+--- output ---
+--- alembic upgrade head ---
+--- alembic current ---
+0001 (head)
+--- alembic check ---
+No new upgrade operations detected.
+--- end of output ---
+exit code  : 0
+result     : PASS

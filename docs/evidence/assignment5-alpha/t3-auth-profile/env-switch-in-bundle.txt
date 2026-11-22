@@ -1,0 +1,11 @@
+check      : The environment switch is compiled into the production bundle
+command    : bash -c grep -o 'VITE_USE_MOCK:"[a-z]*"' apps/student-app/dist/build/h5/assets/index-*.js | head -1 && grep -o 'VITE_API_BASE_URL:"[^"]*"' apps/student-app/dist/build/h5/assets/index-*.js | head -1
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:51:23Z
+--- output ---
+VITE_USE_MOCK:"false"
+VITE_API_BASE_URL:"http://127.0.0.1:8000/api/v1"
+--- end of output ---
+exit code  : 0
+result     : PASS
