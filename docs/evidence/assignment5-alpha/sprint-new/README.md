@@ -5,7 +5,9 @@ integrated `sprint/alpha` tree (`15e3b947433f6fa09c4f69ed4b9009d150bd8d97`).
 
 > This directory records the **T1** round. The **T2** round (shared contracts and the HTTP
 > transport for both clients) recorded its own evidence in the sibling directory
-> `../t2-shared-http/`, against commit `c54bcc6`.
+> `../t2-shared-http/`, against commit `c54bcc6`. The **T3** round (account and profile
+> integration on MySQL 8.4) recorded its evidence in `../t3-auth-profile/`, against commit
+> `5900b11`.
 
 ## Results
 

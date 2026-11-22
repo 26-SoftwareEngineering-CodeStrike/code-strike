@@ -1,0 +1,13 @@
+check      : TypeScript type check across contracts, student app and admin web
+command    : pnpm type-check
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:34:04Z
+--- output ---
+$ pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check
+$ tsc --noEmit
+$ vue-tsc --noEmit
+$ vue-tsc -b
+--- end of output ---
+exit code  : 0
+result     : PASS

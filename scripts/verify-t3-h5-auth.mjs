@@ -4,12 +4,12 @@ if (!webSocketUrl || !baseUrl || !evidenceDirectory) throw new Error('Usage: nod
 const socket = new WebSocket(webSocketUrl)
 const pending = new Map()
 let requestId = 0
-socket.addEventListener('message', (event) => { const payload = JSON.parse(String(event.data)); if (!payload.id) return; const request = pending.get(payload.id); if (!request) return; pending.delete(payload.id); payload.error ? request.reject(new Error(payload.error.message)) : request.resolve(payload.result) })
+socket.addEventListener('message', (event) => { const payload = JSON.parse(String(event.data)); if (!payload.id) return; const request = pending.get(payload.id); if (!request) return; pending.delete(payload.id); payload.error ? request.reject(new Error(`${request.method}: ${payload.error.message}`)) : request.resolve(payload.result) })
 await new Promise((resolve, reject) => { socket.addEventListener('open', resolve, { once: true }); socket.addEventListener('error', reject, { once: true }) })
-function send(method, params = {}) { requestId += 1; return new Promise((resolve, reject) => { pending.set(requestId, { resolve, reject }); socket.send(JSON.stringify({ id: requestId, method, params })) }) }
+function send(method, params = {}) { requestId += 1; return new Promise((resolve, reject) => { pending.set(requestId, { resolve, reject, method }); socket.send(JSON.stringify({ id: requestId, method, params })) }) }
 async function evaluate(expression) { const result = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }); if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text); return result.result.value }
 const pause = (milliseconds = 500) => new Promise((resolve) => setTimeout(resolve, milliseconds))
-async function navigate(path) { await send('Page.navigate', { url: `${baseUrl}/#${path}` }); await send('Page.reload', { ignoreCache: true }); await pause(1800) }
+async function navigate(path) { await send('Page.navigate', { url: `${baseUrl}/?build=${Date.now()}#${path}` }); await pause(1800) }
 async function clickText(selector, value) { return evaluate(`(() => { const item = Array.from(document.querySelectorAll(${JSON.stringify(selector)})).find((node) => node.textContent.trim().includes(${JSON.stringify(value)})); if (!item) return false; item.click(); return true })()`) }
 async function setInput(placeholder, value) { return evaluate(`(() => { const host = Array.from(document.querySelectorAll('uni-input, uni-textarea')).find((node) => { const label = node.querySelector('.uni-input-placeholder, .uni-textarea-placeholder'); return label && label.textContent.includes(${JSON.stringify(placeholder)}) }); if (!host) return false; const field = host.querySelector('input, textarea'); if (!field) return false; field.value = ${JSON.stringify(value)}; field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true })()`) }
 function check(condition, label) { if (!condition) throw new Error(`FAILED: ${label}`); console.log(`PASS: ${label}`) }

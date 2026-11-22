@@ -1,0 +1,236 @@
+check      : Standalone Assignment 4 HTML prototype regression
+command    : node scripts/verify-html-wave4.mjs ws://127.0.0.1:9222/devtools/page/EA2253CE9FB1A2F4420ADBC8CD73C2AC prototype/html/wave4-pilot
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:53:35Z
+--- output ---
+PASS: ui04-competition-hub.html contains no forbidden cross-document mechanism
+PASS: ui05-competition-detail.html contains no forbidden cross-document mechanism
+PASS: ui09-recruitment-detail.html contains no forbidden cross-document mechanism
+PASS: ui04-competition-hub.html opens on ui04 at 320x900
+PASS: ui04-competition-hub.html renders three in-document views from file:// at 320x900
+PASS: ui04-competition-hub.html opens at the visible page top at 320x900
+PASS: ui04-competition-hub.html has no horizontal overflow at 320x900
+PASS: ui04-competition-hub.html keeps the mobile content gutter at 320x900
+PASS: ui04-competition-hub.html has one navigation and no external or cross-file dependency at 320x900
+PASS: ui04-competition-hub.html keeps the opaque fixed navigation at 320x900
+PASS: ui04-competition-hub.html keeps labelled navigation targets at 320x900
+PASS: ui04-competition-hub.html retains vertical document scrolling at 320x900
+PASS: ui04-competition-hub.html can scroll normally at 320x900
+PASS: ui04-competition-hub.html shows four complete tabs at 320x900
+PASS: ui04-competition-hub.html has no browser console or runtime errors at 320x900
+PASS: ui04-competition-hub.html opens on ui04 at 390x900
+PASS: ui04-competition-hub.html renders three in-document views from file:// at 390x900
+PASS: ui04-competition-hub.html opens at the visible page top at 390x900
+PASS: ui04-competition-hub.html has no horizontal overflow at 390x900
+PASS: ui04-competition-hub.html keeps the mobile content gutter at 390x900
+PASS: ui04-competition-hub.html has one navigation and no external or cross-file dependency at 390x900
+PASS: ui04-competition-hub.html keeps the opaque fixed navigation at 390x900
+PASS: ui04-competition-hub.html keeps labelled navigation targets at 390x900
+PASS: ui04-competition-hub.html retains vertical document scrolling at 390x900
+PASS: ui04-competition-hub.html can scroll normally at 390x900
+PASS: ui04-competition-hub.html shows four complete tabs at 390x900
+PASS: ui04-competition-hub.html has no browser console or runtime errors at 390x900
+PASS: ui04-competition-hub.html opens on ui04 at 402x820
+PASS: ui04-competition-hub.html renders three in-document views from file:// at 402x820
+PASS: ui04-competition-hub.html opens at the visible page top at 402x820
+PASS: ui04-competition-hub.html has no horizontal overflow at 402x820
+PASS: ui04-competition-hub.html keeps the mobile content gutter at 402x820
+PASS: ui04-competition-hub.html has one navigation and no external or cross-file dependency at 402x820
+PASS: ui04-competition-hub.html keeps the opaque fixed navigation at 402x820
+PASS: ui04-competition-hub.html keeps labelled navigation targets at 402x820
+PASS: ui04-competition-hub.html retains vertical document scrolling at 402x820
+PASS: ui04-competition-hub.html can scroll normally at 402x820
+PASS: ui04-competition-hub.html shows four complete tabs at 402x820
+PASS: ui04-competition-hub.html UI-05 final card clears navigation at 402x820
+PASS: ui04-competition-hub.html UI-09 final action clears navigation at 402x820
+PASS: ui04-competition-hub.html UI-04 final card clears navigation at 402x820
+PASS: ui04-competition-hub.html has no browser console or runtime errors at 402x820
+PASS: ui04-competition-hub.html opens on ui04 at 430x900
+PASS: ui04-competition-hub.html renders three in-document views from file:// at 430x900
+PASS: ui04-competition-hub.html opens at the visible page top at 430x900
+PASS: ui04-competition-hub.html has no horizontal overflow at 430x900
+PASS: ui04-competition-hub.html keeps the mobile content gutter at 430x900
+PASS: ui04-competition-hub.html has one navigation and no external or cross-file dependency at 430x900
+PASS: ui04-competition-hub.html keeps the opaque fixed navigation at 430x900
+PASS: ui04-competition-hub.html keeps labelled navigation targets at 430x900
+PASS: ui04-competition-hub.html retains vertical document scrolling at 430x900
+PASS: ui04-competition-hub.html can scroll normally at 430x900
+PASS: ui04-competition-hub.html shows four complete tabs at 430x900
+PASS: ui04-competition-hub.html has no browser console or runtime errors at 430x900
+PASS: ui05-competition-detail.html opens on ui05 at 320x900
+PASS: ui05-competition-detail.html renders three in-document views from file:// at 320x900
+PASS: ui05-competition-detail.html opens at the visible page top at 320x900
+PASS: ui05-competition-detail.html has no horizontal overflow at 320x900
+PASS: ui05-competition-detail.html keeps the mobile content gutter at 320x900
+PASS: ui05-competition-detail.html has one navigation and no external or cross-file dependency at 320x900
+PASS: ui05-competition-detail.html keeps the opaque fixed navigation at 320x900
+PASS: ui05-competition-detail.html keeps labelled navigation targets at 320x900
+PASS: ui05-competition-detail.html retains vertical document scrolling at 320x900
+PASS: ui05-competition-detail.html can scroll normally at 320x900
+PASS: ui05-competition-detail.html shows four complete tabs at 320x900
+PASS: ui05-competition-detail.html has no browser console or runtime errors at 320x900
+PASS: ui05-competition-detail.html opens on ui05 at 390x900
+PASS: ui05-competition-detail.html renders three in-document views from file:// at 390x900
+PASS: ui05-competition-detail.html opens at the visible page top at 390x900
+PASS: ui05-competition-detail.html has no horizontal overflow at 390x900
+PASS: ui05-competition-detail.html keeps the mobile content gutter at 390x900
+PASS: ui05-competition-detail.html has one navigation and no external or cross-file dependency at 390x900
+PASS: ui05-competition-detail.html keeps the opaque fixed navigation at 390x900
+PASS: ui05-competition-detail.html keeps labelled navigation targets at 390x900
+PASS: ui05-competition-detail.html retains vertical document scrolling at 390x900
+PASS: ui05-competition-detail.html can scroll normally at 390x900
+PASS: ui05-competition-detail.html shows four complete tabs at 390x900
+PASS: ui05-competition-detail.html has no browser console or runtime errors at 390x900
+PASS: ui05-competition-detail.html opens on ui05 at 402x820
+PASS: ui05-competition-detail.html renders three in-document views from file:// at 402x820
+PASS: ui05-competition-detail.html opens at the visible page top at 402x820
+PASS: ui05-competition-detail.html has no horizontal overflow at 402x820
+PASS: ui05-competition-detail.html keeps the mobile content gutter at 402x820
+PASS: ui05-competition-detail.html has one navigation and no external or cross-file dependency at 402x820
+PASS: ui05-competition-detail.html keeps the opaque fixed navigation at 402x820
+PASS: ui05-competition-detail.html keeps labelled navigation targets at 402x820
+PASS: ui05-competition-detail.html retains vertical document scrolling at 402x820
+PASS: ui05-competition-detail.html can scroll normally at 402x820
+PASS: ui05-competition-detail.html shows four complete tabs at 402x820
+PASS: ui05-competition-detail.html UI-05 final card clears navigation at 402x820
+PASS: ui05-competition-detail.html UI-09 final action clears navigation at 402x820
+PASS: ui05-competition-detail.html UI-04 final card clears navigation at 402x820
+PASS: ui05-competition-detail.html has no browser console or runtime errors at 402x820
+PASS: ui05-competition-detail.html opens on ui05 at 430x900
+PASS: ui05-competition-detail.html renders three in-document views from file:// at 430x900
+PASS: ui05-competition-detail.html opens at the visible page top at 430x900
+PASS: ui05-competition-detail.html has no horizontal overflow at 430x900
+PASS: ui05-competition-detail.html keeps the mobile content gutter at 430x900
+PASS: ui05-competition-detail.html has one navigation and no external or cross-file dependency at 430x900
+PASS: ui05-competition-detail.html keeps the opaque fixed navigation at 430x900
+PASS: ui05-competition-detail.html keeps labelled navigation targets at 430x900
+PASS: ui05-competition-detail.html retains vertical document scrolling at 430x900
+PASS: ui05-competition-detail.html can scroll normally at 430x900
+PASS: ui05-competition-detail.html shows four complete tabs at 430x900
+PASS: ui05-competition-detail.html has no browser console or runtime errors at 430x900
+PASS: ui09-recruitment-detail.html opens on ui09 at 320x900
+PASS: ui09-recruitment-detail.html renders three in-document views from file:// at 320x900
+PASS: ui09-recruitment-detail.html opens at the visible page top at 320x900
+PASS: ui09-recruitment-detail.html has no horizontal overflow at 320x900
+PASS: ui09-recruitment-detail.html keeps the mobile content gutter at 320x900
+PASS: ui09-recruitment-detail.html has one navigation and no external or cross-file dependency at 320x900
+PASS: ui09-recruitment-detail.html keeps the opaque fixed navigation at 320x900
+PASS: ui09-recruitment-detail.html keeps labelled navigation targets at 320x900
+PASS: ui09-recruitment-detail.html retains vertical document scrolling at 320x900
+PASS: ui09-recruitment-detail.html can scroll normally at 320x900
+PASS: ui09-recruitment-detail.html shows four complete tabs at 320x900
+PASS: ui09-recruitment-detail.html has no browser console or runtime errors at 320x900
+PASS: ui09-recruitment-detail.html opens on ui09 at 390x900
+PASS: ui09-recruitment-detail.html renders three in-document views from file:// at 390x900
+PASS: ui09-recruitment-detail.html opens at the visible page top at 390x900
+PASS: ui09-recruitment-detail.html has no horizontal overflow at 390x900
+PASS: ui09-recruitment-detail.html keeps the mobile content gutter at 390x900
+PASS: ui09-recruitment-detail.html has one navigation and no external or cross-file dependency at 390x900
+PASS: ui09-recruitment-detail.html keeps the opaque fixed navigation at 390x900
+PASS: ui09-recruitment-detail.html keeps labelled navigation targets at 390x900
+PASS: ui09-recruitment-detail.html retains vertical document scrolling at 390x900
+PASS: ui09-recruitment-detail.html can scroll normally at 390x900
+PASS: ui09-recruitment-detail.html shows four complete tabs at 390x900
+PASS: ui09-recruitment-detail.html has no browser console or runtime errors at 390x900
+PASS: ui09-recruitment-detail.html opens on ui09 at 402x820
+PASS: ui09-recruitment-detail.html renders three in-document views from file:// at 402x820
+PASS: ui09-recruitment-detail.html opens at the visible page top at 402x820
+PASS: ui09-recruitment-detail.html has no horizontal overflow at 402x820
+PASS: ui09-recruitment-detail.html keeps the mobile content gutter at 402x820
+PASS: ui09-recruitment-detail.html has one navigation and no external or cross-file dependency at 402x820
+PASS: ui09-recruitment-detail.html keeps the opaque fixed navigation at 402x820
+PASS: ui09-recruitment-detail.html keeps labelled navigation targets at 402x820
+PASS: ui09-recruitment-detail.html retains vertical document scrolling at 402x820
+PASS: ui09-recruitment-detail.html can scroll normally at 402x820
+PASS: ui09-recruitment-detail.html shows four complete tabs at 402x820
+PASS: ui09-recruitment-detail.html UI-05 final card clears navigation at 402x820
+PASS: ui09-recruitment-detail.html UI-09 final action clears navigation at 402x820
+PASS: ui09-recruitment-detail.html UI-04 final card clears navigation at 402x820
+PASS: ui09-recruitment-detail.html has no browser console or runtime errors at 402x820
+PASS: ui09-recruitment-detail.html opens on ui09 at 430x900
+PASS: ui09-recruitment-detail.html renders three in-document views from file:// at 430x900
+PASS: ui09-recruitment-detail.html opens at the visible page top at 430x900
+PASS: ui09-recruitment-detail.html has no horizontal overflow at 430x900
+PASS: ui09-recruitment-detail.html keeps the mobile content gutter at 430x900
+PASS: ui09-recruitment-detail.html has one navigation and no external or cross-file dependency at 430x900
+PASS: ui09-recruitment-detail.html keeps the opaque fixed navigation at 430x900
+PASS: ui09-recruitment-detail.html keeps labelled navigation targets at 430x900
+PASS: ui09-recruitment-detail.html retains vertical document scrolling at 430x900
+PASS: ui09-recruitment-detail.html can scroll normally at 430x900
+PASS: ui09-recruitment-detail.html shows four complete tabs at 430x900
+PASS: ui09-recruitment-detail.html has no browser console or runtime errors at 430x900
+PASS: ui04-competition-hub.html starts on its declared initial view
+PASS: ui04-competition-hub.html UI-04 search exposes an empty state
+PASS: ui04-competition-hub.html UI-04 search restores competition cards
+PASS: ui04-competition-hub.html UI-04 competition card opens UI-05
+PASS: ui04-competition-hub.html UI-05 transition restores top scroll
+PASS: ui04-competition-hub.html competition card opens Overview
+PASS: ui04-competition-hub.html switches to overview tab
+PASS: ui04-competition-hub.html switches to discussion tab
+PASS: ui04-competition-hub.html switches to resources tab
+PASS: ui04-competition-hub.html switches to recruitment tab
+PASS: ui04-competition-hub.html Recruitment shows public teams without Delisted content
+PASS: ui04-competition-hub.html Find a team opens Recruitment
+PASS: ui04-competition-hub.html Team Alpha opens UI-09
+PASS: ui04-competition-hub.html UI-09 transition restores top scroll
+PASS: ui04-competition-hub.html UI-09 apply shows example Pending feedback
+PASS: ui04-competition-hub.html UI-09 returns to UI-05
+PASS: ui04-competition-hub.html UI-09 return restores Recruitment tab
+PASS: ui04-competition-hub.html repeated Team Alpha round trip remains functional
+PASS: ui04-competition-hub.html UI-05 back returns to UI-04
+PASS: ui04-competition-hub.html complete flow never changes the document URL
+PASS: ui04-competition-hub.html complete flow keeps one view and one bottom navigation
+PASS: ui04-competition-hub.html complete interaction flow has no console or runtime errors
+PASS: ui05-competition-detail.html starts on its declared initial view
+PASS: ui05-competition-detail.html starts UI-05 on Overview
+PASS: ui05-competition-detail.html initial UI-05 can return to UI-04
+PASS: ui05-competition-detail.html UI-04 search exposes an empty state
+PASS: ui05-competition-detail.html UI-04 search restores competition cards
+PASS: ui05-competition-detail.html UI-04 competition card opens UI-05
+PASS: ui05-competition-detail.html UI-05 transition restores top scroll
+PASS: ui05-competition-detail.html competition card opens Overview
+PASS: ui05-competition-detail.html switches to overview tab
+PASS: ui05-competition-detail.html switches to discussion tab
+PASS: ui05-competition-detail.html switches to resources tab
+PASS: ui05-competition-detail.html switches to recruitment tab
+PASS: ui05-competition-detail.html Recruitment shows public teams without Delisted content
+PASS: ui05-competition-detail.html Find a team opens Recruitment
+PASS: ui05-competition-detail.html Team Alpha opens UI-09
+PASS: ui05-competition-detail.html UI-09 transition restores top scroll
+PASS: ui05-competition-detail.html UI-09 apply shows example Pending feedback
+PASS: ui05-competition-detail.html UI-09 returns to UI-05
+PASS: ui05-competition-detail.html UI-09 return restores Recruitment tab
+PASS: ui05-competition-detail.html repeated Team Alpha round trip remains functional
+PASS: ui05-competition-detail.html UI-05 back returns to UI-04
+PASS: ui05-competition-detail.html complete flow never changes the document URL
+PASS: ui05-competition-detail.html complete flow keeps one view and one bottom navigation
+PASS: ui05-competition-detail.html complete interaction flow has no console or runtime errors
+PASS: ui09-recruitment-detail.html starts on its declared initial view
+PASS: ui09-recruitment-detail.html initial UI-09 returns to UI-05
+PASS: ui09-recruitment-detail.html initial UI-09 return restores Recruitment
+PASS: ui09-recruitment-detail.html returned UI-05 can continue back to UI-04
+PASS: ui09-recruitment-detail.html UI-04 search exposes an empty state
+PASS: ui09-recruitment-detail.html UI-04 search restores competition cards
+PASS: ui09-recruitment-detail.html UI-04 competition card opens UI-05
+PASS: ui09-recruitment-detail.html UI-05 transition restores top scroll
+PASS: ui09-recruitment-detail.html competition card opens Overview
+PASS: ui09-recruitment-detail.html switches to overview tab
+PASS: ui09-recruitment-detail.html switches to discussion tab
+PASS: ui09-recruitment-detail.html switches to resources tab
+PASS: ui09-recruitment-detail.html switches to recruitment tab
+PASS: ui09-recruitment-detail.html Recruitment shows public teams without Delisted content
+PASS: ui09-recruitment-detail.html Find a team opens Recruitment
+PASS: ui09-recruitment-detail.html Team Alpha opens UI-09
+PASS: ui09-recruitment-detail.html UI-09 transition restores top scroll
+PASS: ui09-recruitment-detail.html UI-09 apply shows example Pending feedback
+PASS: ui09-recruitment-detail.html UI-09 returns to UI-05
+PASS: ui09-recruitment-detail.html UI-09 return restores Recruitment tab
+PASS: ui09-recruitment-detail.html repeated Team Alpha round trip remains functional
+PASS: ui09-recruitment-detail.html UI-05 back returns to UI-04
+PASS: ui09-recruitment-detail.html complete flow never changes the document URL
+PASS: ui09-recruitment-detail.html complete flow keeps one view and one bottom navigation
+PASS: ui09-recruitment-detail.html complete interaction flow has no console or runtime errors
+--- end of output ---
+exit code  : 0
+result     : PASS

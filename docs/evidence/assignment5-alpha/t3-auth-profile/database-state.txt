@@ -1,0 +1,31 @@
+check      : Account, profile and skill rows read back out of MySQL, plus the expired token path
+command    : bash -c CODESTRIKE_TEST_USERNAME=$(cat '/d/Project/VSCode/code-strike/.tools/t3-test-account.txt') bash scripts/run-with-server-env.sh '/d/Project/VSCode/code-strike/apps/server/.venv/Scripts/python.exe' ../../scripts/verify-t3-database-state.py
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:35:44Z
+--- output ---
+account          : t3_mwrejkya_3nkc
+role             : Student
+password stored  : yes (hash only)
+profile name     : Alex Chen
+profile college  : School of Computer Science
+profile major    : Software Engineering
+profile year     : 2026
+profile contact  : yes
+profile skills   : Python
+token rows       : 2 (1 revoked)
+PASS: the registered account has the Student role
+PASS: the password is stored as a PBKDF2 hash
+PASS: the profile name is stored in MySQL
+PASS: the profile college is stored in MySQL
+PASS: the profile academic year is stored in MySQL
+PASS: the profile brief CV is stored in MySQL
+PASS: the profile contact is stored in MySQL
+PASS: the profile skill tags are stored in MySQL
+PASS: the signed-out token is marked revoked in MySQL
+PASS: an expired token is refused with 401 (got 401)
+PASS: an expired token is refused with the UNAUTHENTICATED code
+RESULT: PASS (0 failures)
+--- end of output ---
+exit code  : 0
+result     : PASS

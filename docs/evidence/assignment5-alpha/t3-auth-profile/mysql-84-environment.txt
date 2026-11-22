@@ -1,0 +1,62 @@
+check      : Isolated MySQL 8.4 instance, isolation facts and schema
+command    : mysql_server_report
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:32:29Z
+--- output ---
+--- mysqld binary ---
+D:\Project\VSCode\code-strike\.tools\mysql-8.4.6-winx64\bin\mysqld.exe  Ver 8.4.6 for Win64 on x86_64 (MySQL Community Server - GPL)
+--- listening socket ---
+  TCP    127.0.0.1:3307         0.0.0.0:0              LISTENING       21864
+--- server variables ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+version	port	charset	collation	datadir
+8.4.6	3307	utf8mb4	utf8mb4_0900_ai_ci	D:\\Project\\VSCode\\code-strike\\.tools\\mysql84-data\\
+--- databases visible to the application user ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Database
+codestrike
+information_schema
+performance_schema
+--- tables in the codestrike database ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Tables_in_codestrike
+alembic_version
+applications
+auth_attempts
+auth_tokens
+comment_revisions
+comments
+communities
+competition_submission_revisions
+competition_submissions
+competitions
+content_images
+email_codes
+memberships
+moderation_records
+notifications
+planner_items
+planner_recurrences
+post_interactions
+post_revisions
+posts
+profile_skills
+profiles
+recruitment_revisions
+skills
+team_skills
+teams
+users
+--- isolation of the pre-existing MySQL 8.0 installation ---
+MySQL 8.0 service names found on this machine:
+SERVICE_NAME: MySQL80
+SERVICE_NAME: MySQL80_ERP_W10
+MySQL 8.0 data directory (untouched, not started by this task):
+Data
+Uploads
+installer_config.xml
+my.ini
+--- end of output ---
+exit code  : 0
+result     : PASS

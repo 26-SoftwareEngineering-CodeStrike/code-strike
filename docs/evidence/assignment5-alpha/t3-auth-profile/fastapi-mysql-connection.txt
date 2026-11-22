@@ -1,0 +1,21 @@
+check      : FastAPI reaching MySQL 8.4 through the API
+command    : fastapi_report
+branch     : feat/3-auth-profile
+sha        : 5900b11359a606c2039cafe773f0917f4b8f9427
+executed   : 2026-11-22T05:32:34Z
+--- output ---
+--- GET /api/v1/health ---
+{"status":"ok","service":"CodeStrike API","api_version":"v1"}
+status=200
+--- GET /api/v1/skills (database backed) ---
+[{"id":"142e378b-1721-45c1-a089-6e165fe45327","name":"CAD"},{"id":"5d8dee95-7993-4eb8-94be-a37c3a71521b","name":"Data Visualization"},{"id":"390a3024-c1cc-432a-b0e4-e734601cb71c","name":"Java"},{"id":"7ba58e04-ce13-4bd0-bf65-ac80f95e5a18","name":"Mathematical Modeling"},{"id":"0bdf6668-1a85-48fb-83a7-e208359ac1d4","name":"Product Design"},{"id":"742c1e8a-cd30-4918-84b3-f3c57b751628","name":"Python"},{"id":"2a06bbab-cff5-4660-814d-e54bf5bfd2c7","name":"Research"},{"id":"9d36844f-dc9e-44b5-8c68-451bee615a3a","name":"Vue"}]
+status=200
+--- GET /api/v1/competitions (database backed) ---
+[]
+status=200
+--- GET /api/v1/auth/me without a token ---
+{"code":"UNAUTHENTICATED","message":"Sign in is required."}
+status=401
+--- end of output ---
+exit code  : 0
+result     : PASS
