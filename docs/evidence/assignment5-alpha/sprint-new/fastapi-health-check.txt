@@ -1,0 +1,12 @@
+=== HEALTH CHECK: GET /api/v1/health ===
+HTTP/1.1 200 OK
+date: Sun, 22 Nov 2026 03:38:44 GMT
+server: uvicorn
+content-length: 61
+content-type: application/json
+
+{"status":"ok","service":"CodeStrike API","api_version":"v1"}
+=== HEALTH BODY ===
+{"status":"ok","service":"CodeStrike API","api_version":"v1"}
+=== DOCS ENDPOINT ===
+GET /api/v1/docs -> 200

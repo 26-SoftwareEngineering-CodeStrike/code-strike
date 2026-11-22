@@ -1,0 +1,20 @@
+openapi version : 3.1.0
+title / version : CodeStrike API / 0.1.0
+paths / ops     : 58 / 78
+schemas         : 47
+--- module route coverage ---
+PASS: system/health  1 routes
+PASS: auth           9 routes
+PASS: profiles       1 routes
+PASS: skills         2 routes
+PASS: teams          11 routes
+PASS: notifications  2 routes
+PASS: planner        4 routes
+PASS: competitions   4 routes
+PASS: content        7 routes
+PASS: moderation     7 routes
+PASS: dashboard      1 routes
+PASS: every operation declares responses
+tags            : administration, auth, community content, competitions, moderation, notifications, planner, profiles, skills, system, teams and applications
+---
+RESULT: PASS (0 failures)

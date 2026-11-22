@@ -1,0 +1,235 @@
+$ node --experimental-strip-types --experimental-loader ./tests/ts-extension-loader.mjs --test tests/*.test.mjs
+TAP version 13
+# (node:18016) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18016) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: dynamic Published to Delisted transition immediately closes public list and detail
+ok 1 - dynamic Published to Delisted transition immediately closes public list and detail
+  ---
+  duration_ms: 3.679
+  type: 'test'
+  ...
+# Subtest: owner history keeps all five states distinct and historical approval is not membership
+ok 2 - owner history keeps all five states distinct and historical approval is not membership
+  ---
+  duration_ms: 1.2709
+  type: 'test'
+  ...
+# Subtest: one Pending per student/team is enforced while different-team Pending is allowed
+ok 3 - one Pending per student/team is enforced while different-team Pending is allowed
+  ---
+  duration_ms: 0.2641
+  type: 'test'
+  ...
+# Subtest: incomplete profile cannot create a Pending application or alter history
+ok 4 - incomplete profile cannot create a Pending application or alter history
+  ---
+  duration_ms: 0.1158
+  type: 'test'
+  ...
+# Subtest: approval creates membership and invalidates same-competition Pending only
+ok 5 - approval creates membership and invalidates same-competition Pending only
+  ---
+  duration_ms: 0.2584
+  type: 'test'
+  ...
+# Subtest: manual close and revision delisting block fresh applications but not eligible Pending approval
+ok 6 - manual close and revision delisting block fresh applications but not eligible Pending approval
+  ---
+  duration_ms: 0.2431
+  type: 'test'
+  ...
+# Subtest: capacity, deadline and dissolution use exact invalidation semantics
+ok 7 - capacity, deadline and dissolution use exact invalidation semantics
+  ---
+  duration_ms: 0.2945
+  type: 'test'
+  ...
+# Subtest: an ended membership does not block an otherwise eligible reapplication
+ok 8 - an ended membership does not block an otherwise eligible reapplication
+  ---
+  duration_ms: 0.1126
+  type: 'test'
+  ...
+# Subtest: captain DTO contains exactly the five permitted applicant fields
+ok 9 - captain DTO contains exactly the five permitted applicant fields
+  ---
+  duration_ms: 0.3512
+  type: 'test'
+  ...
+# Subtest: captain scope changes immediately and privileged revision review is explicit
+ok 10 - captain scope changes immediately and privileged revision review is explicit
+  ---
+  duration_ms: 0.4901
+  type: 'test'
+  ...
+# Subtest: team creation validates profile and deadline then creates captain membership
+ok 11 - team creation validates profile and deadline then creates captain membership
+  ---
+  duration_ms: 0.3418
+  type: 'test'
+  ...
+# Subtest: recruitment draft stays separate until isolated admin approval
+ok 12 - recruitment draft stays separate until isolated admin approval
+  ---
+  duration_ms: 0.3023
+  type: 'test'
+  ...
+# Subtest: rejected recruitment revision requires captain resubmission before a later approval
+ok 13 - rejected recruitment revision requires captain resubmission before a later approval
+  ---
+  duration_ms: 0.2147
+  type: 'test'
+  ...
+# Subtest: moderation approval revalidates dissolution, deadline and changed capacity conditions
+ok 14 - moderation approval revalidates dissolution, deadline and changed capacity conditions
+  ---
+  duration_ms: 0.2984
+  type: 'test'
+  ...
+# Subtest: captain role is scoped per competition rather than blocking all student participation
+ok 15 - captain role is scoped per competition rather than blocking all student participation
+  ---
+  duration_ms: 0.2085
+  type: 'test'
+  ...
+# Subtest: one student can scope captain queues independently across two competitions
+ok 16 - one student can scope captain queues independently across two competitions
+  ---
+  duration_ms: 0.739
+  type: 'test'
+  ...
+# Subtest: manual closure still allows approval of an existing eligible Pending application
+ok 17 - manual closure still allows approval of an existing eligible Pending application
+  ---
+  duration_ms: 0.1777
+  type: 'test'
+  ...
+# Subtest: member leave and captain removal end access and reduce derived member count without reopening
+ok 18 - member leave and captain removal end access and reduce derived member count without reopening
+  ---
+  duration_ms: 0.306
+  type: 'test'
+  ...
+# Subtest: captain cannot leave and transfer changes both roles and permissions immediately
+ok 19 - captain cannot leave and transfer changes both roles and permissions immediately
+  ---
+  duration_ms: 0.1695
+  type: 'test'
+  ...
+# Subtest: dissolution invalidates Pending while retaining application and membership history
+ok 20 - dissolution invalidates Pending while retaining application and membership history
+  ---
+  duration_ms: 0.1948
+  type: 'test'
+  ...
+# Subtest: team member and contact responses stay separated by current captain authorization
+ok 21 - team member and contact responses stay separated by current captain authorization
+  ---
+  duration_ms: 0.1837
+  type: 'test'
+  ...
+# (node:20176) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:20176) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: incomplete signed-in student can use the private planner
+ok 22 - incomplete signed-in student can use the private planner
+  ---
+  duration_ms: 3.665
+  type: 'test'
+  ...
+# Subtest: visitor cannot read a student private planner
+ok 23 - visitor cannot read a student private planner
+  ---
+  duration_ms: 0.1959
+  type: 'test'
+  ...
+# Subtest: different students have isolated planner data
+ok 24 - different students have isolated planner data
+  ---
+  duration_ms: 0.1709
+  type: 'test'
+  ...
+# Subtest: Day and Week views expose the same stable occurrence
+ok 25 - Day and Week views expose the same stable occurrence
+  ---
+  duration_ms: 8.593
+  type: 'test'
+  ...
+# Subtest: actual start week includes the first finite weekly occurrence and then stops
+ok 26 - actual start week includes the first finite weekly occurrence and then stops
+  ---
+  duration_ms: 1.1717
+  type: 'test'
+  ...
+# Subtest: course duplicate criterion uses name, actual date, start and end time and skips only duplicate instances
+ok 27 - course duplicate criterion uses name, actual date, start and end time and skips only duplicate instances
+  ---
+  duration_ms: 0.3339
+  type: 'test'
+  ...
+# Subtest: different-name overlapping course is retained
+ok 28 - different-name overlapping course is retained
+  ---
+  duration_ms: 0.2198
+  type: 'test'
+  ...
+# Subtest: timed plan may overlap a course
+ok 29 - timed plan may overlap a course
+  ---
+  duration_ms: 0.4234
+  type: 'test'
+  ...
+# Subtest: to-do without a deadline remains visible on its assigned date
+ok 30 - to-do without a deadline remains visible on its assigned date
+  ---
+  duration_ms: 0.4088
+  type: 'test'
+  ...
+# Subtest: editing one course occurrence keeps its stable ID and leaves adjacent weeks unchanged
+ok 31 - editing one course occurrence keeps its stable ID and leaves adjacent weeks unchanged
+  ---
+  duration_ms: 0.6316
+  type: 'test'
+  ...
+# Subtest: deleting one course occurrence retains the rest of its series
+ok 32 - deleting one course occurrence retains the rest of its series
+  ---
+  duration_ms: 0.2217
+  type: 'test'
+  ...
+# Subtest: completing one repeated to-do leaves the other occurrence unchanged
+ok 33 - completing one repeated to-do leaves the other occurrence unchanged
+  ---
+  duration_ms: 0.1632
+  type: 'test'
+  ...
+# Subtest: calendar date arithmetic remains stable across month, year and leap-day boundaries
+ok 34 - calendar date arithmetic remains stable across month, year and leap-day boundaries
+  ---
+  duration_ms: 0.0987
+  type: 'test'
+  ...
+# Subtest: Mock create, read, update, complete and delete operations stay consistent
+ok 35 - Mock create, read, update, complete and delete operations stay consistent
+  ---
+  duration_ms: 0.2806
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 205.2788

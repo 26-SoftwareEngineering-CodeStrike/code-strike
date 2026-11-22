@@ -1,0 +1,29 @@
+# CodeStrike sprint/alpha baseline manifest
+# Generated from live git state on 2026-11-22 at sprint/alpha = 15e3b947433f6fa09c4c69ed4b9009d150bd8d97
+#
+## Ancestry
+sprint/alpha                    = 15e3b947433f6fa09c4c69ed4b9009d150bd8d97
+feature/assignment4-prototype   = fe94176e933cf33525d1d24c8c73692bbcfc09e6
+origin/feature/assignment4-prototype = ceac8ece060ec9c064e7668ba169253b4614fa57
+origin/feature/backend-implementation = c2b027b3137cf04c517cc6932c0c85f74cfb39c1
+origin/main                     = 5afd42b5ad70182b4af7e1e7cbed74dc4aeec510
+tree(sprint/alpha)              = 13fac42430e0a5e3fdd52a07e0715e03bc98d422
+
+## Commit history on sprint/alpha
+* 15e3b94 (HEAD -> sprint/alpha) feat(sprint): import FastAPI backend into alpha baseline (T1)
+*   eae892a chore(sprint): record backend branch ancestry for T1 baseline merge
+|\  
+| * c2b027b (origin/feature/backend-implementation) feat: implement CodeStrike backend
+| * 0829aa1 Initial CodeStrike project baseline
+* fe94176 (feature/assignment4-prototype) docs(prototype): archive MoDao handoff assets
+* ceac8ec (tag: a4-prototype-freeze-20261028, origin/feature/assignment4-prototype) feat(prototype): enable self-contained three-view MoDao navigation
+* 30f35e1 fix(prototype): prevent content bleed beneath HTML navigation
+* 2820a2b style(prototype): synchronize standalone HTML with final product UI
+* 5460c10 style(prototype): unify product UI across remaining pages
+* 64496e3 style(prototype): establish CodeStrike product UI design system
+* 35f9cec feat(prototype): implement Wave 4 planner and HTML handoff
+* 8393dc3 fix(prototype): close Wave 3 eligibility and moderation gaps
+* 516a741 feat(prototype): implement Wave 3 team lifecycle and recruitment management
+* 2494359 feat(prototype): implement Wave 2 application lifecycle and captain review
+* 578cd62 feat(prototype): implement Wave 1 competition discovery and recruitment
+* 5afd42b (origin/main, origin/HEAD, main) chore: initialize Phase 1 workspace
