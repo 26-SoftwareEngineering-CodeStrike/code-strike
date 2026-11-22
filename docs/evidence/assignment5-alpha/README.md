@@ -27,6 +27,23 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 `sprint/alpha` tip at the time of recording: `15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
 (tree `13fac42430e0a5e3fdd52a07e0715e03bc98d422`).
 
+## Sprint issues
+
+The T1–T9 issues were created from the published blog's task table, snapshotted in
+`sprint-baseline/published-blog-task-plan.txt`.
+
+| Issue | Task | Priority | Module |
+| --- | --- | --- | --- |
+| [#1](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/1) | T1 | P0 | Baseline Merge |
+| [#2](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/2) | T2 | P0 | Shared Types & HTTP Client |
+| [#3](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/3) | T3 | P0 | Auth & Profile Integration |
+| [#4](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/4) | T4 | P0 | Competitions & Teams Integration |
+| [#5](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/5) | T5 | P1 | Community Posts & Interactions |
+| [#6](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/6) | T6 | P1 | Admin Web Integration |
+| [#7](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/7) | T7 | P1 | Notifications & Planner Integration |
+| [#8](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/8) | T8 | P0 | Testing & QA Automation |
+| [#9](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/9) | T9 | P1 | MP-Weixin Build Check & Docs |
+
 ## Environment
 
 | Component | Version |

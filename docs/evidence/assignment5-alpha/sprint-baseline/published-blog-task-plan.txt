@@ -1,0 +1,89 @@
+# Source snapshot — published Alpha Sprint blog (task plan)
+#
+# Published 2026-11-21 19:39:21 on the team forum:
+#   "Group 5 - CodeStrike Alpha Sprint: Code Standards, sprint Tasks, and Plans"
+#   CSDN topic 620614150, community 2601_FZU-MU_SE
+#
+# This file records the task table used to create the GitHub Issues for T1-T9.
+# It is a snapshot of an externally published source, not work produced in this round.
+#
+# --- Sprint goals ---
+# 1. Unify Codebase Baseline: integrate the Assignment 4 frontend prototype
+#    (feature/assignment4-prototype) and the FastAPI/MySQL backend
+#    (feature/backend-implementation) onto sprint/alpha.
+# 2. Deliverables & Documentation: publish all required Alpha Sprint blogs on
+#    schedule (4 Sprint Essays, 1 Testing Essay, 1 Sprint Summary Essay,
+#    1 Topical Collection Essay) with verifiable burn-up charts, commit/issue
+#    evidence and live screenshots.
+#
+# Sprint window: 2026-11-21 to 2026-11-28. Branch: sprint/alpha.
+#
+# --- Task table (verbatim) ---
+#
+# Task ID | Priority | Module | Task Description | Acceptance Criteria
+#
+# T1 | P0 | Baseline Merge | Merge feature/assignment4-prototype and
+# feature/backend-implementation into sprint/alpha; verify pnpm type-check,
+# pnpm build:student:h5, pnpm build:admin, and pytest. | Clean build and
+# baseline test pass on sprint/alpha with reproducible setup docs.
+#
+# T2 | P0 | Shared Types & HTTP Client | Expand packages/api-contracts types
+# and implement HttpTransport with Bearer token management and error mapping
+# for student-app and admin-web. | Both clients support switching between
+# MockTransport and HttpTransport via env config.
+#
+# T3 | P0 | Auth & Profile Integration | Connect registration, login, logout,
+# current user (/auth/me), and profile/skills (/profiles/me, /skills) in H5
+# student client. | Real user can register, log in, persist token, and update
+# profile/skills in MySQL.
+#
+# T4 | P0 | Competitions & Teams Integration | Connect competition list/detail,
+# team creation, recruitment list/detail, application submission, and captain
+# review/admission flows. | Full team recruitment -> apply -> captain
+# approve/reject flow works end-to-end against MySQL, respecting capacity &
+# privacy rules.
+#
+# T5 | P1 | Community Posts & Interactions | Connect competition community posts,
+# comments, likes/favorites, and image upload/preview
+# (/competitions/{id}/posts, /posts/{id}/interactions/{kind}). | Users can
+# publish posts, comment, and toggle likes/favorites persisted in MySQL.
+#
+# T6 | P1 | Admin Web Integration | Implement HttpTransport for apps/admin-web
+# covering /dashboard, competition management (/admin/competitions), and
+# content/recruitment moderation. | Admin can log in, view real dashboard counts,
+# and approve/reject/remove pending revisions.
+#
+# T7 | P1 | Notifications & Planner Integration | Connect recipient
+# notifications (/notifications) and personal planner (/planner/items,
+# /planner/day, /planner/week) in H5 client. | Notifications reflect
+# admission/moderation events; planner CRUD persists across reloads.
+#
+# T8 | P0 | Testing & QA Automation | Expand automated API + UI verification,
+# run MySQL 8.4 concurrency/integrity tests, execute manual regression
+# checklist, and capture test reports. | Zero P0/P1 defects open; full test
+# report and automated test metrics documented in Testing Essay.
+#
+# T9 | P1 | MP-Weixin Build Check & Docs | Verify pnpm build:student:mp-weixin
+# compiles cleanly while ICP filing completes; maintain sprint logs, burn-up
+# data, and bilingual blog drafts. | mp-weixin dist builds without error; all 8
+# blogs published and submitted before Nov 29 23:59.
+#
+# --- Governing conventions quoted in the blog ---
+#
+# Branch strategy: main holds the stable phase baseline; sprint/alpha is the
+# Alpha Sprint integration branch. Task branches use feat/<issue-id>-<short-slug>
+# or fix/<issue-id>-<short-slug> and merge back to sprint/alpha via Pull Request
+# after self-check and peer review.
+#
+# Commit format: <type>(<scope>): <subject> (#<issue>) with allowed types feat,
+# fix, docs, style, refactor, test, chore. Every development commit during the
+# sprint must reference its corresponding GitHub Issue number.
+#
+# Backend standards: Python 3.13 / FastAPI / SQLAlchemy 2 / MySQL 8.4. Passwords
+# hashed with salted PBKDF2-HMAC-SHA256 (600,000 iterations); bearer tokens stored
+# as SHA-256 digests. Alembic migrations via `alembic upgrade head`. ruff
+# line-length = 100.
+#
+# Workspace: pnpm@11.24.0 workspace commands. All shared DTOs and enums must be
+# imported from @codestrike/contracts (packages/api-contracts), never duplicated
+# locally. Zero TypeScript errors allowed before commit: `pnpm type-check` must pass.
