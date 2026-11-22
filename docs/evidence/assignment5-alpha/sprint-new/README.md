@@ -3,6 +3,10 @@
 Every file in this directory is the raw output of a command executed on 2026-11-22 against the
 integrated `sprint/alpha` tree (`15e3b947433f6fa09c4f69ed4b9009d150bd8d97`).
 
+> This directory records the **T1** round. The **T2** round (shared contracts and the HTTP
+> transport for both clients) recorded its own evidence in the sibling directory
+> `../t2-shared-http/`, against commit `c54bcc6`.
+
 ## Results
 
 | # | Check | Command | Result | Evidence |
