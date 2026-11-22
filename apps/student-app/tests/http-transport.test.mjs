@@ -184,7 +184,7 @@ test('a JSON body is sent with the JSON content type and query parameters are en
   assert.deepEqual(calls[0].data, { name: 'Team Alpha', capacity: 4 })
 })
 
-test('a 401 response drops the stale token through the unauthorized handler', async () => {
+test('a 401 response to a session request drops the stale token', async () => {
   const { adapter } = scriptedAdapter(() => ({
     statusCode: 401,
     data: { code: 'UNAUTHENTICATED', message: 'Invalid or expired session.' },
@@ -197,9 +197,29 @@ test('a 401 response drops the stale token through the unauthorized handler', as
     onUnauthorized: () => cleared.push(true),
   })
 
-  await assert.rejects(() => transport.request({ path: '/me' }))
+  await assert.rejects(() => transport.request({ path: '/me', auth: 'required' }))
 
   assert.equal(cleared.length, 1)
+})
+
+test('a rejected sign-in attempt does not end the session of the signed-in student', async () => {
+  const { adapter } = scriptedAdapter(() => ({
+    statusCode: 401,
+    data: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password.' },
+  }))
+  const cleared = []
+  const transport = new HttpTransport({
+    baseUrl: 'http://127.0.0.1:8000/api/v1',
+    adapter,
+    getToken: () => 'current-session-token',
+    onUnauthorized: () => cleared.push(true),
+  })
+
+  await assert.rejects(() =>
+    transport.request({ path: '/auth/login', method: 'POST', body: { username: 'a', password: 'b' } }),
+  )
+
+  assert.equal(cleared.length, 0)
 })
 
 test('the student transport reads the bearer token from its token store', async () => {

@@ -110,6 +110,67 @@ export interface TokenDto {
   user: UserDto
 }
 
+export interface RegisterRequest {
+  username: string
+  password: string
+}
+
+export interface LoginRequest {
+  username: string
+  password: string
+}
+
+export interface MessageDto {
+  message: string
+}
+
+export interface ProfileDto {
+  name: string | null
+  college: string | null
+  major: string | null
+  academicYear: string | null
+  sex: string | null
+  briefCv: string | null
+  wechatId: string | null
+  qqId: string | null
+  mbti: string | null
+  hobbies: string | null
+  userId: string
+  skills: SkillDto[]
+  skillIds: string[]
+  missingFields: string[]
+  complete: boolean
+}
+
+export interface ProfileUpdateRequest {
+  name?: string
+  college?: string
+  major?: string
+  academicYear?: string
+  sex?: string
+  briefCv?: string
+  wechatId?: string
+  qqId?: string
+  mbti?: string
+  hobbies?: string
+  skillIds?: string[]
+}
+
+/**
+ * The profile fields the SRS marks as mandatory. The backend reports the
+ * fields a profile is still missing under the same names.
+ */
+export const PROFILE_MANDATORY_FIELDS = [
+  'name',
+  'college',
+  'major',
+  'academicYear',
+  'sex',
+  'briefCv',
+] as const
+
+export type ProfileMandatoryField = (typeof PROFILE_MANDATORY_FIELDS)[number]
+
 export type PlannerItemKind = 'Course' | 'TimedPlan' | 'Todo'
 
 export interface PlannerItemDto {

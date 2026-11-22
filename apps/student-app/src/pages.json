@@ -85,6 +85,18 @@
     {
       "path": "pages/planner/occurrence",
       "style": { "navigationBarTitleText": "Occurrence", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/auth/login",
+      "style": { "navigationBarTitleText": "Sign in", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/auth/register",
+      "style": { "navigationBarTitleText": "Create account", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": { "navigationBarTitleText": "My profile", "navigationStyle": "custom" }
     }
   ],
   "globalStyle": {

@@ -138,3 +138,28 @@ test('API mode reports the prototype operations the backend does not serve', asy
     },
   )
 })
+
+test('mock mode reports that the account features need the API backend', async () => {
+  const api = createStudentApiClient({ mode: 'mock' })
+
+  for (const call of [
+    () => api.login({ username: 'student', password: 'password-value' }),
+    () => api.register({ username: 'student', password: 'password-value' }),
+    () => api.getProfile(),
+    () => api.listSkills(),
+    () => api.logout(),
+  ]) {
+    await assert.rejects(call, (error) => {
+      assert.ok(error instanceof ApiError)
+      assert.equal(error.code, 'NOT_AVAILABLE_IN_MOCK_MODE')
+      assert.equal(error.kind, 'config')
+      return true
+    })
+  }
+})
+
+test('mock mode has no stored session to restore', async () => {
+  const api = createStudentApiClient({ mode: 'mock' })
+
+  assert.equal(await api.restoreSession(), null)
+})
