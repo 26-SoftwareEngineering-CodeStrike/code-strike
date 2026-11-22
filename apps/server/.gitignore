@@ -1,0 +1,5 @@
+.tools/
+.test-venv/
+.env
+*.db
+test-results/
