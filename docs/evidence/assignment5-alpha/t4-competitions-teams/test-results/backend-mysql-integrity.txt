@@ -1,0 +1,25 @@
+check      : The MySQL integrity tests
+command    : bash -c set -a; . '/d/Project/VSCode/code-strike/apps/server/.env'; set +a; cd '/d/Project/VSCode/code-strike/apps/server' && '/d/Project/VSCode/code-strike/.test-venv/Scripts/python.exe' -m pytest tests/test_mysql_integrity.py -v
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:41:50Z
+--- output ---
+============================= test session starts =============================
+platform win32 -- Python 3.13.9, pytest-9.1.1, pluggy-1.7.0
+rootdir: D:\Project\VSCode\code-strike\apps\server
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 5 items
+
+tests\test_mysql_integrity.py .....                                      [100%]
+
+============================== warnings summary ===============================
+..\..\.test-venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\Project\VSCode\code-strike\.test-venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 5 passed, 1 warning in 7.40s =========================
+--- end of output ---
+exit code  : 0
+result     : PASS

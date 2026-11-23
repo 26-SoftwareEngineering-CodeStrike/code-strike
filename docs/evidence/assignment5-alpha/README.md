@@ -14,6 +14,8 @@ and no result is asserted that was not observed.
 | `sprint-new/` | Work performed or re-verified during the sprint: the T1 integration itself and every verification executed against the integrated `sprint/alpha` tree. |
 | `t2-shared-http/` | The T2 round: shared contracts, the HTTP transport for both clients and the verification executed against the `feat/2-shared-http` branch. |
 | `t3-auth-profile/` | The T3 round: the isolated MySQL 8.4 environment, the account and profile integration and the verification executed against the `feat/3-auth-profile` branch. |
+| `t4-competitions-teams/` | The T4 round: the contract audit, the recruitment, application and captain admission integration, and the verification executed against the `feat/4-competitions-teams` branch. |
+| `sprint-essay-1/` | The burn-up record of the first sprint essay, covering 2026-11-21 and 2026-11-22. |
 
 `sprint-baseline` is a snapshot of inherited material. `sprint-new` is the output of this
 round's own commands. Re-running a baseline check does not move it into `sprint-new`.
@@ -28,6 +30,7 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 | `c54bcc6` | `feat/2-shared-http` | `feat(api): integrate shared contracts and HTTP transport (#2)` |
 | `f36660f` | `sprint/alpha` | Merge pull request #10 from feat/2-shared-http |
 | `5900b11` | `feat/3-auth-profile` | `feat(auth): integrate registration and profile flows (#3)` |
+| `8f84d65` | `feat/4-competitions-teams` | `feat(teams): integrate recruitment and application flows (#4)` |
 
 `sprint/alpha` tip at the time of recording: `15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
 (tree `13fac42430e0a5e3fdd52a07e0715e03bc98d422`).
@@ -60,7 +63,8 @@ The T1–T9 issues were created from the published blog's task table, snapshotte
 | pytest | 9.1.1 |
 | FastAPI | 0.162.0 |
 | SQLAlchemy | 2.0.55 |
-| MySQL client | 8.0.37 (server not running; **not** 8.4) |
+| MySQL client | 8.0.37 (the pre-existing installation; **not** 8.4) |
+| MySQL server used by the sprint | 8.4.6, isolated instance on port 3307, see `t3-auth-profile/README.md` |
 | Docker | not installed |
 | Browser | Microsoft Edge 157.0.4341.60 (headless, DevTools Protocol) |
 
@@ -71,5 +75,9 @@ The backend virtualenv lives at `.test-venv/` in the repository root and is igno
 Seven backend tests require a real MySQL 8.4 instance and were **skipped**, not passed.
 The exact reasons are in `sprint-new/backend-pytest.txt` and summarised in
 `sprint-new/mysql-8.4-skip-record.md`. No SQLite result is presented as MySQL evidence.
+
+The T3 round installed the isolated MySQL 8.4.6 instance that removed this limitation; the
+rounds from T3 on run the backend suite against it with no skip. The statement above still
+describes the T1 round, whose log was produced before that instance existed.
 
 Log files use the `.txt` extension because the repository's `.gitignore` excludes `*.log`.

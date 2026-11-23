@@ -1,0 +1,13 @@
+check      : The isolated MySQL 8.4 instance and the API
+command    : bash -c cd '/d/Project/VSCode/code-strike' && bash scripts/run-with-server-env.sh '/d/Project/VSCode/code-strike/.test-venv/Scripts/python.exe' '/d/Project/VSCode/code-strike/scripts/verify-t4-environment.py'
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:40:19Z
+--- output ---
+mysql version : 8.4.6
+database      : codestrike
+alembic head  : 0001
+isolation     : READ-COMMITTED
+--- end of output ---
+exit code  : 0
+result     : PASS

@@ -1,0 +1,71 @@
+check      : The admin web regression suite
+command    : bash -c cd '/d/Project/VSCode/code-strike' && pnpm --filter @codestrike/admin-web test
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:42:08Z
+--- output ---
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/*.test.mjs
+TAP version 13
+# (node:5320) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the fetch adapter sends the bearer token, the JSON body and the configured headers
+ok 1 - the fetch adapter sends the bearer token, the JSON body and the configured headers
+  ---
+  duration_ms: 25.4526
+  type: 'test'
+  ...
+# Subtest: no Authorization header is sent when the admin has no session
+ok 2 - no Authorization header is sent when the admin has no session
+  ---
+  duration_ms: 0.6086
+  type: 'test'
+  ...
+# Subtest: a backend error envelope is mapped onto the ApiError
+ok 3 - a backend error envelope is mapped onto the ApiError
+  ---
+  duration_ms: 1.0303
+  type: 'test'
+  ...
+# Subtest: an unreachable service becomes a network error
+ok 4 - an unreachable service becomes a network error
+  ---
+  duration_ms: 0.3851
+  type: 'test'
+  ...
+# Subtest: the admin dashboard is served by the mock transport in mock mode
+ok 5 - the admin dashboard is served by the mock transport in mock mode
+  ---
+  duration_ms: 0.407
+  type: 'test'
+  ...
+# Subtest: the admin dashboard requires a token and adapts the backend DTO in API mode
+ok 6 - the admin dashboard requires a token and adapts the backend DTO in API mode
+  ---
+  duration_ms: 0.3445
+  type: 'test'
+  ...
+# Subtest: the admin dashboard is refused locally when no session exists
+ok 7 - the admin dashboard is refused locally when no session exists
+  ---
+  duration_ms: 0.3174
+  type: 'test'
+  ...
+# Subtest: the Element Plus feedback names the failure and keeps the backend message
+ok 8 - the Element Plus feedback names the failure and keeps the backend message
+  ---
+  duration_ms: 0.1789
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 271.9979
+--- end of output ---
+exit code  : 0
+result     : PASS

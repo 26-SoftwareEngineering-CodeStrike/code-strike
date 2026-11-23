@@ -1,0 +1,13 @@
+check      : The workspace type check
+command    : bash -c cd '/d/Project/VSCode/code-strike' && pnpm type-check
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:42:09Z
+--- output ---
+$ pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check
+$ tsc --noEmit
+$ vue-tsc --noEmit
+$ vue-tsc -b
+--- end of output ---
+exit code  : 0
+result     : PASS

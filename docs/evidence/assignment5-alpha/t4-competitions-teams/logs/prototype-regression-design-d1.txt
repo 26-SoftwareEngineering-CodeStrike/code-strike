@@ -1,0 +1,241 @@
+check      : The Assignment 4 prototype regression, D1 design assertions
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-h5-design-d1.mjs 'ws://127.0.0.1:9222/devtools/page/3B70F3A67CCFC5FF1D11E62B0F6A989E' 'http://127.0.0.1:4173' '/tmp/codestrike-t4-prototype-shots'
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:44:20Z
+--- output ---
+PASS: ui04 has no horizontal overflow at 320px ({"page":[320,320],"offenders":[]})
+PASS: ui04 primary content renders at 320px
+PASS: ui04 keeps a consistent content alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304]]})
+PASS: ui04 has a clear active navigation item at 320px
+PASS: ui04 has meaningful icons and text labels at 320px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui04 bottom content clears navigation at 320px
+PASS: ui05 has no horizontal overflow at 320px ({"page":[320,320],"offenders":[["SPAN","",65,403]]})
+PASS: ui05 primary content renders at 320px
+PASS: ui05 keeps a consistent content alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui05 has a clear active navigation item at 320px
+PASS: ui05 has meaningful icons and text labels at 320px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: UI-05 exposes all four complete tab labels at 320px ([["Overview",19,90,71,71],["Discussion",90,160,71,71],["Resources",160,231,71,71],["Recruitment",231,301,71,71]])
+PASS: UI-05 Recruitment tab is reachable at 320px
+PASS: UI-05 Recruitment content is available at 320px
+PASS: ui05 bottom content clears navigation at 320px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui09 has no horizontal overflow at 320px ({"page":[320,320],"offenders":[]})
+PASS: ui09 primary content renders at 320px
+PASS: ui09 keeps a consistent content alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui09 has a clear active navigation item at 320px
+PASS: ui09 has meaningful icons and text labels at 320px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui09 main action is present at 320px
+PASS: ui09 bottom content clears navigation at 320px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Team Alpha captain remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui11 has no horizontal overflow at 320px ({"page":[320,320],"offenders":[]})
+PASS: ui11 primary content renders at 320px
+PASS: ui11 keeps a consistent content alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui11 has a clear active navigation item at 320px
+PASS: ui11 has meaningful icons and text labels at 320px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui11 main action is present at 320px
+PASS: ui11 bottom content clears navigation at 320px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui16 has no horizontal overflow at 320px ({"page":[320,320],"offenders":[["DIV","",0,400],["DIV","",0,400],["DIV","",0,400],["DIV","",0,400]]})
+PASS: ui16 primary content renders at 320px
+PASS: ui16 keeps a consistent content alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304],[16,304]]})
+PASS: ui16 has a clear active navigation item at 320px
+PASS: ui16 has meaningful icons and text labels at 320px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui16 main action is present at 320px
+PASS: ui16 bottom content clears navigation at 320px
+PASS: ui04 has no horizontal overflow at 390px ({"page":[390,390],"offenders":[]})
+PASS: ui04 primary content renders at 390px
+PASS: ui04 keeps a consistent content alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374]]})
+PASS: ui04 has a clear active navigation item at 390px
+PASS: ui04 has meaningful icons and text labels at 390px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui04 bottom content clears navigation at 390px
+PASS: ui05 has no horizontal overflow at 390px ({"page":[390,390],"offenders":[["SPAN","",72,443]]})
+PASS: ui05 primary content renders at 390px
+PASS: ui05 keeps a consistent content alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui05 has a clear active navigation item at 390px
+PASS: ui05 has meaningful icons and text labels at 390px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: UI-05 exposes all four complete tab labels at 390px ([["Overview",19,107,88,88],["Discussion",107,195,88,88],["Resources",195,283,88,88],["Recruitment",283,371,88,88]])
+PASS: UI-05 Recruitment tab is reachable at 390px
+PASS: UI-05 Recruitment content is available at 390px
+PASS: ui05 bottom content clears navigation at 390px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui09 has no horizontal overflow at 390px ({"page":[390,390],"offenders":[]})
+PASS: ui09 primary content renders at 390px
+PASS: ui09 keeps a consistent content alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui09 has a clear active navigation item at 390px
+PASS: ui09 has meaningful icons and text labels at 390px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui09 main action is present at 390px
+PASS: ui09 bottom content clears navigation at 390px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Team Alpha captain remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui11 has no horizontal overflow at 390px ({"page":[390,390],"offenders":[["DIV","",0,400],["DIV","",0,400],["DIV","",0,400],["DIV","",0,400]]})
+PASS: ui11 primary content renders at 390px
+PASS: ui11 keeps a consistent content alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui11 has a clear active navigation item at 390px
+PASS: ui11 has meaningful icons and text labels at 390px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui11 main action is present at 390px
+PASS: ui11 bottom content clears navigation at 390px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui16 has no horizontal overflow at 390px ({"page":[390,390],"offenders":[["DIV","",0,400],["DIV","",0,400],["DIV","",0,400],["DIV","",0,400]]})
+PASS: ui16 primary content renders at 390px
+PASS: ui16 keeps a consistent content alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374],[16,374]]})
+PASS: ui16 has a clear active navigation item at 390px
+PASS: ui16 has meaningful icons and text labels at 390px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui16 main action is present at 390px
+PASS: ui16 bottom content clears navigation at 390px
+PASS: ui04 has no horizontal overflow at 430px ({"page":[430,430],"offenders":[]})
+PASS: ui04 primary content renders at 430px
+PASS: ui04 keeps a consistent content alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414]]})
+PASS: ui04 has a clear active navigation item at 430px
+PASS: ui04 has meaningful icons and text labels at 430px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui04 bottom content clears navigation at 430px
+PASS: ui05 has no horizontal overflow at 430px ({"page":[430,430],"offenders":[["SPAN","",72,443]]})
+PASS: ui05 primary content renders at 430px
+PASS: ui05 keeps a consistent content alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui05 has a clear active navigation item at 430px
+PASS: ui05 has meaningful icons and text labels at 430px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: UI-05 exposes all four complete tab labels at 430px ([["Overview",19,117,98,98],["Discussion",117,215,98,98],["Resources",215,313,98,98],["Recruitment",313,411,98,98]])
+PASS: UI-05 Recruitment tab is reachable at 430px
+PASS: UI-05 Recruitment content is available at 430px
+PASS: ui05 bottom content clears navigation at 430px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui09 has no horizontal overflow at 430px ({"page":[430,430],"offenders":[]})
+PASS: ui09 primary content renders at 430px
+PASS: ui09 keeps a consistent content alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui09 has a clear active navigation item at 430px
+PASS: ui09 has meaningful icons and text labels at 430px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui09 main action is present at 430px
+PASS: ui09 bottom content clears navigation at 430px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Team Alpha captain remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui11 has no horizontal overflow at 430px ({"page":[430,430],"offenders":[]})
+PASS: ui11 primary content renders at 430px
+PASS: ui11 keeps a consistent content alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui11 has a clear active navigation item at 430px
+PASS: ui11 has meaningful icons and text labels at 430px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui11 main action is present at 430px
+PASS: ui11 bottom content clears navigation at 430px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui16 has no horizontal overflow at 430px ({"page":[430,430],"offenders":[]})
+PASS: ui16 primary content renders at 430px
+PASS: ui16 keeps a consistent content alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414],[16,414]]})
+PASS: ui16 has a clear active navigation item at 430px
+PASS: ui16 has meaningful icons and text labels at 430px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui16 main action is present at 430px
+PASS: ui16 bottom content clears navigation at 430px
+PASS: ui04 has no horizontal overflow at 680px ({"page":[680,680],"offenders":[]})
+PASS: ui04 primary content renders at 680px
+PASS: ui04 keeps a consistent content alignment line at 680px ({"padding":[36,36],"rects":[[37,643],[37,331]]})
+PASS: ui04 has a clear active navigation item at 680px
+PASS: ui04 has meaningful icons and text labels at 680px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui04 bottom content clears navigation at 680px
+PASS: ui05 has no horizontal overflow at 680px ({"page":[680,680],"offenders":[]})
+PASS: ui05 primary content renders at 680px
+PASS: ui05 keeps a consistent content alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui05 has a clear active navigation item at 680px
+PASS: ui05 has meaningful icons and text labels at 680px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: UI-05 exposes all four complete tab labels at 680px ([["Overview",44,192,148,148],["Discussion",192,340,148,148],["Resources",340,488,148,148],["Recruitment",488,636,148,148]])
+PASS: UI-05 Recruitment tab is reachable at 680px
+PASS: UI-05 Recruitment content is available at 680px
+PASS: ui05 bottom content clears navigation at 680px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui09 has no horizontal overflow at 680px ({"page":[680,680],"offenders":[]})
+PASS: ui09 primary content renders at 680px
+PASS: ui09 keeps a consistent content alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui09 has a clear active navigation item at 680px
+PASS: ui09 has meaningful icons and text labels at 680px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui09 main action is present at 680px
+PASS: ui09 bottom content clears navigation at 680px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Team Alpha captain remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui11 has no horizontal overflow at 680px ({"page":[680,680],"offenders":[]})
+PASS: ui11 primary content renders at 680px
+PASS: ui11 keeps a consistent content alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui11 has a clear active navigation item at 680px
+PASS: ui11 has meaningful icons and text labels at 680px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui11 main action is present at 680px
+PASS: ui11 bottom content clears navigation at 680px
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: ui16 has no horizontal overflow at 680px ({"page":[680,680],"offenders":[]})
+PASS: ui16 primary content renders at 680px
+PASS: ui16 keeps a consistent content alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639],[41,639]]})
+PASS: ui16 has a clear active navigation item at 680px
+PASS: ui16 has meaningful icons and text labels at 680px ({"labels":["Competitions","Teams","Planner","Me"],"icons":[[28,27],[28,27],[28,27],[28,27]]})
+PASS: ui16 main action is present at 680px
+PASS: ui16 bottom content clears navigation at 680px
+PASS: UI-04 search can be edited
+PASS: UI-04 empty search state is visible
+PASS: UI-04 Prototype Lab requires explicit opening
+PASS: UI-04 Prototype Lab surface is visible
+PASS: UI-04 failure state control remains available
+PASS: UI-04 error state is visible
+PASS: Prototype Lab has a consistent explicit header entry
+PASS: Prototype Lab opens as a separate surface
+PASS: Prototype Lab states that actor switching is not authentication
+PASS: Student Alex remains explicitly selectable
+PASS: Prototype Lab has an explicit close control
+PASS: Prototype Lab closes without covering product content
+PASS: UI-16 Week mode remains interactive
+PASS: UI-16 selected mode is visually clear
+PASS: UI-16 last occurrence and add controls clear bottom navigation
+PASS: Primary navigation and planner controls meet the 44px touch target
+--- end of output ---
+exit code  : 0
+result     : PASS
