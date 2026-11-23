@@ -353,22 +353,49 @@ def own_records(session: Session, token: str, kind: str, offset: int, limit: int
             return [application_view(session, a) for a in session.scalars(select(Application).where(Application.applicant_id == actor.id)
                     .order_by(Application.created_at.desc(), Application.id).offset(offset).limit(limit))]
         if kind == "history":
-            return [{"id": m.id, "teamName": t.name, "competitionId": t.competition_id, "status": m.status,
-                     "joinedAt": m.joined_at, "endedAt": m.ended_at, "reason": m.end_reason}
-                    for m, t in session.execute(select(Membership, Team).join(Team, Team.id == Membership.team_id)
-                    .where(Membership.student_id == actor.id).order_by(Membership.joined_at.desc(), Membership.id).offset(offset).limit(limit))]
+            rows = session.execute(select(Membership, Team).join(Team, Team.id == Membership.team_id)
+                                   .where(Membership.student_id == actor.id)
+                                   .order_by(Membership.joined_at.desc(), Membership.id)
+                                   .offset(offset).limit(limit)).all()
+            # The projection is self-sufficient: a client renders a past membership
+            # from this row alone, without a second request per team.
+            team_ids = {team.id for _, team in rows}
+            counts: dict[str, int] = {}
+            if team_ids:
+                counts = dict(session.execute(
+                    select(Membership.team_id, func.count()).where(
+                        Membership.team_id.in_(team_ids), Membership.status == "Active")
+                    .group_by(Membership.team_id)).all())
+            captain_ids = {team.captain_id for _, team in rows}
+            captains = dict(session.execute(
+                select(User.id, User.username).where(User.id.in_(captain_ids))).all()) if captain_ids else {}
+            return [{"id": m.id, "teamId": t.id, "teamName": t.name, "competitionId": t.competition_id,
+                     "status": m.status, "joinedAt": m.joined_at, "endedAt": m.ended_at, "reason": m.end_reason,
+                     "lifecycle": t.lifecycle, "publication": t.publication,
+                     "recruitmentSwitch": t.recruitment_switch, "capacity": t.capacity,
+                     "captainUsername": captains.get(t.captain_id),
+                     "memberCount": counts.get(t.id, 0),
+                     "role": "Captain" if t.captain_id == actor.id else "Member"}
+                    for m, t in rows]
         return [team_view(session, t) for t in session.scalars(select(Team).join(Membership, Membership.team_id == Team.id)
                 .where(Membership.student_id == actor.id, Membership.status == "Active").order_by(Team.id).offset(offset).limit(limit))]
 
 
-def recruitment_list(session: Session, competition_id: str, offset: int, limit: int):
+def recruitment_list(session: Session, competition_id: str, offset: int, limit: int, token: str | None = None):
     with session.begin():
         comp = session.scalar(select(Competition).where(Competition.id == competition_id, Competition.published.is_(True)).with_for_update())
         if not comp:
             raise DomainError("NOT_FOUND", "Competition not found.", 404)
         expire_competition(session, comp)
-        return [team_view(session, t) for t in session.scalars(select(Team).where(Team.competition_id == competition_id,
-                Team.publication == "Published", Team.lifecycle == "Active").order_by(Team.id).offset(offset).limit(limit))]
+        viewer = optional_student(session, token)
+        result = []
+        for team in session.scalars(select(Team).where(Team.competition_id == competition_id,
+                Team.publication == "Published", Team.lifecycle == "Active").order_by(Team.id).offset(offset).limit(limit)):
+            view = team_view(session, team)
+            if viewer is not None:
+                view["match"] = "Matched" if get_skill_ids(session, viewer.id) & {s["id"] for s in view["skills"]} else "Not Matched"
+            result.append(view)
+        return result
 
 
 def team_detail(session: Session, team_id: str, token: str | None):
@@ -388,6 +415,20 @@ def team_detail(session: Session, team_id: str, token: str | None):
         if actor and actor.role == "Student":
             result["match"] = "Matched" if get_skill_ids(session, actor.id) & {s["id"] for s in result["skills"]} else "Not Matched"
         return result
+
+
+def optional_student(session: Session, token: str | None) -> User | None:
+    """A public listing stays public.
+
+    A signed-in student additionally receives their own skill match, and a token
+    the server cannot use does not close a listing that is public anyway.
+    """
+    if not token:
+        return None
+    try:
+        return require_actor(session, token, "Student")
+    except DomainError:
+        return None
 
 
 def recruitment_revisions(session: Session, token: str, team_id: str):

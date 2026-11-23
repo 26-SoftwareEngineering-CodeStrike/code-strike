@@ -124,8 +124,10 @@ test('member, contact and application DTOs become their view models', () => {
     status: 'Active',
     role: 'Captain',
   })
+  // The backend addresses a member by the user id in every member-scoped
+  // route, so that is the handle the view model carries.
   assert.deepEqual(member, {
-    membershipId: 'membership-1',
+    membershipId: 'user-1',
     username: 'orbit_captain',
     role: 'Captain',
     status: 'Active',

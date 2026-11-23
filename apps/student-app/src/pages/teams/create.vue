@@ -8,6 +8,7 @@ import CsHeader from '../../components/CsHeader.vue'
 import PersonaSwitcher from '../../components/PersonaSwitcher.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
 const competitions = ref<CompetitionSummary[]>([])
@@ -23,7 +24,8 @@ const saving = ref(false)
 const competitionMaximum = ref(4)
 const labOpen = ref(false)
 
-const skillOptions = ['Python', 'Java', 'Vue', 'Research', 'CAD', 'Product Design', 'Data Visualization', 'Mathematical Modeling']
+/** The Mock catalogue the prototype shipped with; API mode replaces it. */
+const skillOptions = ref(['Python', 'Java', 'Vue', 'Research', 'CAD', 'Product Design', 'Data Visualization', 'Mathematical Modeling'])
 const selectedCompetition = computed(() => competitions.value[competitionIndex.value])
 const capacityOptions = computed(() => {
   return Array.from({ length: competitionMaximum.value }, (_, index) => index + 1)
@@ -31,11 +33,31 @@ const capacityOptions = computed(() => {
 
 onShow(initialize)
 async function initialize() {
-  const [available, current, competitionItems] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor(), api.listCompetitions()])
-  actors.value = available.filter((actor) => ['visitor', 'student-alex', 'student-incomplete'].includes(actor.id))
-  actorId.value = current.id
-  competitions.value = competitionItems
-  if (competitionItems[0]) competitionMaximum.value = (await api.getCompetition(competitionItems[0].id)).maximumTeamSize
+  try {
+    if (personaAvailable) {
+      const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
+      actors.value = available.filter((actor) => ['visitor', 'student-alex', 'student-incomplete'].includes(actor.id))
+      actorId.value = current.id
+    }
+    await loadSkillCatalog()
+    const competitionItems = await api.listCompetitions()
+    competitions.value = competitionItems
+    if (competitionItems[0]) competitionMaximum.value = (await api.getCompetition(competitionItems[0].id)).maximumTeamSize
+  } catch (error) {
+    feedback.value = error instanceof Error ? error.message : 'The team setup form could not be loaded.'
+  }
+}
+
+/**
+ * The team endpoints accept the skill ids of the administrator catalogue, so
+ * the offered tags come from the server rather than from a hard-coded list.
+ * Mock mode keeps the catalogue the prototype shipped with.
+ */
+async function loadSkillCatalog() {
+  if (personaAvailable) return
+  const catalog = await api.listSkills()
+  skillOptions.value = catalog.map((skill) => skill.name)
+  requiredSkills.value = requiredSkills.value.filter((skill) => skillOptions.value.includes(skill))
 }
 async function selectActor(id: string) { const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; feedback.value = ''; createdTeamId.value = '' }
 async function selectCompetition(event: { detail: { value: string } }) { competitionIndex.value = Number(event.detail.value); const selected = selectedCompetition.value; if (selected) competitionMaximum.value = (await api.getCompetition(selected.id)).maximumTeamSize; capacity.value = capacityOptions.value[capacityOptions.value.length - 1] }
@@ -54,7 +76,7 @@ function openMyTeams() { uni.redirectTo({ url: '/pages/teams/index' }) }
 </script>
 
 <template>
-  <view class="page-shell"><CsHeader back demo eyebrow="Team setup" title="Create team" @demo="labOpen = true" />
+  <view class="page-shell"><CsHeader back :demo="personaAvailable" eyebrow="Team setup" title="Create team" @demo="labOpen = true" />
     <view class="content">
       <view class="intro"><text class="intro__title">Build your competition team</text><text class="intro__copy">Choose a competition, describe your goal and set the skills you need.</text></view>
       <view class="notice"><text class="notice__title">Eligibility is checked when you create the team</text><text class="notice__copy">Complete your profile and confirm that the competition is still open before submitting.</text></view>
@@ -69,7 +91,7 @@ function openMyTeams() { uni.redirectTo({ url: '/pages/teams/index' }) }
         <button class="primary" :disabled="saving" @click="createTeam">{{ saving ? 'Creating…' : 'Create team' }}</button>
       </view>
       <view v-if="feedback" class="feedback" :class="{ success: createdTeamId }"><text>{{ feedback }}</text><button v-if="createdTeamId" class="view-teams" @click="openMyTeams">View My Teams</button></view>
-    </view><PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
+    </view><PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
 </template>
 
 <style scoped>

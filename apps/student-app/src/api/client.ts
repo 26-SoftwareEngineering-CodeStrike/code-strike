@@ -35,12 +35,29 @@ import type {
 } from '@codestrike/contracts'
 import {
   currentTransportConfig,
+  toActiveMemberContact,
+  toApplicationHistoryItem,
+  toCaptainPendingApplication,
   toCompetitionDetail,
   toCompetitionSummary,
+  toMyTeamHistoryItem,
+  toMyTeamItem,
   toRecruitmentDetail,
+  toRecruitmentManagementView,
   toRecruitmentSummary,
+  toTeamMemberView,
+  toTeamOperationsView,
 } from '@codestrike/contracts'
-import type { CompetitionDetailDto, TeamDto } from '@codestrike/contracts'
+import type {
+  ApplicationDto,
+  CompetitionDetailDto,
+  MemberDto,
+  RecruitmentRevisionRowDto,
+  ReviewDto,
+  TeamCreatedDto,
+  TeamDto,
+  TeamHistoryDto,
+} from '@codestrike/contracts'
 import { ApiError } from '@codestrike/contracts/http'
 import { createStudentHttpTransport } from './http-transport'
 import { MockTransport } from './mock-transport'
@@ -49,11 +66,17 @@ import {
   applySessionUser,
   clearSession,
   hasStoredToken,
+  sessionUser,
 } from './session'
 import { appTokenStore } from './token-store'
 
 export interface StudentApiClient {
-  listCompetitions(options?: { simulateFailure?: boolean }): Promise<CompetitionSummary[]>
+  /**
+   * False in API mode. The Prototype Lab switches local Mock personas only and
+   * must never be presented as a way of obtaining a server-side identity.
+   */
+  readonly personaSwitchingAvailable: boolean
+  listCompetitions(options?: { simulateFailure?: boolean; query?: string }): Promise<CompetitionSummary[]>
   getCompetition(id: string): Promise<CompetitionDetail>
   listRecruitments(competitionId: string): Promise<RecruitmentSummary[]>
   getRecruitment(id: string): Promise<RecruitmentDetail>
@@ -77,8 +100,8 @@ export interface StudentApiClient {
   getTeamOperations(teamId: string): Promise<MockCommandResult<TeamOperationsView>>
   getActiveMemberContacts(teamId: string): Promise<MockCommandResult<ActiveMemberContact[]>>
   leaveTeam(teamId: string): Promise<MockCommandResult>
-  removeMember(teamId: string, membershipId: string): Promise<MockCommandResult>
-  transferCaptain(teamId: string, membershipId: string): Promise<MockCommandResult>
+  removeMember(teamId: string, memberId: string): Promise<MockCommandResult>
+  transferCaptain(teamId: string, memberId: string): Promise<MockCommandResult>
   dissolveTeam(teamId: string): Promise<MockCommandResult>
   getPlannerView(date: string, mode: PlannerViewMode): Promise<MockCommandResult<PlannerView>>
   listSchoolPeriods(): Promise<SchoolPeriod[]>
@@ -145,17 +168,135 @@ function needsApiBackend<T>(operation: string): Promise<T> {
   )
 }
 
+function toFailure<T>(error: unknown): MockCommandResult<T> {
+  if (error instanceof ApiError) {
+    // The backend reports the still-missing profile fields in `details`; the
+    // screen shows them so the student knows what to complete.
+    const missing = error.details?.missingFields
+    const suffix =
+      Array.isArray(missing) && missing.length > 0 ? ` Missing: ${missing.join(', ')}.` : ''
+    return { ok: false, code: error.code, message: `${error.message}${suffix}` }
+  }
+  return {
+    ok: false,
+    code: 'UNEXPECTED_ERROR',
+    message: error instanceof Error ? error.message : 'The request failed.',
+  }
+}
+
+/**
+ * API mode reports the server's verdict inside the envelope the screens
+ * already render, so a refusal reaches the user with the backend's own code
+ * and wording instead of a generic failure message.
+ */
+async function apiCommand<T>(
+  run: () => Promise<T>,
+  code: string,
+  message: string,
+): Promise<MockCommandResult<T>> {
+  try {
+    return { ok: true, code, message, data: await run() }
+  } catch (error) {
+    return toFailure<T>(error)
+  }
+}
+
+/** The same envelope for an operation the server answers without a payload. */
+async function apiCommandWithoutData(
+  run: () => Promise<unknown>,
+  code: string,
+  message: string,
+): Promise<MockCommandResult> {
+  try {
+    await run()
+    return { ok: true, code, message }
+  } catch (error) {
+    return toFailure<undefined>(error)
+  }
+}
+
 function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): StudentApiClient {
   const api = mode === 'api'
 
+  /**
+   * The administrator skill catalog is the only source of the skill ids the
+   * team endpoints accept. It is fetched once per client and reused.
+   */
+  let catalogPromise: Promise<SkillDto[]> | null = null
+  const skillCatalog = (): Promise<SkillDto[]> => {
+    if (!catalogPromise) {
+      catalogPromise = transport.request<SkillDto[]>({ path: '/skills' }).catch((error) => {
+        catalogPromise = null
+        throw error
+      })
+    }
+    return catalogPromise
+  }
+
+  const resolveSkillIds = async (skillNames: string[]): Promise<string[]> => {
+    const catalog = await skillCatalog()
+    const ids: string[] = []
+    for (const name of skillNames) {
+      const skill = catalog.find((item) => item.name === name)
+      if (!skill) {
+        throw new ApiError(`"${name}" is not in the administrator skill catalog.`, {
+          kind: 'config',
+          code: 'INVALID_SKILLS',
+        })
+      }
+      ids.push(skill.id)
+    }
+    return ids
+  }
+
+  const competitionTitles = async (): Promise<Map<string, string>> => {
+    const competitions = await transport.request<CompetitionDetailDto[]>({ path: '/competitions' })
+    return new Map(competitions.map((competition) => [competition.id, competition.title]))
+  }
+
+  const signedInUser = async (): Promise<UserDto> => {
+    if (sessionUser.value) return sessionUser.value
+    const user = await transport.request<UserDto>({ path: '/auth/me', auth: 'required' })
+    applySessionUser(user)
+    return user
+  }
+
+  /** Reads the team, its competition and its revision list in one place. */
+  const readRecruitmentManagement = async (
+    teamId: string,
+  ): Promise<RecruitmentManagementView> => {
+    const team = await transport.request<TeamDto>({ path: `/teams/${teamId}`, auth: 'required' })
+    const [competition, revisions, catalog] = await Promise.all([
+      transport.request<CompetitionDetailDto>({ path: `/competitions/${team.competitionId}` }),
+      transport.request<RecruitmentRevisionRowDto[]>({
+        path: `/teams/${teamId}/recruitment/revisions`,
+        auth: 'required',
+      }),
+      skillCatalog(),
+    ])
+    const skillNames = new Map(catalog.map((skill) => [skill.id, skill.name]))
+    return toRecruitmentManagementView({
+      team,
+      competitionTitle: competition.title,
+      competitionMaximumTeamSize: competition.maxTeamSize,
+      revisions,
+      resolveSkillName: (skillId) => skillNames.get(skillId) ?? skillId,
+    })
+  }
+
   return {
+    personaSwitchingAvailable: !api,
     listCompetitions: async (options) => {
       if (!api) {
         return transport.request<CompetitionSummary[]>({
           path: options?.simulateFailure ? '/competitions?scenario=error' : '/competitions',
         })
       }
-      const response = await transport.request<CompetitionDetailDto[]>({ path: '/competitions' })
+      const query = options?.query?.trim()
+      const response = await transport.request<CompetitionDetailDto[]>({
+        path: '/competitions',
+        query: query ? { q: query, limit: 100 } : { limit: 100 },
+      })
       return response.map((competition) => toCompetitionSummary(competition))
     },
     getCompetition: async (id) => {
@@ -183,6 +324,7 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
       })
       const teams = await transport.request<TeamDto[]>({
         path: `/competitions/${competitionId}/recruitments`,
+        auth: 'optional',
       })
       const context = { deadlinePassed: competition.deadlineStatus === 'AfterDeadline' }
       return teams.map((team) => toRecruitmentSummary(team, context))
@@ -191,7 +333,7 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
       if (!api) {
         return transport.request<RecruitmentDetail>({ path: `/recruitments/${id}` })
       }
-      const team = await transport.request<TeamDto>({ path: `/teams/${id}` })
+      const team = await transport.request<TeamDto>({ path: `/teams/${id}`, auth: 'optional' })
       const competition = await transport.request<CompetitionDetailDto>({
         path: `/competitions/${team.competitionId}`,
       })
@@ -221,79 +363,351 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
             method: 'POST',
             body: { actorId },
           }),
-    listMyApplications: () =>
-      api
-        ? unsupportedInApiMode('listMyApplications')
-        : transport.request<MockCommandResult<ApplicationHistoryItem[]>>({ path: '/applications/mine' }),
-    applyToTeam: (teamId) =>
-      api
-        ? unsupportedInApiMode('applyToTeam')
-        : transport.request<MockCommandResult<ApplicationHistoryItem>>({
-            path: '/applications',
+    listMyApplications: async () => {
+      if (!api) {
+        return transport.request<MockCommandResult<ApplicationHistoryItem[]>>({
+          path: '/applications/mine',
+        })
+      }
+      return apiCommand(
+        async () => {
+          const [applications, teams, titles] = await Promise.all([
+            transport.request<ApplicationDto[]>({ path: '/me/applications', auth: 'required' }),
+            transport.request<TeamDto[]>({ path: '/me/teams', auth: 'required' }),
+            competitionTitles(),
+          ])
+          const currentTeamIds = new Set(teams.map((team) => team.id))
+          return applications.map((application) => {
+            const isCurrentMembership = currentTeamIds.has(application.teamId)
+            const canWithdraw = application.status === 'Pending' && !isCurrentMembership
+            const canReapply =
+              !isCurrentMembership &&
+              !canWithdraw &&
+              (application.status === 'Rejected' ||
+                application.status === 'Withdrawn' ||
+                application.status === 'Invalidated')
+            return toApplicationHistoryItem(application, {
+              competitionTitle: titles.get(application.competitionId) ?? '',
+              isCurrentMembership,
+              canWithdraw,
+              canReapply,
+            })
+          })
+        },
+        'APPLICATION_HISTORY',
+        'Owner application history loaded.',
+      )
+    },
+    applyToTeam: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult<ApplicationHistoryItem>>({
+          path: '/applications',
+          method: 'POST',
+          body: { teamId },
+        })
+      }
+      return apiCommand(
+        async () => {
+          const application = await transport.request<ApplicationDto>({
+            path: `/teams/${teamId}/applications`,
             method: 'POST',
-            body: { teamId },
-          }),
-    withdrawApplication: (id) =>
-      api
-        ? unsupportedInApiMode('withdrawApplication')
-        : transport.request<MockCommandResult>({ path: `/applications/${id}/withdraw`, method: 'POST' }),
-    reapply: (id) =>
-      api
-        ? unsupportedInApiMode('reapply')
-        : transport.request<MockCommandResult<ApplicationHistoryItem>>({
-            path: `/applications/${id}/reapply`,
+            auth: 'required',
+          })
+          const titles = await competitionTitles()
+          return toApplicationHistoryItem(application, {
+            competitionTitle: titles.get(application.competitionId) ?? '',
+            isCurrentMembership: false,
+            canWithdraw: application.status === 'Pending',
+            canReapply: false,
+          })
+        },
+        'APPLICATION_CREATED',
+        'Application submitted with Pending status.',
+      )
+    },
+    withdrawApplication: async (id) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/applications/${id}/withdraw`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request<ApplicationDto>({
+            path: `/applications/${id}/withdraw`,
             method: 'POST',
-          }),
-    listCaptainApplications: (teamId) =>
-      api
-        ? unsupportedInApiMode('listCaptainApplications')
-        : transport.request<MockCommandResult<CaptainPendingApplication[]>>({
-            path: teamId ? `/captain/teams/${teamId}/applications` : '/captain/applications',
-          }),
-    approveApplication: (id) =>
-      api
-        ? unsupportedInApiMode('approveApplication')
-        : transport.request<MockCommandResult>({
-            path: `/captain/applications/${id}/approve`,
+            auth: 'required',
+          })
+        },
+        'APPLICATION_WITHDRAWN',
+        'Application withdrawn. The history record was preserved.',
+      )
+    },
+    reapply: async (id) => {
+      if (!api) {
+        return transport.request<MockCommandResult<ApplicationHistoryItem>>({
+          path: `/applications/${id}/reapply`,
+          method: 'POST',
+        })
+      }
+      return apiCommand(
+        async () => {
+          const history = await transport.request<ApplicationDto[]>({
+            path: '/me/applications',
+            auth: 'required',
+          })
+          const previous = history.find((application) => application.id === id)
+          if (!previous) {
+            throw new ApiError('The application history record was not found.', {
+              kind: 'config',
+              code: 'NOT_FOUND',
+            })
+          }
+          const application = await transport.request<ApplicationDto>({
+            path: `/teams/${previous.teamId}/applications`,
             method: 'POST',
-          }),
-    rejectApplication: (id) =>
-      api
-        ? unsupportedInApiMode('rejectApplication')
-        : transport.request<MockCommandResult>({
-            path: `/captain/applications/${id}/reject`,
+            auth: 'required',
+          })
+          const titles = await competitionTitles()
+          return toApplicationHistoryItem(application, {
+            competitionTitle: titles.get(application.competitionId) ?? '',
+            isCurrentMembership: false,
+            canWithdraw: application.status === 'Pending',
+            canReapply: false,
+          })
+        },
+        'APPLICATION_CREATED',
+        'A new application was created with Pending status.',
+      )
+    },
+    listCaptainApplications: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult<CaptainPendingApplication[]>>({
+          path: teamId ? `/captain/teams/${teamId}/applications` : '/captain/applications',
+        })
+      }
+      if (!teamId) {
+        return {
+          ok: false,
+          code: 'TEAM_REQUIRED',
+          message: 'Choose a team from My Teams before reviewing applications.',
+        }
+      }
+      return apiCommand(
+        async () => {
+          const queue = await transport.request<ReviewDto[]>({
+            path: `/teams/${teamId}/applications`,
+            auth: 'required',
+          })
+          return queue.map((review) => toCaptainPendingApplication(review))
+        },
+        'CAPTAIN_QUEUE',
+        'Pending application queue loaded.',
+      )
+    },
+    approveApplication: async (id) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/captain/applications/${id}/approve`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request<ApplicationDto>({
+            path: `/applications/${id}/decision`,
             method: 'POST',
-          }),
-    createTeam: (input) =>
-      api
-        ? unsupportedInApiMode('createTeam')
-        : transport.request<MockCommandResult<MyTeamItem>>({ path: '/teams', method: 'POST', body: input }),
-    listMyTeams: () =>
-      api
-        ? unsupportedInApiMode('listMyTeams')
-        : transport.request<MockCommandResult<MyTeamsView>>({ path: '/teams/mine' }),
-    getRecruitmentManagement: (teamId) =>
-      api
-        ? unsupportedInApiMode('getRecruitmentManagement')
-        : transport.request<MockCommandResult<RecruitmentManagementView>>({
-            path: `/teams/${teamId}/recruitment`,
-          }),
-    setRecruitmentSwitch: (teamId, value) =>
-      api
-        ? unsupportedInApiMode('setRecruitmentSwitch')
-        : transport.request<MockCommandResult<RecruitmentManagementView>>({
-            path: `/teams/${teamId}/recruitment-switch`,
+            auth: 'required',
+            body: { decision: 'Approved' },
+          })
+        },
+        'APPLICATION_APPROVED',
+        'Application approved; the applicant became an active member.',
+      )
+    },
+    rejectApplication: async (id) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/captain/applications/${id}/reject`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request<ApplicationDto>({
+            path: `/applications/${id}/decision`,
+            method: 'POST',
+            auth: 'required',
+            body: { decision: 'Rejected' },
+          })
+        },
+        'APPLICATION_REJECTED',
+        'Application rejected; the history record was retained.',
+      )
+    },
+    createTeam: async (input) => {
+      if (!api) {
+        return transport.request<MockCommandResult<MyTeamItem>>({
+          path: '/teams',
+          method: 'POST',
+          body: input,
+        })
+      }
+      return apiCommand(
+        async () => {
+          const skillIds = await resolveSkillIds(input.requiredSkills)
+          const created = await transport.request<TeamCreatedDto>({
+            path: '/teams',
+            method: 'POST',
+            auth: 'required',
+            body: {
+              competitionId: input.competitionId,
+              name: input.name,
+              summary: input.summary,
+              capacity: input.capacity,
+              skillIds,
+              submitRecruitment: input.submitRecruitment,
+            },
+          })
+          const titles = await competitionTitles()
+          const [members] = await Promise.all([
+            transport.request<MemberDto[]>({
+              path: `/teams/${created.id}/members`,
+              auth: 'required',
+            }),
+          ])
+          const user = await signedInUser()
+          const membership = members.find((member) => member.userId === user.id)
+          if (!membership) {
+            throw new ApiError('The new team membership was not returned by the server.', {
+              kind: 'config',
+              code: 'MEMBERSHIP_NOT_FOUND',
+            })
+          }
+          return toMyTeamItem(created, {
+            competitionTitle: titles.get(created.competitionId) ?? '',
+            membershipId: membership.id,
+            membershipStatus: 'Active',
+            membershipRole: membership.role,
+          })
+        },
+        'TEAM_CREATED',
+        input.submitRecruitment
+          ? 'Team created. The first recruitment version was submitted for review.'
+          : 'Team created privately. No recruitment was submitted.',
+      )
+    },
+    listMyTeams: async () => {
+      if (!api) {
+        return transport.request<MockCommandResult<MyTeamsView>>({ path: '/teams/mine' })
+      }
+      return apiCommand(
+        async () => {
+          const [teams, history, titles, user] = await Promise.all([
+            transport.request<TeamDto[]>({ path: '/me/teams', auth: 'required' }),
+            transport.request<TeamHistoryDto[]>({ path: '/me/team-history', auth: 'required' }),
+            competitionTitles(),
+            signedInUser(),
+          ])
+          const current: MyTeamItem[] = []
+          for (const team of teams) {
+            const members = await transport.request<MemberDto[]>({
+              path: `/teams/${team.id}/members`,
+              auth: 'required',
+            })
+            const membership = members.find((member) => member.userId === user.id)
+            if (!membership) {
+              throw new ApiError('The team membership was not returned by the server.', {
+                kind: 'config',
+                code: 'MEMBERSHIP_NOT_FOUND',
+              })
+            }
+            current.push(
+              toMyTeamItem(team, {
+                competitionTitle: titles.get(team.competitionId) ?? '',
+                membershipId: membership.id,
+                membershipStatus: 'Active',
+                membershipRole: membership.role,
+              }),
+            )
+          }
+          const past = history
+            .filter((row) => row.status === 'Ended')
+            .map((row) =>
+              toMyTeamHistoryItem(row, { competitionTitle: titles.get(row.competitionId) ?? '' }),
+            )
+          const view: MyTeamsView = { current, history: past }
+          return view
+        },
+        'MY_TEAMS',
+        'Team memberships loaded.',
+      )
+    },
+    getRecruitmentManagement: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult<RecruitmentManagementView>>({
+          path: `/teams/${teamId}/recruitment`,
+        })
+      }
+      return apiCommand(
+        async () => readRecruitmentManagement(teamId),
+        'RECRUITMENT_MANAGEMENT',
+        'Recruitment management loaded.',
+      )
+    },
+    setRecruitmentSwitch: async (teamId, value) => {
+      if (!api) {
+        return transport.request<MockCommandResult<RecruitmentManagementView>>({
+          path: `/teams/${teamId}/recruitment-switch`,
+          method: 'PUT',
+          body: { value },
+        })
+      }
+      return apiCommand(
+        async () => {
+          await transport.request<TeamDto>({
+            path: `/teams/${teamId}/recruitment/switch`,
             method: 'PUT',
-            body: { value },
-          }),
-    submitRecruitmentRevision: (teamId, input) =>
-      api
-        ? unsupportedInApiMode('submitRecruitmentRevision')
-        : transport.request<MockCommandResult<RecruitmentManagementView>>({
-            path: `/teams/${teamId}/recruitment-revision`,
+            auth: 'required',
+            body: { state: value },
+          })
+          return readRecruitmentManagement(teamId)
+        },
+        'RECRUITMENT_SWITCH_UPDATED',
+        value === 'Open'
+          ? 'Recruitment opened to new applications.'
+          : 'Recruitment closed manually. Existing Pending applications stay reviewable.',
+      )
+    },
+    submitRecruitmentRevision: async (teamId, input) => {
+      if (!api) {
+        return transport.request<MockCommandResult<RecruitmentManagementView>>({
+          path: `/teams/${teamId}/recruitment-revision`,
+          method: 'POST',
+          body: input,
+        })
+      }
+      return apiCommand(
+        async () => {
+          const skillIds = await resolveSkillIds(input.requiredSkills)
+          await transport.request({
+            path: `/teams/${teamId}/recruitment/revisions`,
             method: 'POST',
-            body: input,
-          }),
+            auth: 'required',
+            body: {
+              name: input.teamName,
+              summary: input.summary,
+              capacity: input.capacity,
+              skillIds,
+            },
+          })
+          return readRecruitmentManagement(teamId)
+        },
+        'RECRUITMENT_SUBMITTED',
+        'Recruitment version submitted for review. It stays private until it is approved.',
+      )
+    },
     moderateRecruitment: (teamId, decision) =>
       api
         ? unsupportedInApiMode('moderateRecruitment')
@@ -302,41 +716,153 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
             method: 'POST',
             body: { decision },
           }),
-    getTeamOperations: (teamId) =>
-      api
-        ? unsupportedInApiMode('getTeamOperations')
-        : transport.request<MockCommandResult<TeamOperationsView>>({
-            path: `/teams/${teamId}/operations`,
-          }),
-    getActiveMemberContacts: (teamId) =>
-      api
-        ? unsupportedInApiMode('getActiveMemberContacts')
-        : transport.request<MockCommandResult<ActiveMemberContact[]>>({
-            path: `/teams/${teamId}/member-contacts`,
-          }),
-    leaveTeam: (teamId) =>
-      api
-        ? unsupportedInApiMode('leaveTeam')
-        : transport.request<MockCommandResult>({ path: `/teams/${teamId}/leave`, method: 'POST' }),
-    removeMember: (teamId, membershipId) =>
-      api
-        ? unsupportedInApiMode('removeMember')
-        : transport.request<MockCommandResult>({
-            path: `/teams/${teamId}/members/${membershipId}/remove`,
+    getTeamOperations: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult<TeamOperationsView>>({
+          path: `/teams/${teamId}/operations`,
+        })
+      }
+      return apiCommand(
+        async () => {
+          const [team, members, titles] = await Promise.all([
+            transport.request<TeamDto>({ path: `/teams/${teamId}`, auth: 'required' }),
+            transport.request<MemberDto[]>({
+              path: `/teams/${teamId}/members`,
+              auth: 'required',
+            }),
+            competitionTitles(),
+          ])
+          const user = await signedInUser()
+          const membership = members.find((member) => member.userId === user.id)
+          if (!membership) {
+            throw new ApiError('The team membership was not returned by the server.', {
+              kind: 'config',
+              code: 'MEMBERSHIP_NOT_FOUND',
+            })
+          }
+          const teamItem = toMyTeamItem(team, {
+            competitionTitle: titles.get(team.competitionId) ?? '',
+            membershipId: membership.id,
+            membershipStatus: 'Active',
+            membershipRole: membership.role,
+          })
+          return toTeamOperationsView(teamItem, members.map((member) => toTeamMemberView(member)))
+        },
+        'TEAM_OPERATIONS',
+        'Active team members loaded without contact fields.',
+      )
+    },
+    getActiveMemberContacts: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult<ActiveMemberContact[]>>({
+          path: `/teams/${teamId}/member-contacts`,
+        })
+      }
+      return apiCommand(
+        async () => {
+          const members = await transport.request<MemberDto[]>({
+            path: `/teams/${teamId}/members`,
+            auth: 'required',
+          })
+          const contacts: ActiveMemberContact[] = []
+          for (const member of members) {
+            // The captain reads the contact details of the other members.
+            if (member.role === 'Captain') continue
+            const contact = await transport.request<{
+              userId: string
+              wechatId: string | null
+              qqId: string | null
+            }>({
+              path: `/teams/${teamId}/members/${member.userId}/contact`,
+              auth: 'required',
+            })
+            contacts.push(
+              toActiveMemberContact(contact, {
+                membershipId: member.userId,
+                memberName: member.username,
+              }),
+            )
+          }
+          return contacts
+        },
+        'ACTIVE_MEMBER_CONTACTS',
+        'Current active-member contacts loaded for the current captain.',
+      )
+    },
+    leaveTeam: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/teams/${teamId}/leave`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request({ path: `/teams/${teamId}/leave`, method: 'POST', auth: 'required' })
+        },
+        'MEMBER_LEFT',
+        'You left the team. The historical membership was retained.',
+      )
+    },
+    removeMember: async (teamId, memberId) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/teams/${teamId}/members/${memberId}/remove`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request({
+            path: `/teams/${teamId}/members/${memberId}`,
+            method: 'DELETE',
+            auth: 'required',
+          })
+        },
+        'MEMBER_REMOVED',
+        'Member removed. The historical membership was retained.',
+      )
+    },
+    transferCaptain: async (teamId, memberId) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/teams/${teamId}/captain/transfer`,
+          method: 'POST',
+          body: { membershipId: memberId },
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request({
+            path: `/teams/${teamId}/captain`,
             method: 'POST',
-          }),
-    transferCaptain: (teamId, membershipId) =>
-      api
-        ? unsupportedInApiMode('transferCaptain')
-        : transport.request<MockCommandResult>({
-            path: `/teams/${teamId}/captain/transfer`,
+            auth: 'required',
+            body: { memberId },
+          })
+        },
+        'CAPTAIN_TRANSFERRED',
+        'Captaincy transferred immediately.',
+      )
+    },
+    dissolveTeam: async (teamId) => {
+      if (!api) {
+        return transport.request<MockCommandResult>({
+          path: `/teams/${teamId}/dissolve`,
+          method: 'POST',
+        })
+      }
+      return apiCommandWithoutData(
+        async () => {
+          await transport.request({
+            path: `/teams/${teamId}/dissolve`,
             method: 'POST',
-            body: { membershipId },
-          }),
-    dissolveTeam: (teamId) =>
-      api
-        ? unsupportedInApiMode('dissolveTeam')
-        : transport.request<MockCommandResult>({ path: `/teams/${teamId}/dissolve`, method: 'POST' }),
+            auth: 'required',
+          })
+        },
+        'TEAM_DISSOLVED',
+        'Team dissolved. Pending applications were invalidated and history was retained.',
+      )
+    },
     getPlannerView: (date, mode) =>
       api
         ? unsupportedInApiMode('getPlannerView')

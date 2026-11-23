@@ -9,6 +9,7 @@ import PersonaSwitcher from '../../components/PersonaSwitcher.vue'
 import StatePanel from '../../components/StatePanel.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
 const applications = ref<ApplicationHistoryItem[]>([])
@@ -21,9 +22,11 @@ onShow(initialize)
 
 async function initialize() {
   loading.value = true
-  const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
-  actors.value = available.filter((actor) => ['visitor', 'student-alex'].includes(actor.id))
-  actorId.value = current.id
+  if (personaAvailable) {
+    const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
+    actors.value = available.filter((actor) => ['visitor', 'student-alex'].includes(actor.id))
+    actorId.value = current.id
+  }
   await loadHistory()
 }
 async function loadHistory() {
@@ -51,11 +54,12 @@ function reapply(item: ApplicationHistoryItem) {
 }
 function statusClass(status: string) { return `status--${status.toLowerCase()}` }
 function openCaptainReview() { uni.navigateTo({ url: '/pages/captain/review' }) }
-function browseTeamAlpha() { uni.navigateTo({ url: '/pages/recruitment/detail?id=team-alpha' }) }
+/** The Mock team id only exists in the prototype, so API mode browses the real list. */
+function browseRecruitment() { if (personaAvailable) uni.navigateTo({ url: '/pages/recruitment/detail?id=team-alpha' }); else uni.reLaunch({ url: '/pages/index/index' }) }
 </script>
 
 <template>
-  <view class="page-shell"><CsHeader back demo eyebrow="Recruitment" title="My applications" @demo="labOpen = true" />
+  <view class="page-shell"><CsHeader back :demo="personaAvailable" eyebrow="Recruitment" title="My applications" @demo="labOpen = true" />
     <view class="content">
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
       <StatePanel v-if="loading" title="Loading application history" message="Getting your latest application records." />
@@ -72,9 +76,9 @@ function browseTeamAlpha() { uni.navigateTo({ url: '/pages/recruitment/detail?id
           <button v-else-if="item.canReapply" class="action" @click="reapply(item)">Check eligibility and reapply</button>
         </view>
       </view>
-      <button class="browse-link" @click="browseTeamAlpha">Browse Team Alpha recruitment</button>
+      <button class="browse-link" @click="browseRecruitment">{{ personaAvailable ? 'Browse Team Alpha recruitment' : 'Browse published recruitment' }}</button>
       <button class="captain-link" @click="openCaptainReview">Captain review</button>
-    </view><PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
+    </view><PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
 </template>
 
 <style scoped>

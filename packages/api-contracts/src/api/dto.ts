@@ -90,6 +90,58 @@ export interface MemberDto {
   role: 'Captain' | 'Member'
 }
 
+/**
+ * The body of a recruitment revision. The backend stores the skill *ids* the
+ * captain picked from the administrator catalog, not their names.
+ */
+export interface RecruitmentSettingsPayloadDto {
+  name: string
+  summary: string
+  capacity: number
+  skillIds: string[]
+}
+
+/** The revision created by `POST /teams` when `submitRecruitment` is true. */
+export interface RecruitmentRevisionDto {
+  id: string
+  teamId: string
+  status: string
+  publication?: string
+  proposed?: RecruitmentSettingsPayloadDto
+}
+
+/** One row of `GET /teams/{team_id}/recruitment/revisions`. */
+export interface RecruitmentRevisionRowDto {
+  id: string
+  status: string
+  payload: RecruitmentSettingsPayloadDto
+  reason: string | null
+  createdAt: string
+}
+
+export interface TeamCreatedDto extends TeamDto {
+  revision: RecruitmentRevisionDto | null
+}
+
+/** One row of `GET /me/team-history`. */
+export interface TeamHistoryDto {
+  id: string
+  teamId: string
+  teamName: string
+  competitionId: string
+  status: MembershipStatus
+  joinedAt: string
+  endedAt: string | null
+  reason: string | null
+  lifecycle: TeamLifecycle
+  publication: RecruitmentPublicationStatus
+  recruitmentSwitch: RecruitmentSwitch
+  capacity: number
+  captainUsername: string | null
+  memberCount: number
+  role: 'Captain' | 'Member'
+}
+
 export interface ContactDto {
   userId: string
   wechatId: string | null

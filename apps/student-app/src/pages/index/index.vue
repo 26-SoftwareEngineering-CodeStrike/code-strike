@@ -10,6 +10,7 @@ import { createStudentApiClient } from '../../api/client'
 import { toStatePanel } from '../../api/error-presentation'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const query = ref('')
 const competitions = ref<CompetitionSummary[]>([])
 const loading = ref(true)
@@ -27,7 +28,7 @@ loadCompetitions()
 
 <template>
   <view class="page-shell">
-    <CsHeader demo eyebrow="Campus competitions" title="Discover" @demo="labOpen = true" />
+    <CsHeader :demo="personaAvailable" eyebrow="Campus competitions" title="Discover" @demo="labOpen = true" />
     <view class="content">
       <view class="intro"><text class="intro__title">Find your next competition</text><text class="intro__copy">Explore published opportunities, communities and teams in one place.</text></view>
       <view class="search-box">
@@ -44,7 +45,7 @@ loadCompetitions()
       <view v-else class="competition-grid"><CompetitionCard v-for="competition in filteredCompetitions" :key="competition.id" :competition="competition" @open="openCompetition" /></view>
 
     </view>
-    <view v-show="labOpen" class="prototype-overlay"><button class="prototype-overlay__backdrop" aria-label="Close Prototype Lab" @click="labOpen = false" /><view class="prototype-sheet" role="dialog" aria-label="Prototype Lab"><view class="prototype-sheet__head"><view><text class="prototype-sheet__title">Prototype Lab</text><text class="prototype-sheet__copy">Local display controls only</text></view><button class="prototype-sheet__close" aria-label="Close Prototype Lab" @click="labOpen = false">×</button></view><text class="prototype-sheet__note">This control changes a deterministic Mock response. It is not authentication or a backend connection.</text><button class="prototype-sheet__action" @click="loadCompetitions(true); labOpen = false">Simulate failure</button></view></view>
+    <view v-if="personaAvailable" v-show="labOpen" class="prototype-overlay"><button class="prototype-overlay__backdrop" aria-label="Close Prototype Lab" @click="labOpen = false" /><view class="prototype-sheet" role="dialog" aria-label="Prototype Lab"><view class="prototype-sheet__head"><view><text class="prototype-sheet__title">Prototype Lab</text><text class="prototype-sheet__copy">Local display controls only</text></view><button class="prototype-sheet__close" aria-label="Close Prototype Lab" @click="labOpen = false">×</button></view><text class="prototype-sheet__note">This control changes a deterministic Mock response. It is not authentication or a backend connection.</text><button class="prototype-sheet__action" @click="loadCompetitions(true); labOpen = false">Simulate failure</button></view></view>
     <CsBottomNav active="Competitions" />
   </view>
 </template>

@@ -9,6 +9,7 @@ import PersonaSwitcher from '../../components/PersonaSwitcher.vue'
 import StatePanel from '../../components/StatePanel.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
 const queue = ref<CaptainPendingApplication[]>([])
@@ -22,11 +23,26 @@ const labOpen = ref(false)
 onLoad((options) => { if (typeof options?.id === 'string') { targetTeamId.value = options.id; hasExplicitTeam.value = true } })
 onShow(initialize)
 async function initialize() {
-  const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
-  actors.value = available.filter((actor) => ['visitor', 'captain-alpha', 'captain-delta', 'former-captain-alpha', 'admin-reviewer'].includes(actor.id))
-  actorId.value = current.id
-  if (!targetTeamId.value && current.captainTeamId) targetTeamId.value = current.captainTeamId
+  if (personaAvailable) {
+    const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
+    actors.value = available.filter((actor) => ['visitor', 'captain-alpha', 'captain-delta', 'former-captain-alpha', 'admin-reviewer'].includes(actor.id))
+    actorId.value = current.id
+    if (!targetTeamId.value && current.captainTeamId) targetTeamId.value = current.captainTeamId
+  } else if (!targetTeamId.value) {
+    await resolveCaptainTeam()
+  }
   await loadQueue()
+}
+
+/**
+ * API mode has no demo persona, so the captain team comes from the memberships
+ * the server reports. A team id in the URL never grants the captain scope: the
+ * server checks the current captain of that team.
+ */
+async function resolveCaptainTeam() {
+  const result = await api.listMyTeams()
+  if (!result.ok || !result.data) { errorMessage.value = result.message; return }
+  targetTeamId.value = result.data.current.find((team) => team.membershipRole === 'Captain')?.id ?? ''
 }
 async function selectActor(id: string) {
   const result = await api.selectPrototypeActor(id)
@@ -56,7 +72,7 @@ function openRevisionReview() { uni.navigateTo({ url: `/pages/prototype/recruitm
 </script>
 
 <template>
-  <view class="page-shell"><CsHeader back demo eyebrow="Team applications" title="Captain review" @demo="labOpen = true" />
+  <view class="page-shell"><CsHeader back :demo="personaAvailable" eyebrow="Team applications" title="Captain review" @demo="labOpen = true" />
     <view class="content">
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
       <StatePanel v-if="loading" title="Loading pending applications" message="Getting applications for this team." />
@@ -71,7 +87,7 @@ function openRevisionReview() { uni.navigateTo({ url: `/pages/prototype/recruitm
           <view class="actions"><button class="reject" @click="process(item, 'reject')">Reject</button><button class="approve" @click="process(item, 'approve')">Approve</button></view>
         </view>
       </view>
-    </view><PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false"><template #tools><view v-if="targetTeamId === 'team-delta' && (actorId === 'captain-delta' || actorId === 'admin-reviewer')" class="review-lab"><text class="review-lab__label">Recruitment review</text><text class="review-lab__copy">Inspect this team's approved and proposed recruitment versions.</text><button @click="openRevisionReview">Inspect revision differences</button></view></template></PersonaSwitcher><CsBottomNav active="Teams" /></view>
+    </view><PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false"><template #tools><view v-if="targetTeamId === 'team-delta' && (actorId === 'captain-delta' || actorId === 'admin-reviewer')" class="review-lab"><text class="review-lab__label">Recruitment review</text><text class="review-lab__copy">Inspect this team's approved and proposed recruitment versions.</text><button @click="openRevisionReview">Inspect revision differences</button></view></template></PersonaSwitcher><CsBottomNav active="Teams" /></view>
 </template>
 
 <style scoped>
