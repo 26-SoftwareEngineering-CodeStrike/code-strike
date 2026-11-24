@@ -1,0 +1,155 @@
+check      : The build result that the picture is rendered from
+command    : bash -c cd '/d/Project/VSCode/code-strike' && {
+    echo 'CodeStrike WeChat mini program build result'
+    echo 'branch:' 'feat/9-weixin-readiness'
+    echo 'sha   :' 'd78ac52609a1f83c1f6cbecc29962d010f1af144'
+    echo 'executed:' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+    echo
+    echo '--- the workspace type check ---'
+    cat '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/logs/type-check.txt'
+    echo
+    echo '--- the mini program build, API mode ---'
+    cat '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/logs/build-mp-weixin-api.txt'
+    echo
+    echo '--- the built package, API mode ---'
+    cat '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/logs/verify-build-mp-weixin-api.txt'
+    echo
+    echo '--- the HTTP method audit ---'
+    cat '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/logs/compatibility-audit.txt'
+  }
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:49:00Z
+--- output ---
+CodeStrike WeChat mini program build result
+branch: feat/9-weixin-readiness
+sha   : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed: 2026-11-24T02:49:00Z
+
+--- the workspace type check ---
+check      : The workspace type check
+command    : bash -c cd '/d/Project/VSCode/code-strike' && pnpm type-check
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:47:53Z
+--- output ---
+$ pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check
+$ tsc --noEmit
+$ vue-tsc --noEmit
+$ vue-tsc -b
+--- end of output ---
+exit code  : 0
+result     : PASS
+
+--- the mini program build, API mode ---
+check      : The WeChat mini program production build, API mode
+command    : bash -c cd '/d/Project/VSCode/code-strike' && VITE_USE_MOCK=false VITE_API_BASE_URL='https://api.example.invalid/api/v1' pnpm build:student:mp-weixin
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:15Z
+--- output ---
+$ pnpm --filter @codestrike/student-app build:mp-weixin
+$ uni build -p mp-weixin
+Compiler version: 5.26（vue3）
+Compiling...
+
+uni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.34.2026102909.html
+DONE  Build complete.
+Run method: open Weixin Mini Program Devtools, import [36mdist\build\mp-weixin[39m run.
+--- end of output ---
+exit code  : 0
+result     : PASS
+
+--- the built package, API mode ---
+check      : The built mini program package, API mode
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-t9-weixin-build.mjs
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:25Z
+--- output ---
+build output : D:\Project\VSCode\code-strike\apps\student-app\dist\build\mp-weixin
+expected app id: wxa551256ce5fab6a7
+compiled api base url: https://api.example.invalid/api/v1
+
+PASS: project.config.json carries the expected AppID — appid=wxa551256ce5fab6a7
+PASS: the project name is not empty — projectname="CodeStrike"
+PASS: the legal domain check is enabled in the built package — urlCheck=true
+PASS: the package is a mini program — compileType=miniprogram
+PASS: app.json lists its pages — 17 pages
+PASS: every page has its four compiled files — 17 pages complete
+PASS: the pages directory is present — 10 page directories
+PASS: the package declares no native tabBar — the custom bottom navigation is used instead
+PASS: the static directory is present — 1 files
+PASS: the main package is under the 2 MB limit — 342.1 KiB of 2048 KiB
+PASS: the compiled bundle carries exactly one transport mode — API mode (VITE_USE_MOCK=false)
+PASS: the compiled base url is usable on a device — https
+
+RESULT: PASS (0 failures)
+--- end of output ---
+exit code  : 0
+result     : PASS
+
+--- the HTTP method audit ---
+check      : The HTTP methods the client sends against the documented mini program method set
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-t9-weixin-compatibility.mjs
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:49Z
+--- output ---
+WeChat mini program HTTP method audit
+============================================================
+source scanned : apps\student-app\src, packages\api-contracts\src
+methods used   : DELETE, PATCH, POST, PUT
+documented set : OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+
+ok      POST    apps\student-app\src\api\client.ts:363  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:405  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:413  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:432  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:439  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:451  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:469  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:513  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:520  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:533  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:540  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:553  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:562  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:663  method: 'PUT',
+ok      PUT     apps\student-app\src\api\client.ts:671  method: 'PUT',
+ok      POST    apps\student-app\src\api\client.ts:687  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:696  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:716  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:796  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:801  await transport.request({ path: `/teams/${teamId}/leave`, method: 'POST', auth: 'required' })
+ok      POST    apps\student-app\src\api\client.ts:811  method: 'POST',
+ok      DELETE  apps\student-app\src\api\client.ts:818  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:830  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:838  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:851  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:858  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:881  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:889  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:903  method: 'PUT',
+ok      DELETE  apps\student-app\src\api\client.ts:911  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:918  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:924  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:934  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:943  await transport.request<{ message: string }>({ path: '/auth/logout', method: 'POST' })
+FINDING PATCH   apps\student-app\src\api\client.ts:974  method: 'PATCH',
+
+RESULT: FINDING — PATCH is outside the documented mini program method set.
+The runtime behaviour of that method on the simulator or a device is NOT VERIFIED
+by this check and has to be tested manually in the WeChat Developer Tools.
+
+The backend already answers the same route with a documented method:
+  PATCH /profiles/me -> partial update, only the fields that were sent
+  PUT   /profiles/me -> full replace, every field falls back to its empty default
+A switch to PUT therefore also needs the client to send the whole profile,
+otherwise the fields that are left out are cleared.
+--- end of output ---
+exit code  : 0
+result     : PASS
+--- end of output ---
+exit code  : 0
+result     : PASS

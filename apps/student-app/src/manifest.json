@@ -1,5 +1,5 @@
 {
-    "name" : "",
+    "name" : "CodeStrike",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,9 +50,9 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxa551256ce5fab6a7",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : true
         },
         "usingComponents" : true
     },

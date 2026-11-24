@@ -15,6 +15,7 @@ and no result is asserted that was not observed.
 | `t2-shared-http/` | The T2 round: shared contracts, the HTTP transport for both clients and the verification executed against the `feat/2-shared-http` branch. |
 | `t3-auth-profile/` | The T3 round: the isolated MySQL 8.4 environment, the account and profile integration and the verification executed against the `feat/3-auth-profile` branch. |
 | `t4-competitions-teams/` | The T4 round: the contract audit, the recruitment, application and captain admission integration, and the verification executed against the `feat/4-competitions-teams` branch. |
+| `t9-weixin-readiness/` | The WeChat mini program preparation for T9: the AppID configuration, the package builds in both transport modes, the platform compatibility audit and the deployment posture audit. The mini program itself was **not** started, because the WeChat Developer Tools are not installed on this machine. |
 | `sprint-essay-1/` | The burn-up record of the first sprint essay, covering 2026-11-21 and 2026-11-22. |
 
 `sprint-baseline` is a snapshot of inherited material. `sprint-new` is the output of this

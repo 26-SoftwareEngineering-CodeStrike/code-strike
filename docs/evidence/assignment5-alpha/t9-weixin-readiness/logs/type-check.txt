@@ -1,0 +1,13 @@
+check      : The workspace type check
+command    : bash -c cd '/d/Project/VSCode/code-strike' && pnpm type-check
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:47:53Z
+--- output ---
+$ pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check
+$ tsc --noEmit
+$ vue-tsc --noEmit
+$ vue-tsc -b
+--- end of output ---
+exit code  : 0
+result     : PASS

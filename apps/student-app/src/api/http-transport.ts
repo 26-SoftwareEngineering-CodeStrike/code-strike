@@ -14,8 +14,14 @@ export interface StudentHttpTransportOptions {
 type UniRequestMethod = NonNullable<UniApp.RequestOptions['method']>
 
 /**
- * Bridges `uni.request` onto the shared transport adapter. The uni method
- * union omits PATCH although XHR and the mini program network stack accept it.
+ * Bridges `uni.request` onto the shared transport adapter.
+ *
+ * The uni method union omits PATCH, and the WeChat mini program network API
+ * documents the same list, so PATCH is outside the documented set. Whether the
+ * mini program actually refuses it has not been tested on a simulator or a
+ * device, so the cast below is a plain widening and not a claim that the
+ * platform supports the method. `scripts/verify-t9-weixin-compatibility.mjs`
+ * reports every method the client sends that is outside the documented set.
  */
 function toUniMethod(method: string): UniRequestMethod {
   return method as UniRequestMethod

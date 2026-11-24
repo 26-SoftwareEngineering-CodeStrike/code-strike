@@ -1,0 +1,38 @@
+check      : The three screens, captured from the H5 bundle against the real backend
+command    : bash -c cd '/d/Project/VSCode/code-strike' && bash scripts/run-with-server-env.sh node '/d/Project/VSCode/code-strike/scripts/collect-t9-weixin-evidence.mjs' 'ws://127.0.0.1:9228/devtools/page/2E26481C3CD772DEFC28B709359664FA' 'http://127.0.0.1:4173' '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/screenshots' 'http://127.0.0.1:8000/api/v1'
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:49:16Z
+--- output ---
+=== T9 WECHAT MINI PROGRAM READINESS (t9mp_student_mwu3j16y) ===
+captured A5_MP_04_Account_Login.png
+API 200 OPTIONS /auth/login
+API 200 POST /auth/login
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /profiles/me
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 GET /profiles/me
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /competitions?limit=100
+API 200 GET /auth/me
+API 200 GET /competitions?limit=100
+captured A5_MP_03_Competition_Home.png
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /profiles/me
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 GET /profiles/me
+captured A5_MP_05_Profile_API_Test.png
+
+competition home shows the search field: true
+the profile shows the name from the API: true
+
+NOTE: these three pictures are H5 captures. The mini program screens are NOT VERIFIED.
+--- end of output ---
+exit code  : 0
+result     : PASS

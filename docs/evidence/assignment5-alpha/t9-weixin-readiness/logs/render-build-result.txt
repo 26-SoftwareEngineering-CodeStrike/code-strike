@@ -1,0 +1,10 @@
+check      : The build result picture
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/render-evidence-log.mjs '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/logs/build-result.txt' '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/screenshots/A5_MP_01_Build_Result.png' 'CodeStrike WeChat mini program build result'
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:49:00Z
+--- output ---
+wrote D:/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t9-weixin-readiness/screenshots/A5_MP_01_Build_Result.png
+--- end of output ---
+exit code  : 0
+result     : PASS
