@@ -1,30 +1,34 @@
 import type { TokenStore } from '@codestrike/contracts'
 
-const ADMIN_TOKEN_KEY = 'codestrike:admin-access-token'
+export const ADMIN_TOKEN_KEY = 'codestrike:admin-access-token'
 
 /** The admin console is a browser application, so it keeps the bearer token in localStorage. */
 export function createAdminTokenStore(): TokenStore {
+  let memory: string | null = null
+  let storageAvailable = true
   return {
     get() {
       try {
-        const value = globalThis.localStorage?.getItem(ADMIN_TOKEN_KEY)
-        return value && value.length > 0 ? value : null
+        if (!storageAvailable || !globalThis.localStorage) return memory
+        return globalThis.localStorage.getItem(ADMIN_TOKEN_KEY) || null
       } catch {
-        return null
+        return memory
       }
     },
     set(token) {
+      memory = token
       try {
         globalThis.localStorage?.setItem(ADMIN_TOKEN_KEY, token)
       } catch {
-        // Storage can be blocked by the browser; the token then lives for this session only.
+        storageAvailable = false
       }
     },
     clear() {
+      memory = null
       try {
         globalThis.localStorage?.removeItem(ADMIN_TOKEN_KEY)
       } catch {
-        // A failed removal leaves no usable token behind either way.
+        storageAvailable = false
       }
     },
   }

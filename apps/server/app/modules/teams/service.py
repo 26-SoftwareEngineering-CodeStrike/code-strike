@@ -440,11 +440,12 @@ def recruitment_revisions(session: Session, token: str, team_id: str):
     return _run(session, token, operation, team_id=team_id)
 
 
-def moderation_queue(session: Session, token: str, offset: int, limit: int):
+def moderation_queue(session: Session, token: str, offset: int, limit: int, status="Pending"):
     with session.begin():
         require_actor(session, token, role="Admin")
-        return [{"id": r.id, "teamId": r.team_id, "status": r.status, "proposed": r.payload}
-                for r in session.scalars(select(RecruitmentRevision).where(RecruitmentRevision.status == "Pending")
+        return [{"id": r.id, "teamId": r.team_id, "status": r.status, "proposed": r.payload, "removed": removed}
+                for r, removed in session.execute(select(RecruitmentRevision, Team.recruitment_removed)
+                .join(Team, Team.id == RecruitmentRevision.team_id).where(RecruitmentRevision.status == status)
                 .order_by(RecruitmentRevision.created_at, RecruitmentRevision.id).offset(offset).limit(limit))]
 
 
@@ -454,7 +455,7 @@ def moderate(session: Session, token: str, revision_id: str, decision: str | Non
                              .with_for_update().execution_options(populate_existing=True))
         if decision is None:
             return {"id": rev.id, "teamId": team.id, "status": rev.status, "proposed": rev.payload,
-                    "effective": team_view(session, team), "reason": rev.reason}
+                    "effective": team_view(session, team), "reason": rev.reason, "removed": team.recruitment_removed}
         if team.lifecycle != "Active" or team.recruitment_removed or team.latest_revision_id != rev.id or rev.status != "Pending":
             raise DomainError("STALE_REVISION", "Cannot moderate a stale, deleted or processed revision.")
         if decision == "Approved":

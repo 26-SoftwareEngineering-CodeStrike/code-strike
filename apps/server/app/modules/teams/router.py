@@ -1,3 +1,4 @@
+from typing import Literal
 from fastapi import APIRouter, Depends, Query
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
@@ -121,8 +122,9 @@ def dissolve(team_id: str, token: str = Depends(bearer_token), session: Session 
 
 @router.get("/moderation/recruitments")
 def moderation_queue(offset: int = Query(0, ge=0), limit: int = Query(50, ge=1, le=100),
+                     status: Literal["Pending", "Approved", "Rejected", "Superseded"] = "Pending",
                      token: str = Depends(bearer_token), session: Session = Depends(get_session)):
-    return service.moderation_queue(session, token, offset, limit)
+    return service.moderation_queue(session, token, offset, limit, status)
 
 
 @router.get("/moderation/recruitments/{revision_id}")
