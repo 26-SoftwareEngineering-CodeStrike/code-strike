@@ -34,6 +34,9 @@ export function createUniRequestAdapter(): TransportAdapter {
         url: request.url,
         method: toUniMethod(request.method),
         header: request.header,
+        ...(request.header.Accept === 'image/png, image/jpeg'
+          ? { responseType: 'arraybuffer' as const, dataType: 'other' }
+          : {}),
         data: request.data as string | AnyObject | ArrayBuffer | undefined,
         timeout: request.timeout,
         success: (response) => {

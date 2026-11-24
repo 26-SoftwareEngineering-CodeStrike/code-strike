@@ -60,6 +60,8 @@ import type {
 } from '@codestrike/contracts'
 import { ApiError } from '@codestrike/contracts/http'
 import { createStudentHttpTransport } from './http-transport'
+import { createCommunityApi } from './community'
+import type { CommunityApi } from './community'
 import { MockTransport } from './mock-transport'
 import {
   applySession,
@@ -71,6 +73,7 @@ import {
 import { appTokenStore } from './token-store'
 
 export interface StudentApiClient {
+  readonly community: CommunityApi | null
   /**
    * False in API mode. The Prototype Lab switches local Mock personas only and
    * must never be presented as a way of obtaining a server-side identity.
@@ -286,6 +289,7 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
 
   return {
     personaSwitchingAvailable: !api,
+    community: api ? createCommunityApi(transport) : null,
     listCompetitions: async (options) => {
       if (!api) {
         return transport.request<CompetitionSummary[]>({

@@ -1,0 +1,25 @@
+.cm-page { max-width: 720px; margin: 0 auto; padding: 20px 16px calc(120px + env(safe-area-inset-bottom)); }
+.cm-stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.cm-card { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 18px; background: #fff; border: 1px solid #dfe4ea; border-radius: 14px; }
+.cm-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.cm-heading { color: #14213d; font-size: 19px; font-weight: 750; line-height: 1.35; overflow-wrap: anywhere; }
+.cm-meta { color: #526174; font-size: 14px; overflow-wrap: anywhere; }
+.cm-body { color: #25344c; font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cm-primary, .cm-action, .cm-danger { min-height: 44px; margin: 0; padding: 8px 14px; border-radius: 10px; font-size: 15px; line-height: 1.5; font-weight: 650; }
+.cm-primary { color: #fff; background: #2563eb; }
+.cm-action { color: #204ea5; background: #eef3fb; }
+.cm-danger { color: #a3312b; background: #fff0ee; }
+.cm-active { color: #fff; background: #214d9c; }
+.cm-label { display: block; color: #344054; font-size: 15px; font-weight: 650; }
+.cm-input, .cm-textarea { width: 100%; margin-top: 5px; padding: 10px 12px; color: #14213d; background: #f7f9fb; border: 1px solid #cdd6e1; border-radius: 10px; font-size: 16px; font-weight: 400; }
+.cm-input { height: 46px; }
+.cm-textarea { height: 112px; }
+.cm-error, .cm-success { display: block; padding: 10px 12px; border-radius: 9px; overflow-wrap: anywhere; font-size: 15px; }
+.cm-error { color: #8a302b; background: #fff0ee; }
+.cm-success { color: #075b49; background: #edf8f4; }
+.cm-preview { display: block; width: 100%; max-width: 440px; height: 180px; background: #f5f7fa; border-radius: 10px; }
+.cm-image-button { width: 100%; margin: 0; padding: 0; background: transparent; }
+.cm-post-link { width: 100%; margin: 0; text-align: left; line-height: 1.45; }
+.cm-excerpt { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.cm-reply { padding-left: 14px; border-left: 3px solid #bacbe6; }
+@media (min-width: 680px) { .cm-page { padding-top: 28px; } }
