@@ -31,8 +31,10 @@ export function createFetchAdapter(): TransportAdapter {
         body: request.data === undefined ? undefined : JSON.stringify(request.data),
         signal: controller.signal,
       })
-      const text = await response.text()
-      const data: TransportAdapterResponse['data'] = parseJsonPayload(text)
+      const image = response.ok && response.headers.get('content-type')?.startsWith('image/')
+      const data: TransportAdapterResponse['data'] = image
+        ? await response.blob()
+        : parseJsonPayload(await response.text())
       return { statusCode: response.status, data, header: readHeaders(response.headers) }
     } catch (reason) {
       if (controller.signal.aborted) {

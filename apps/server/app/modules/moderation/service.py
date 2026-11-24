@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from app.core.exceptions import DomainError
 from app.core.security import require_actor
 from app.modules.competitions.models import CompetitionSubmission, CompetitionSubmissionRevision
@@ -20,7 +20,8 @@ def revision_data(session, kind, obj, rev):
         payload = post_view(session, obj, rev)
     else:
         payload = comment_view(session, obj, rev)
-    return dict(id=rev.id, revisionId=rev.id, targetId=obj.id, kind=kind, status=rev.status, proposed=payload)
+    return dict(id=rev.id, revisionId=rev.id, targetId=obj.id, kind=kind, status=rev.status,
+                removed=getattr(obj, 'removed', False), deleted=obj.deleted, proposed=payload)
 
 
 def locate(session, revision_id):
@@ -38,14 +39,30 @@ def locate(session, revision_id):
     raise DomainError('NOT_FOUND', 'Revision not found.', 404)
 
 
+def revision_query(kind, status):
+    cls, rev_cls, fk = KINDS[kind]
+    query = select(rev_cls, cls).join(cls, cls.id == getattr(rev_cls, fk)).where(rev_cls.status == status)
+    if status == 'Pending':
+        query = query.where(cls.deleted.is_(False), cls.latest_revision_id == rev_cls.id)
+        if kind in ('Post', 'Comment'):
+            query = query.where(cls.removed.is_(False))
+        if kind == 'Comment':
+            query = query.join(Post, Post.id == Comment.post_id).where(Post.deleted.is_(False), Post.removed.is_(False))
+    return query
+
+
+def pending_count(session):
+    return sum(session.scalar(revision_query(kind, 'Pending').with_only_columns(
+        func.count(), maintain_column_froms=True)) for kind in KINDS)
+
+
 def listing(session, token, offset, limit, status='Pending'):
     with session.begin():
         require_actor(session, token, 'Admin')
         # Bounded per-type fetch, then stable combined pagination.
         candidates = []
-        for kind, (cls, rev_cls, fk) in KINDS.items():
-            query = select(rev_cls, cls).join(cls, cls.id == getattr(rev_cls, fk)).where(rev_cls.status == status)
-            query = query.order_by(rev_cls.created_at, rev_cls.id).limit(offset+limit)
+        for kind, (_, rev_cls, _) in KINDS.items():
+            query = revision_query(kind, status).order_by(rev_cls.created_at, rev_cls.id).limit(offset+limit)
             for rev, obj in session.execute(query):
                 candidates.append((rev.created_at, rev.id, revision_data(session, kind, obj, rev)))
         candidates.sort(key=lambda v: (v[0], v[1]))

@@ -221,6 +221,8 @@ def test_recruitment_increase_stays_closed_and_remove_revokes(client, team_facto
                     json={'decision':'Approved'})
     assert r.status_code == 200, r.text
     assert r.json()['team']['recruitmentSwitch'] == 'Closed'
+    approved = client.get('/api/v1/moderation/recruitments', params={'status': 'Approved'}, headers=admin_headers)
+    assert any(row['id'] == revision['id'] and not row['removed'] for row in approved.json())
     assert client.delete(f"/api/v1/teams/{team['id']}/members/{uid}", headers=captain).status_code == 200
     assert client.get(f"/api/v1/teams/{team['id']}/members", headers=student).status_code == 403
     assert client.put(f"/api/v1/teams/{team['id']}/recruitment/switch", headers=captain, json={'state':'Open'}).status_code == 200
