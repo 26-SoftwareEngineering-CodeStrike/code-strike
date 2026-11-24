@@ -1,0 +1,45 @@
+check      : The recruitment, application and membership rows read back from MySQL
+command    : bash -c cd '/d/Project/VSCode/code-strike' && bash scripts/run-with-server-env.sh '/d/Project/VSCode/code-strike/.test-venv/Scripts/python.exe' '/d/Project/VSCode/code-strike/scripts/verify-t4-database-state.py'
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:43:02Z
+--- output ---
+competition       : T4 open Competition mwtdjtub
+competition id    : 1495ffb9-e676-444b-ae1c-4d5d6560e3d4
+team              : Signal Forge
+team id           : d44d46ae-5dde-4ba8-ac99-288e0f0a5f48
+publication       : Published
+recruitment switch: Closed
+captain account   : t4_captain_mwtdjtmt_l9fz (role Student)
+applicant account : t4_applicantb_mwtdjtmt_hpzb (role Student)
+outsider account  : t4_outsider_mwtdjtmt_3u7o (role Student)
+application id    : 5cfe2688-ae16-4e10-b386-7f677f1248cd
+application status: Approved
+
+PASS: the team row exists in MySQL
+PASS: the team row records the captain as its captain
+PASS: the publication state is Published in MySQL
+PASS: the team lifecycle is Active in MySQL
+PASS: the team has exactly two active members in MySQL (found 2)
+PASS: the captain is an active membership row
+PASS: the applicant is an active membership row
+PASS: the outsider has no membership row in the team
+PASS: every membership row points at the competition of the team
+PASS: the application row exists in MySQL
+PASS: the application status is Approved in MySQL
+PASS: the application row records the applicant
+PASS: the application row records when it was decided
+PASS: the team has exactly one approved application row (found 1)
+PASS: the team has a recruitment revision row
+PASS: the recruitment revision row is Approved
+PASS: the generated membership and application guards exist in MySQL
+PASS: the generated guards are computed columns
+PASS: the active membership rows count the captain and the member (found 2)
+PASS: the team never holds more active members than its capacity
+PASS: the approved applicant has no Pending application left
+PASS: the outsider never has an application row in this team
+
+RESULT: PASS (0 failures)
+--- end of output ---
+exit code  : 0
+result     : PASS

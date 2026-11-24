@@ -1,0 +1,165 @@
+check      : The real H5 team flow against the backend and MySQL 8.4
+command    : bash -c cd '/d/Project/VSCode/code-strike' && bash scripts/run-with-server-env.sh node '/d/Project/VSCode/code-strike/scripts/verify-t4-h5-teams.mjs' 'ws://127.0.0.1:9222/devtools/page/ABC45BF9458B8B255FFA00246D047ADB' 'http://127.0.0.1:4173' '/d/Project/VSCode/code-strike/docs/evidence/assignment5-alpha/t4-competitions-teams/screenshots' 'http://127.0.0.1:8000/api/v1'
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:43:06Z
+--- output ---
+=== T4 H5 TEAM FLOW (T4 Browser Competition mwtdl5vn) ===
+API 200 GET /competitions?limit=100
+PASS: the published competition appears in the competition list
+PASS: the competition search field is rendered
+PASS: the search field accepts the competition name
+PASS: the search keeps the matching competition
+PASS: the search removes the other competitions
+PASS: the competition card is opened
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+PASS: the competition detail page is rendered
+PASS: the competition detail shows the real competition
+PASS: the competition detail reports the real registration state
+PASS: the username field accepts the account name
+PASS: the password field accepts the password
+PASS: the sign-in button is pressed
+API 200 OPTIONS /auth/login
+API 200 POST /auth/login body={"username":"t4ui_captain_mwtdl5vn","password":"<redacted>"}
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /profiles/me
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 GET /profiles/me
+PASS: the session is established for t4ui_captain_mwtdl5vn
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /skills
+API 200 GET /auth/me
+API 200 GET /skills
+API 200 OPTIONS /competitions?limit=100
+API 200 GET /competitions?limit=100
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+PASS: the team creation form renders
+PASS: the competition picker shows the published competition
+PASS: the skill catalogue of the server is offered
+PASS: the team name field accepts a value
+PASS: the team summary field accepts a value
+PASS: the recruitment submission switch is turned on
+PASS: a second required skill tag is selected
+PASS: both required skill tags are selected
+PASS: the framework kept the team name
+PASS: the framework kept the team summary
+PASS: the create team button is pressed
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 OPTIONS /teams
+API 201 POST /teams body={"competitionId":"9f3204da-28df-4b93-b847-8f7dde3c9893","name":"Signal Forge","summary":"A campus navigation concept built in the browser evidence run.","capacity":4,"skillIds":["742c1e8a-cd30-4918-84b3-f3c57b751628","390a3024-c1cc-432a-b0e4-e734601cb71c"],"submitRecruitment":true}
+API 200 OPTIONS /competitions
+API 200 GET /competitions
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+PASS: the server confirms the new team
+PASS: the first recruitment version was submitted for review
+PASS: the captain is the first member of the new team
+PASS: the administrator published the recruitment revision
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /auth/me
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893/recruitments
+PASS: the recruitment tab is opened
+PASS: the published recruitment appears in the competition
+PASS: the published recruitment reports the skill match of the viewer
+PASS: the published recruitment reports the real capacity
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+PASS: the username field accepts the account name
+PASS: the password field accepts the password
+PASS: the sign-in button is pressed
+API 200 OPTIONS /auth/login
+API 200 POST /auth/login body={"username":"t4ui_applicant_mwtdl5vn","password":"<redacted>"}
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /profiles/me
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 GET /profiles/me
+PASS: the session is established for t4ui_applicant_mwtdl5vn
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e
+API 200 GET /auth/me
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e
+API 200 OPTIONS /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+API 200 GET /competitions/9f3204da-28df-4b93-b847-8f7dde3c9893
+PASS: the applicant opens the published recruitment
+PASS: the apply button is pressed
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+API 201 POST /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+API 200 OPTIONS /competitions
+API 200 GET /competitions
+PASS: the submitted application is reported as Pending
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+PASS: the username field accepts the account name
+PASS: the password field accepts the password
+PASS: the sign-in button is pressed
+API 200 OPTIONS /auth/login
+API 200 POST /auth/login body={"username":"t4ui_captain_mwtdl5vn","password":"<redacted>"}
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /profiles/me
+API 200 OPTIONS /skills
+API 200 GET /skills
+API 200 GET /profiles/me
+PASS: the session is established for t4ui_captain_mwtdl5vn
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 OPTIONS /me/teams
+API 200 OPTIONS /me/team-history
+API 200 OPTIONS /competitions
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 GET /me/teams
+API 200 GET /me/team-history
+API 200 GET /competitions
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+PASS: the captain sees the Pending applicant
+PASS: the captain sees the skill match of the applicant
+PASS: the approve button is pressed
+PASS: the approval is confirmed in the dialog
+API 200 OPTIONS /applications/c056e576-5eb7-4e2a-80f8-1f24aebce6e0/decision
+API 200 POST /applications/c056e576-5eb7-4e2a-80f8-1f24aebce6e0/decision body={"decision":"Approved"}
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/applications
+PASS: the captain sees the approval confirmation
+API 200 OPTIONS /auth/me
+API 200 OPTIONS /me/teams
+API 200 OPTIONS /me/team-history
+API 200 OPTIONS /competitions
+API 200 OPTIONS /auth/me
+API 200 GET /auth/me
+API 200 GET /auth/me
+API 200 GET /me/teams
+API 200 GET /me/team-history
+API 200 GET /competitions
+API 200 OPTIONS /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+API 200 GET /teams/fd844b89-41ff-4c21-b3d2-5d9d5d49743e/members
+PASS: the team appears in My Teams
+PASS: the membership role is shown
+PASS: the captain view does not leak the applicant contact
+PASS: the applicant is an active member of the team
+PASS: the team counts the captain and the new member
+--- T4 H5 TEAM FLOW COMPLETE ---
+--- end of output ---
+exit code  : 0
+result     : PASS

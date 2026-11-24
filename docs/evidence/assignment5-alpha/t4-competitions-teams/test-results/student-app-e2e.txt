@@ -1,0 +1,298 @@
+check      : The student app end-to-end suite against MySQL 8.4
+command    : bash -c set -a; . '/d/Project/VSCode/code-strike/apps/server/.env'; set +a; cd '/d/Project/VSCode/code-strike' && CODE_STRIKE_API_BASE_URL='http://127.0.0.1:8000/api/v1' pnpm --filter @codestrike/student-app test:e2e
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:42:02Z
+--- output ---
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/e2e/*.test.mjs
+TAP version 13
+# (node:25232) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:25232) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a student registers and receives a session
+ok 1 - a student registers and receives a session
+  ---
+  duration_ms: 259.9938
+  type: 'test'
+  ...
+# Subtest: a duplicate username is rejected by the backend
+ok 2 - a duplicate username is rejected by the backend
+  ---
+  duration_ms: 5.8789
+  type: 'test'
+  ...
+# Subtest: the correct password signs the student in
+ok 3 - the correct password signs the student in
+  ---
+  duration_ms: 199.2078
+  type: 'test'
+  ...
+# Subtest: a wrong password is refused
+ok 4 - a wrong password is refused
+  ---
+  duration_ms: 247.3151
+  type: 'test'
+  ...
+# Subtest: the current user is read back from the API
+ok 5 - the current user is read back from the API
+  ---
+  duration_ms: 6.5333
+  type: 'test'
+  ...
+# Subtest: a fresh profile reports every missing required field
+ok 6 - a fresh profile reports every missing required field
+  ---
+  duration_ms: 14.4284
+  type: 'test'
+  ...
+# Subtest: the profile is saved and read back from the API
+ok 7 - the profile is saved and read back from the API
+  ---
+  duration_ms: 21.4664
+  type: 'test'
+  ...
+# Subtest: skill tags are taken from the administrator catalog
+ok 8 - skill tags are taken from the administrator catalog
+  ---
+  duration_ms: 27.0779
+  type: 'test'
+  ...
+# Subtest: a skill id outside the catalog is rejected
+ok 9 - a skill id outside the catalog is rejected
+  ---
+  duration_ms: 12.4798
+  type: 'test'
+  ...
+# Subtest: a complete profile is reported as complete
+ok 10 - a complete profile is reported as complete
+  ---
+  duration_ms: 5.2785
+  type: 'test'
+  ...
+# Subtest: a student cannot extend the administrator catalog
+ok 11 - a student cannot extend the administrator catalog
+  ---
+  duration_ms: 11.0117
+  type: 'test'
+  ...
+# Subtest: a protected route without a token is refused
+ok 12 - a protected route without a token is refused
+  ---
+  duration_ms: 3.751
+  type: 'test'
+  ...
+# Subtest: an invalid token is refused
+ok 13 - an invalid token is refused
+  ---
+  duration_ms: 10.2113
+  type: 'test'
+  ...
+# Subtest: signing out revokes the token
+ok 14 - signing out revokes the token
+  ---
+  duration_ms: 33.2827
+  type: 'test'
+  ...
+# (node:32296) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:32296) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Project/VSCode/code-strike/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to D:\\Project\\VSCode\\code-strike\\apps\\student-app\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the administrator signs in with the provisioned account
+ok 15 - the administrator signs in with the provisioned account
+  ---
+  duration_ms: 259.3824
+  type: 'test'
+  ...
+# Subtest: the skill catalogue is readable
+ok 16 - the skill catalogue is readable
+  ---
+  duration_ms: 5.0765
+  type: 'test'
+  ...
+# Subtest: the administrator publishes a competition and keeps one unpublished
+ok 17 - the administrator publishes a competition and keeps one unpublished
+  ---
+  duration_ms: 117.6124
+  type: 'test'
+  ...
+# Subtest: an unpublished competition is absent from the public listing
+ok 18 - an unpublished competition is absent from the public listing
+  ---
+  duration_ms: 49.5436
+  type: 'test'
+  ...
+# Subtest: the five test identities register and complete their profiles
+ok 19 - the five test identities register and complete their profiles
+  ---
+  duration_ms: 2113.8408
+  type: 'test'
+  ...
+# Subtest: the captain creates a team and submits the first recruitment revision
+ok 20 - the captain creates a team and submits the first recruitment revision
+  ---
+  duration_ms: 86.4167
+  type: 'test'
+  ...
+# Subtest: the unpublished recruitment never appears in the public list
+ok 21 - the unpublished recruitment never appears in the public list
+  ---
+  duration_ms: 44.8622
+  type: 'test'
+  ...
+# Subtest: the administrator approves the recruitment revision and it becomes public
+ok 22 - the administrator approves the recruitment revision and it becomes public
+  ---
+  duration_ms: 64.025
+  type: 'test'
+  ...
+# Subtest: the captain finds the team in My Teams
+ok 23 - the captain finds the team in My Teams
+  ---
+  duration_ms: 65.8431
+  type: 'test'
+  ...
+# Subtest: the applicant discovers the published recruitment
+ok 24 - the applicant discovers the published recruitment
+  ---
+  duration_ms: 30.4754
+  type: 'test'
+  ...
+# Subtest: the applicant applies and the application is Pending
+ok 25 - the applicant applies and the application is Pending
+  ---
+  duration_ms: 43.912
+  type: 'test'
+  ...
+# Subtest: a second Pending application from the same student is refused
+ok 26 - a second Pending application from the same student is refused
+  ---
+  duration_ms: 17.6947
+  type: 'test'
+  ...
+# Subtest: the captain reviews the Pending application
+ok 27 - the captain reviews the Pending application
+  ---
+  duration_ms: 14.0776
+  type: 'test'
+  ...
+# Subtest: a student who is not the captain cannot read the review queue
+ok 28 - a student who is not the captain cannot read the review queue
+  ---
+  duration_ms: 18.1647
+  type: 'test'
+  ...
+# Subtest: a team id in the URL does not grant the captain scope
+ok 29 - a team id in the URL does not grant the captain scope
+  ---
+  duration_ms: 14.9578
+  type: 'test'
+  ...
+# Subtest: the captain approves and the applicant becomes an active member
+ok 30 - the captain approves and the applicant becomes an active member
+  ---
+  duration_ms: 101.4035
+  type: 'test'
+  ...
+# Subtest: an approved applicant cannot apply to a second team in the same competition
+ok 31 - an approved applicant cannot apply to a second team in the same competition
+  ---
+  duration_ms: 122.5047
+  type: 'test'
+  ...
+# Subtest: a rejected application stays in the history
+ok 32 - a rejected application stays in the history
+  ---
+  duration_ms: 230.1673
+  type: 'test'
+  ...
+# Subtest: an application can be withdrawn and the history keeps the record
+ok 33 - an application can be withdrawn and the history keeps the record
+  ---
+  duration_ms: 216.7869
+  type: 'test'
+  ...
+# Subtest: an incomplete profile cannot apply
+ok 34 - an incomplete profile cannot apply
+  ---
+  duration_ms: 11.8839
+  type: 'test'
+  ...
+# Subtest: a Not Matched applicant may still apply
+ok 35 - a Not Matched applicant may still apply
+  ---
+  duration_ms: 77.3723
+  type: 'test'
+  ...
+# Subtest: a non-member cannot read the protected contact details
+ok 36 - a non-member cannot read the protected contact details
+  ---
+  duration_ms: 8.8065
+  type: 'test'
+  ...
+# Subtest: a member who is not the captain cannot read the protected contact details
+ok 37 - a member who is not the captain cannot read the protected contact details
+  ---
+  duration_ms: 13.3378
+  type: 'test'
+  ...
+# Subtest: the captain reads the contact details of an active member
+ok 38 - the captain reads the contact details of an active member
+  ---
+  duration_ms: 41.5012
+  type: 'test'
+  ...
+# Subtest: the application history survives a reload and comes from the API
+ok 39 - the application history survives a reload and comes from the API
+  ---
+  duration_ms: 65.6224
+  type: 'test'
+  ...
+# Subtest: the recruitment switch closes and reopens the applications
+ok 40 - the recruitment switch closes and reopens the applications
+  ---
+  duration_ms: 106.7706
+  type: 'test'
+  ...
+# Subtest: a delisted recruitment disappears from the public list
+ok 41 - a delisted recruitment disappears from the public list
+  ---
+  duration_ms: 188.2992
+  type: 'test'
+  ...
+# Subtest: approving beyond the capacity is refused
+ok 42 - approving beyond the capacity is refused
+  ---
+  duration_ms: 299.8294
+  type: 'test'
+  ...
+# Subtest: the last slot can only be taken once when two approvals race
+ok 43 - the last slot can only be taken once when two approvals race
+  ---
+  duration_ms: 292.7943
+  type: 'test'
+  ...
+# Subtest: the run records its identifiers for the database read-back
+ok 44 - the run records its identifiers for the database read-back
+  ---
+  duration_ms: 2.1233
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5162.0209
+--- end of output ---
+exit code  : 0
+result     : PASS

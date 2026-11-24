@@ -1,0 +1,29 @@
+check      : The shared DTOs against the served OpenAPI document
+command    : bash -c cd '/d/Project/VSCode/code-strike' && CODE_STRIKE_API_BASE_URL='http://127.0.0.1:8000/api/v1' node scripts/verify-t2-openapi-contracts.mjs
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:43:01Z
+--- output ---
+openapi version : 3.1.0
+paths / ops     : 58 / 78
+schemas         : 47
+--- shared DTO against the served schema ---
+PASS: HealthResponse <-> HealthResponse (3 properties)
+PASS: CompetitionDetailDto <-> CompetitionDetail (12 properties)
+PASS: TeamDto <-> TeamOut (12 properties)
+PASS: SkillDto <-> SkillOut (2 properties)
+PASS: ApplicationDto <-> ApplicationOut (8 properties)
+PASS: ApplicantPreviewDto <-> ApplicantPreview (5 properties)
+PASS: ReviewDto <-> ReviewOut (11 properties)
+PASS: MemberDto <-> MemberOut (6 properties)
+PASS: ContactDto <-> ContactOut (3 properties)
+PASS: UserDto <-> UserOut (4 properties)
+PASS: TokenDto <-> TokenOut (4 properties)
+PASS: PlannerItemDto <-> ItemOut (17 properties)
+--- captured document against the served document ---
+captured paths/schemas : 58/47
+served   paths/schemas : 58/47
+RESULT: PASS (0 failures)
+--- end of output ---
+exit code  : 0
+result     : PASS

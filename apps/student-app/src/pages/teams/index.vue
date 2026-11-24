@@ -10,6 +10,7 @@ import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
 const currentTeams = ref<MyTeamItem[]>([])
@@ -19,7 +20,7 @@ const errorMessage = ref('')
 const labOpen = ref(false)
 
 onShow(initialize)
-async function initialize() { const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()]); actors.value = available.filter((actor) => ['visitor', 'student-alex', 'student-incomplete', 'captain-alpha', 'alpha-successor', 'captain-delta', 'former-captain-alpha'].includes(actor.id)); actorId.value = current.id; await loadTeams() }
+async function initialize() { if (personaAvailable) { const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()]); actors.value = available.filter((actor) => ['visitor', 'student-alex', 'student-incomplete', 'captain-alpha', 'alpha-successor', 'captain-delta', 'former-captain-alpha'].includes(actor.id)); actorId.value = current.id } await loadTeams() }
 async function selectActor(id: string) { const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; await loadTeams() }
 async function loadTeams() { loading.value = true; errorMessage.value = ''; const result = await api.listMyTeams(); if (result.ok && result.data) { currentTeams.value = result.data.current; historyTeams.value = result.data.history } else { currentTeams.value = []; historyTeams.value = []; errorMessage.value = result.message } loading.value = false }
 function openRecruitment(teamId: string) { uni.navigateTo({ url: `/pages/teams/recruitment?id=${teamId}` }) }
@@ -32,7 +33,7 @@ function publicationTone(status: string): 'positive' | 'warning' | 'danger' | 'n
 
 <template>
   <view class="page-shell">
-    <CsHeader demo eyebrow="Memberships" title="My teams" @demo="labOpen = true" />
+    <CsHeader :demo="personaAvailable" eyebrow="Memberships" title="My teams" @demo="labOpen = true" />
     <view class="content">
       <view class="intro"><text class="intro__title">Your team space</text><text class="intro__copy">Current memberships and captain actions are kept separate from application history.</text></view>
       <StatePanel v-if="loading" title="Loading your teams" message="Getting your current and past memberships." />
@@ -53,7 +54,7 @@ function publicationTone(status: string): 'positive' | 'warning' | 'danger' | 'n
         <view class="global-actions"><button class="create" @click="openCreate">Create a team</button><button @click="openApplications">My applications</button></view>
       </template>
     </view>
-    <PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" />
+    <PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" />
     <CsBottomNav active="Teams" />
   </view>
 </template>

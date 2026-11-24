@@ -36,8 +36,10 @@ def my_applications(offset: int = Query(0, ge=0), limit: int = Query(50, ge=1, l
 
 @router.get("/competitions/{competition_id}/recruitments", response_model=list[TeamOut], response_model_exclude_none=True)
 def recruitments(competition_id: str, offset: int = Query(0, ge=0), limit: int = Query(50, ge=1, le=100),
+                 credentials: HTTPAuthorizationCredentials | None = Depends(optional_bearer),
                  session: Session = Depends(get_session)):
-    return service.recruitment_list(session, competition_id, offset, limit)
+    return service.recruitment_list(session, competition_id, offset, limit,
+                                     credentials.credentials if credentials else None)
 
 
 @router.get("/teams/{team_id}", response_model=TeamOut, response_model_exclude_none=True)

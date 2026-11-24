@@ -225,3 +225,52 @@ def test_recruitment_increase_stays_closed_and_remove_revokes(client, team_facto
     assert client.get(f"/api/v1/teams/{team['id']}/members", headers=student).status_code == 403
     assert client.put(f"/api/v1/teams/{team['id']}/recruitment/switch", headers=captain, json={'state':'Open'}).status_code == 200
     assert apply(client, team, student)['status'] == 'Pending'
+
+
+def test_public_recruitment_reports_the_viewer_skill_match(client, team_factory, db_session_factory, make_user):
+    """The public recruitment list stays public, but a signed-in student also
+    receives their own match status, which is what the screen renders."""
+    team, _, captain, skills = team_factory()
+    matching_id, matching = make_user(complete=True)
+    other_id, other = make_user(complete=True)
+    with db_session_factory.begin() as s:
+        s.add(ProfileSkill(user_id=matching_id, skill_id=skills[0]))
+
+    listed = client.get(f"/api/v1/competitions/{team['competitionId']}/recruitments")
+    assert listed.status_code == 200
+    assert "match" not in listed.json()[0]
+
+    matched = client.get(f"/api/v1/competitions/{team['competitionId']}/recruitments", headers=matching)
+    assert matched.json()[0]["match"] == "Matched"
+    unmatched = client.get(f"/api/v1/competitions/{team['competitionId']}/recruitments", headers=other)
+    assert unmatched.json()[0]["match"] == "Not Matched"
+
+    # A token the server cannot use does not close a public listing.
+    stale = client.get(f"/api/v1/competitions/{team['competitionId']}/recruitments",
+                        headers={"Authorization": "Bearer not-a-real-token"})
+    assert stale.status_code == 200
+    assert "match" not in stale.json()[0]
+
+
+def test_team_history_identifies_the_team_it_belongs_to(client, team_factory, make_user):
+    """The history projection must name the team, not only its display name.
+
+    A client that renders past memberships cannot map a history row onto a team
+    without the team id, so the projection carries it.
+    """
+    team, _, captain, _ = team_factory()
+    _, student = make_user(complete=True)
+    assert client.post(f"/api/v1/teams/{team['id']}/leave", headers=captain).status_code == 409
+    history = client.get("/api/v1/me/team-history", headers=captain).json()
+    assert len(history) == 1
+    assert history[0]["teamId"] == team["id"]
+    assert history[0]["teamName"] == team["name"]
+    assert history[0]["status"] == "Active"
+    assert history[0]["id"] != team["id"]
+
+    assert client.post(f"/api/v1/teams/{team['id']}/dissolve", headers=captain).status_code == 200
+    ended = client.get("/api/v1/me/team-history", headers=captain).json()
+    assert ended[0]["teamId"] == team["id"]
+    assert ended[0]["status"] == "Ended"
+    assert ended[0]["endedAt"] is not None
+    assert client.get("/api/v1/me/team-history", headers=student).json() == []

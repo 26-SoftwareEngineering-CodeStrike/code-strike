@@ -1,0 +1,16 @@
+check      : The student app WeChat mini program build
+command    : bash -c cd '/d/Project/VSCode/code-strike/apps/student-app' && pnpm build:mp-weixin
+branch     : feat/4-competitions-teams
+sha        : 15059fe60d61272c3fcc69796f06203c17a498c9
+executed   : 2026-11-23T14:42:32Z
+--- output ---
+$ uni build -p mp-weixin
+Compiler version: 5.26（vue3）
+Compiling...
+
+uni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.34.2026102909.html
+DONE  Build complete.
+Run method: open Weixin Mini Program Devtools, import [36mdist\build\mp-weixin[39m run.
+--- end of output ---
+exit code  : 0
+result     : PASS

@@ -128,15 +128,35 @@ test('API mode fills the competition detail from the backend routes', async () =
 test('API mode reports the prototype operations the backend does not serve', async () => {
   const api = createStudentApiClient({ mode: 'api', transport: recordingTransport({}) })
 
-  await assert.rejects(
-    () => api.listMyApplications(),
-    (error) => {
+  // The team and application screens are served by the backend since T4, so a
+  // refused request comes back as a failed envelope instead of a rejection.
+  const history = await api.listMyApplications()
+  assert.equal(history.ok, false)
+  assert.equal(typeof history.message, 'string')
+
+  for (const call of [
+    () => api.listPrototypeActors(),
+    () => api.getPrototypeActor(),
+    () => api.selectPrototypeActor('visitor'),
+    () => api.getRecruitmentDesignReview('team-alpha'),
+    () => api.moderateRecruitment('team-alpha', 'Approve'),
+    () => api.getPlannerView('2026-11-23', 'Day'),
+  ]) {
+    await assert.rejects(call, (error) => {
       assert.ok(error instanceof ApiError)
       assert.equal(error.code, 'NOT_AVAILABLE_IN_API_MODE')
       assert.equal(error.kind, 'config')
       return true
-    },
-  )
+    })
+  }
+})
+
+test('API mode never offers the Prototype Lab as an identity', async () => {
+  const api = createStudentApiClient({ mode: 'api', transport: recordingTransport({}) })
+  assert.equal(api.personaSwitchingAvailable, false)
+
+  const mockApi = createStudentApiClient({ mode: 'mock' })
+  assert.equal(mockApi.personaSwitchingAvailable, true)
 })
 
 test('mock mode reports that the account features need the API backend', async () => {

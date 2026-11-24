@@ -10,6 +10,7 @@ import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const teamId = ref('team-alpha')
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
@@ -24,9 +25,11 @@ const isCaptain = computed(() => model.value?.team.membershipRole === 'Captain' 
 onLoad((options) => { if (typeof options?.id === 'string' && options.id) teamId.value = options.id })
 onShow(initialize)
 async function initialize() {
-  const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
-  actors.value = available.filter((actor) => ['visitor', 'captain-alpha', 'alpha-successor', 'captain-delta', 'delta-member', 'former-captain-alpha'].includes(actor.id))
-  actorId.value = current.id
+  if (personaAvailable) {
+    const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
+    actors.value = available.filter((actor) => ['visitor', 'captain-alpha', 'alpha-successor', 'captain-delta', 'delta-member', 'former-captain-alpha'].includes(actor.id))
+    actorId.value = current.id
+  }
   await loadOperations()
 }
 async function selectActor(id: string) { const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; feedback.value = ''; await loadOperations() }
@@ -51,7 +54,7 @@ function openMyTeams() { uni.redirectTo({ url: '/pages/teams/index' }) }
 </script>
 
 <template>
-  <view class="page-shell"><CsHeader back demo eyebrow="Team membership" title="Team operations" @demo="labOpen = true" />
+  <view class="page-shell"><CsHeader back :demo="personaAvailable" eyebrow="Team membership" title="Team operations" @demo="labOpen = true" />
     <view class="content">
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
       <StatePanel v-if="loading" title="Loading active membership" message="Rechecking team lifecycle, membership and current captain scope." />
@@ -65,7 +68,7 @@ function openMyTeams() { uni.redirectTo({ url: '/pages/teams/index' }) }
         <view v-if="isCaptain" class="captain-zone"><text class="captain-zone__title">Captain controls</text><text class="captain-zone__copy">Captain cannot leave directly. Transfer captaincy to an active member or dissolve the team.</text><button class="blocked" @click="leave">Try to Leave as Captain</button><button class="dissolve" @click="dissolve">Dissolve Team</button></view>
         <text class="disclaimer">No internal chat, task board, milestone or file-management feature is included.</text>
       </template>
-    </view><PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
+    </view><PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
 </template>
 
 <style scoped>

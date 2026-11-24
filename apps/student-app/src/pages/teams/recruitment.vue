@@ -10,6 +10,7 @@ import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const teamId = ref('team-alpha')
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
@@ -22,16 +23,33 @@ const loading = ref(true)
 const errorMessage = ref('')
 const feedback = ref('')
 const labOpen = ref(false)
-const skillOptions = ['Python', 'Java', 'Vue', 'Research', 'CAD', 'Product Design', 'Data Visualization', 'Mathematical Modeling']
+/** The Mock catalogue the prototype shipped with; API mode replaces it. */
+const skillOptions = ref(['Python', 'Java', 'Vue', 'Research', 'CAD', 'Product Design', 'Data Visualization', 'Mathematical Modeling'])
 const capacityOptions = computed(() => model.value ? Array.from({ length: model.value.competitionMaximumTeamSize - model.value.memberCount + 1 }, (_, index) => model.value!.memberCount + index) : [])
 
 onLoad((options) => { if (typeof options?.id === 'string' && options.id) teamId.value = options.id })
 onShow(initialize)
 async function initialize() {
-  const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
-  actors.value = available.filter((actor) => ['visitor', 'student-alex', 'captain-alpha', 'captain-delta', 'alpha-successor', 'former-captain-alpha'].includes(actor.id))
-  actorId.value = current.id
+  if (personaAvailable) {
+    const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()])
+    actors.value = available.filter((actor) => ['visitor', 'student-alex', 'captain-alpha', 'captain-delta', 'alpha-successor', 'former-captain-alpha'].includes(actor.id))
+    actorId.value = current.id
+  } else {
+    await loadSkillCatalog()
+  }
   await loadManagement()
+}
+
+/**
+ * The revision endpoint accepts the skill ids of the administrator catalogue,
+ * so the offered tags come from the server rather than from a fixed list.
+ * Mock mode keeps the catalogue the prototype shipped with.
+ */
+async function loadSkillCatalog() {
+  if (personaAvailable) return
+  const catalog = await api.listSkills()
+  skillOptions.value = catalog.map((skill) => skill.name)
+  draftSkills.value = draftSkills.value.filter((skill) => skillOptions.value.includes(skill))
 }
 async function selectActor(id: string) { const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; feedback.value = ''; await loadManagement() }
 async function loadManagement() {
@@ -58,7 +76,7 @@ function openReview() { uni.navigateTo({ url: `/pages/prototype/recruitment-revi
 </script>
 
 <template>
-  <view class="page-shell"><CsHeader back demo eyebrow="Team recruitment" title="Manage recruitment" @demo="labOpen = true" />
+  <view class="page-shell"><CsHeader back :demo="personaAvailable" eyebrow="Team recruitment" title="Manage recruitment" @demo="labOpen = true" />
     <view class="content">
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
       <StatePanel v-if="loading" title="Loading recruitment controls" message="Rechecking current captain scope and effective team state." />
@@ -67,12 +85,12 @@ function openReview() { uni.navigateTo({ url: `/pages/prototype/recruitment-revi
         <view class="state-card"><view class="badges"><StatusBadge :label="model.publication.toUpperCase()" :tone="model.publication === 'Published' ? 'positive' : model.publication === 'Rejected' || model.publication === 'Delisted' ? 'danger' : 'warning'" /><StatusBadge :label="`SWITCH ${model.recruitmentSwitch.toUpperCase()}`" :tone="model.recruitmentSwitch === 'Open' ? 'positive' : 'warning'" /><StatusBadge :label="model.lifecycle.toUpperCase()" :tone="model.lifecycle === 'Active' ? 'positive' : 'danger'" /></view><text class="state-card__title">{{ model.competitionTitle }}</text><text class="state-card__copy">{{ model.memberCount }} active members · competition maximum {{ model.competitionMaximumTeamSize }}. Manual closure blocks fresh applications only.</text><view class="switch-actions"><button :class="{ active: model.recruitmentSwitch === 'Open' }" @click="changeSwitch('Open')">Open applications</button><button :class="{ active: model.recruitmentSwitch === 'Closed' }" @click="changeSwitch('Closed')">Close applications</button></view></view>
 
         <view class="version-card effective"><text class="version-card__label">EFFECTIVE SETTINGS</text><text class="version-card__title">{{ model.effective.teamName }}</text><text class="version-card__copy">{{ model.effective.summary }}</text><text class="version-card__meta">{{ model.effective.capacity }} people · {{ model.effective.requiredSkills.join(', ') }}</text></view>
-        <view v-if="model.draft" class="version-card draft"><text class="version-card__label">PENDING / REJECTED DRAFT</text><text class="version-card__title">{{ model.draft.teamName }}</text><text class="version-card__copy">{{ model.draft.summary }}</text><text class="version-card__meta">{{ model.draft.capacity }} people · {{ model.draft.requiredSkills.join(', ') }}</text><text class="draft-note">Draft values do not replace the approved settings until this exact version passes review.</text><button class="review-link" @click="openReview">Open isolated design review</button></view>
+        <view v-if="model.draft" class="version-card draft"><text class="version-card__label">PENDING / REJECTED DRAFT</text><text class="version-card__title">{{ model.draft.teamName }}</text><text class="version-card__copy">{{ model.draft.summary }}</text><text class="version-card__meta">{{ model.draft.capacity }} people · {{ model.draft.requiredSkills.join(', ') }}</text><text class="draft-note">Draft values do not replace the approved settings until this exact version passes review.</text><button v-if="personaAvailable" class="review-link" @click="openReview">Open isolated design review</button></view>
 
         <view class="editor"><text class="editor__heading">{{ model.publication === 'Private' || model.publication === 'Rejected' ? 'Prepare recruitment submission' : 'Prepare a revision' }}</text><text class="label">TEAM NAME</text><input v-model="draftName" class="input" maxlength="60" /><text class="label field">SUMMARY</text><textarea v-model="draftSummary" class="textarea" maxlength="300" /><text class="label field">MAXIMUM TOTAL MEMBERS</text><picker :range="capacityOptions" :value="capacityOptions.indexOf(draftCapacity)" @change="selectCapacity"><view class="input picker">{{ draftCapacity }} people <text>⌄</text></view></picker><text class="hint">Cannot be below {{ model.memberCount }} active members or above {{ model.competitionMaximumTeamSize }}.</text><text class="label field">REQUIRED SKILL TAGS</text><view class="skills"><button v-for="skill in skillOptions" :key="skill" :class="{ active: draftSkills.includes(skill) }" @click="toggleSkill(skill)">{{ skill }}</button></view><button class="submit" :disabled="model.publication === 'Pending' || model.publication === 'Delisted'" @click="submitRevision">{{ model.publication === 'Pending' || model.publication === 'Delisted' ? 'Version already under review' : 'Submit for Review' }}</button></view>
         <text class="disclaimer">Submitted changes remain separate from the approved version until review is complete.</text>
       </template>
-    </view><PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
+    </view><PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" /><CsBottomNav active="Teams" /></view>
 </template>
 
 <style scoped>

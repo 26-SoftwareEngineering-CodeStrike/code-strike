@@ -10,6 +10,7 @@ import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const recruitmentId = ref('team-alpha')
 const recruitment = ref<RecruitmentDetail | null>(null)
 const actors = ref<PrototypeActor[]>([])
@@ -24,7 +25,7 @@ const canTryApply = computed(() => recruitment.value?.availability === 'Open')
 
 onLoad((options) => { if (typeof options?.id === 'string' && options.id) recruitmentId.value = options.id; initialize() })
 onShow(() => { if (recruitment.value) loadRecruitment(recruitmentId.value) })
-async function initialize() { const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()]); actors.value = available.filter((actor) => ['visitor', 'student-alex'].includes(actor.id)); actorId.value = current.id; await loadRecruitment(recruitmentId.value) }
+async function initialize() { if (personaAvailable) { const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()]); actors.value = available.filter((actor) => ['visitor', 'student-alex'].includes(actor.id)); actorId.value = current.id } await loadRecruitment(recruitmentId.value) }
 async function loadRecruitment(id: string) { recruitmentId.value = id; loading.value = true; errorMessage.value = ''; feedback.value = ''; try { recruitment.value = await api.getRecruitment(id) } catch (error) { recruitment.value = null; errorMessage.value = error instanceof Error ? error.message : 'Unable to load recruitment.' } finally { loading.value = false } }
 async function choosePersona(value: string) { const result = await api.selectPrototypeActor(value); if (result.ok) actorId.value = value }
 async function handleApply() { if (!recruitment.value) return; if (!canTryApply.value) { uni.showModal({ title: actionCopy.value.label, content: actionCopy.value.reason, showCancel: false }); return } const result = await api.applyToTeam(recruitment.value.id); feedback.value = result.message; uni.showToast({ title: result.message, icon: 'none' }) }
@@ -35,7 +36,7 @@ function openApplications() { uni.navigateTo({ url: '/pages/applications/history
 
 <template>
   <view class="page-shell">
-    <CsHeader back demo eyebrow="Team recruitment" :title="recruitment?.name || 'Recruitment'" @demo="labOpen = true" />
+    <CsHeader back :demo="personaAvailable" eyebrow="Team recruitment" :title="recruitment?.name || 'Recruitment'" @demo="labOpen = true" />
     <view class="content">
       <StatePanel v-if="loading" title="Loading recruitment" message="Getting the latest public team details." />
       <StatePanel v-else-if="errorMessage || !recruitment" title="Recruitment unavailable" :message="errorMessage || 'Recruitment not found.'" action-label="Back to competitions" @action="goToCompetitions" />
@@ -55,7 +56,7 @@ function openApplications() { uni.navigateTo({ url: '/pages/applications/history
         </view>
       </template>
     </view>
-    <PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="choosePersona" @close="labOpen = false"><template #tools><view class="scenario-tools"><text class="scenario-tools__label">Public recruitment state</text><scroll-view class="scenario-panel__scroll" scroll-x :show-scrollbar="false"><view class="scenario-panel__items"><button v-for="scenario in scenarios" :key="scenario.id" class="scenario-chip" :class="{ active: recruitment?.id === scenario.id }" @click="loadRecruitment(scenario.id)">{{ scenario.label }}</button></view></scroll-view></view></template></PersonaSwitcher>
+    <PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="choosePersona" @close="labOpen = false"><template #tools><view class="scenario-tools"><text class="scenario-tools__label">Public recruitment state</text><scroll-view class="scenario-panel__scroll" scroll-x :show-scrollbar="false"><view class="scenario-panel__items"><button v-for="scenario in scenarios" :key="scenario.id" class="scenario-chip" :class="{ active: recruitment?.id === scenario.id }" @click="loadRecruitment(scenario.id)">{{ scenario.label }}</button></view></scroll-view></view></template></PersonaSwitcher>
     <CsBottomNav active="Competitions" />
   </view>
 </template>
