@@ -1,6 +1,6 @@
 # Assignment 5 — Alpha Sprint evidence
 
-Evidence for the CodeStrike Alpha Sprint (2026-11-21 → 2026-11-28), tasks T1 to T3.
+Evidence for the CodeStrike Alpha Sprint (2026-11-21 → 2026-11-28), tasks T1 to T4.
 
 This directory records what was **actually executed** in this workspace. Every log, screenshot
 and manifest here was produced by a real command on 2026-11-22. Nothing is transcribed by hand
@@ -31,8 +31,11 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 | `f36660f` | `sprint/alpha` | Merge pull request #10 from feat/2-shared-http |
 | `5900b11` | `feat/3-auth-profile` | `feat(auth): integrate registration and profile flows (#3)` |
 | `8f84d65` | `feat/4-competitions-teams` | `feat(teams): integrate recruitment and application flows (#4)` |
+| `e05d333` | `sprint/alpha` | Merge pull request #12 from feat/4-competitions-teams |
 
-`sprint/alpha` tip at the time of recording: `15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
+`sprint/alpha` tip after the T4 merge: `e05d3331a22bcbe2af86e3bf56153cc1ac995f18`.
+The tip at the time of the T1 record was
+`15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
 (tree `13fac42430e0a5e3fdd52a07e0715e03bc98d422`).
 
 ## Sprint issues

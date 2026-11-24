@@ -1,12 +1,16 @@
 # T4 — Competitions & Teams Integration
 
 Every file in this directory is the raw output of a command executed on 2026-11-23 against
-the T4 branch `feat/4-competitions-teams`. Nothing is transcribed by hand and no result is
-asserted that was not observed.
+the T4 branch `feat/4-competitions-teams`, except the two burn-up files, which were updated on
+2026-11-24 from the close times GitHub recorded after the merge. Nothing is transcribed by hand
+and no result is asserted that was not observed.
 
 | Field | Value |
 | --- | --- |
 | Issue | [#4](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/4) — T4 [P0] Competitions & Teams Integration |
+| Pull request | [#12](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/pull/12) — `feat(teams): integrate recruitment and application flows (#4)` |
+| Merged | 2026-11-24T01:21:13Z, merge commit `e05d3331a22bcbe2af86e3bf56153cc1ac995f18` |
+| Issue closed | 2026-11-24T01:23:03Z |
 | Branch | `feat/4-competitions-teams` |
 | Base | `sprint/alpha` at `15059fe` (the merge of PR #11, T3) |
 | Backend | FastAPI 0.162.0 on `http://127.0.0.1:8000/api/v1`, connected to MySQL 8.4.6 |
@@ -15,6 +19,13 @@ asserted that was not observed.
 
 `contract-differences.md` was written **before** the implementation and lists every real route
 and field that was audited against the prototype view models.
+
+## Verification rerun
+
+Every command in the table below was run again against this branch on 2026-11-24 and passed
+with the same numbers. The H5 browser flow was re-run into a temporary directory so the
+committed screenshots stay the ones that were captured with the evidence; it regenerated all
+eight of them, which shows the flow is reproducible.
 
 ## Results
 
@@ -150,13 +161,25 @@ repository.
 | 2026-11-21 | 9 | 0 |
 | 2026-11-22 | 9 | 3 |
 | 2026-11-23 | 9 | 3 |
-| 2026-11-24 | 9 | 3 |
+| 2026-11-24 | 9 | 4 |
 
-The accepted count is the number of sprint issues that GitHub records as closed on that day:
-issues #1, #2 and #3 closed on 2026-11-22. **T4 is not counted**, because issue #4 is still open
-at the time of this record: the branch is committed locally and the pull request has not been
-merged yet. The days after 2026-11-24 are left empty on purpose, because the future of the
-sprint is not predicted and no story points are invented.
+The accepted count is the number of sprint issues that GitHub records as closed on that day,
+and the unit is **accepted tasks**, not story points. The close times are the ones GitHub
+holds, and every one of them falls on the same calendar date in UTC and in Beijing time, so
+no count depends on which of the two is used:
+
+| Issue | Task | Closed (UTC) | Closed (UTC+8) | Counted on |
+| --- | --- | --- | --- | --- |
+| [#1](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/1) | T1 | 2026-11-22T04:33:49Z | 2026-11-22 12:33:49 | 2026-11-22 |
+| [#2](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/2) | T2 | 2026-11-22T04:32:28Z | 2026-11-22 12:32:28 | 2026-11-22 |
+| [#3](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/3) | T3 | 2026-11-22T06:08:56Z | 2026-11-22 14:08:56 | 2026-11-22 |
+| [#4](https://github.com/26-SoftwareEngineering-CodeStrike/code-strike/issues/4) | T4 | 2026-11-24T01:23:03Z | 2026-11-24 09:23:03 | 2026-11-24 |
+
+Nothing was accepted on 2026-11-21, because the sprint issues were created on 2026-11-22.
+2026-11-23 holds the same count as 2026-11-22, because no issue was closed on that day.
+
+The days after 2026-11-24 are left empty on purpose, because the future of the sprint is not
+predicted and no story points are invented.
 
 ## What the implementation changed
 
@@ -182,6 +205,14 @@ sprint is not predicted and no story points are invented.
 
 ## What was NOT verified
 
+- **This repository has no CI configured**, so no CI run backs any result in this directory.
+  Every result comes from a local command whose raw output is committed here.
+- **No peer review was performed.** Pull request #12 has no reviews and no review comments;
+  the acceptance rests on the automated tests and on this evidence, not on a human reviewer.
+- **The rendered refusal banner of a capacity refusal is not screenshotted.** The refusal
+  itself is proven at the client layer — the approval is refused with the code `TEAM_FULL`
+  and the member count stays at the capacity — and the client is proven to return the
+  server's code and message, but the browser run captured only the successful approval path.
 - **No administrator screen was built.** The administrator moderation API is used by the
   end-to-end test and by the browser run, but the moderation interface itself is T6.
 - **The mp-weixin build was compiled but not opened in WeChat Developer Tools.** The
@@ -192,8 +223,6 @@ sprint is not predicted and no story points are invented.
   and T7, and they still report that they are not served by the API.
 - **The prototype recruitment review screen stays Mock only.** It is the isolated design
   review of the Assignment 4 prototype and has no public equivalent.
-- **Issue #4 is still open.** The branch is committed locally; the pull request and the merge
-  are the next step and were not performed in this round.
 
 ## Secrets
 
