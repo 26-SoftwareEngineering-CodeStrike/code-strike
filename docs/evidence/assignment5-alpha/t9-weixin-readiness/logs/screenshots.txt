@@ -33,3 +33,6 @@ competition home shows the search field: true
 the profile shows the name from the API: true
 
 NOTE: these three pictures are H5 captures. The mini program screens are NOT VERIFIED.
+--- end of output ---
+exit code  : 0
+result     : PASS
