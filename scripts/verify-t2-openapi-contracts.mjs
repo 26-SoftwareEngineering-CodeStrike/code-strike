@@ -8,6 +8,7 @@ const capturedPath = new URL(
 )
 const dtoSourcePaths = [
   new URL('packages/api-contracts/src/api/dto.ts', repoRoot),
+  new URL('packages/api-contracts/src/api/community.ts', repoRoot),
   new URL('packages/api-contracts/src/types.ts', repoRoot),
 ]
 
@@ -25,6 +26,9 @@ const MAPPING = {
   UserDto: 'UserOut',
   TokenDto: 'TokenOut',
   PlannerItemDto: 'ItemOut',
+  CommunityPostDto: 'PostOut',
+  CommunityCommentDto: 'CommentOut',
+  PostInteractionsDto: 'InteractionState',
 }
 
 /** Reads the property names of every exported interface in the shared contract sources. */
@@ -78,7 +82,7 @@ for (const [dtoName, schemaName] of Object.entries(MAPPING)) {
   }
   const contract = contracts.get(dtoName)
   if (!contract) {
-    failures.push(`shared DTO ${dtoName} is missing from ${dtoSourcePath.pathname}`)
+    failures.push(`shared DTO ${dtoName} is missing from the contract sources`)
     continue
   }
   const properties = schema.properties ?? {}
@@ -108,12 +112,18 @@ const capturedPaths = Object.keys(captured.paths).length
 const capturedSchemas = Object.keys(captured.components.schemas).length
 const servedPaths = Object.keys(served.paths).length
 const servedSchemas = Object.keys(schemas).length
-if (capturedPaths !== servedPaths) {
-  failures.push(`path count changed: captured ${capturedPaths}, served ${servedPaths}`)
+// Preserve the original sprint capture. Check names and methods, including the
+// new personal interaction endpoint, so a missing route cannot be masked by an addition.
+const expectedPaths = { ...captured.paths, '/api/v1/posts/{post_id}/interactions': { get: {} } }
+for (const [path, operations] of Object.entries(expectedPaths)) {
+  for (const method of Object.keys(operations)) {
+    if (!served.paths[path]?.[method]) failures.push(`missing ${method.toUpperCase()} ${path}`)
+  }
 }
-if (capturedSchemas !== servedSchemas) {
-  failures.push(`schema count changed: captured ${capturedSchemas}, served ${servedSchemas}`)
-}
+if (Object.keys(expectedPaths).length !== servedPaths) failures.push('unexpected path count')
+const expectedSchemas = [...Object.keys(captured.components.schemas), 'InteractionState']
+for (const name of expectedSchemas) if (!schemas[name]) failures.push(`missing schema ${name}`)
+if (expectedSchemas.length !== servedSchemas) failures.push('unexpected schema count')
 lines.push(`captured paths/schemas : ${capturedPaths}/${capturedSchemas}`)
 lines.push(`served   paths/schemas : ${servedPaths}/${servedSchemas}`)
 

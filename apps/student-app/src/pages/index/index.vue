@@ -22,7 +22,10 @@ const filteredCompetitions = computed(() => { const keyword = query.value.trim()
 async function loadCompetitions(simulateFailure = false) { loading.value = true; errorMessage.value = ''; errorTitle.value = ''; try { competitions.value = await api.listCompetitions({ simulateFailure }) } catch (error) { competitions.value = []; const panel = toStatePanel(error); errorMessage.value = panel.message; errorTitle.value = error instanceof ApiError ? panel.title : '' } finally { loading.value = false } }
 function openCompetition(id: string) { uni.navigateTo({ url: `/pages/competition/detail?id=${id}` }) }
 function clearSearch() { query.value = '' }
-function submitCompetition() { uni.showModal({ title: 'Not available in this pilot', content: 'Competition submission is outside the current student prototype scope.', showCancel: false }) }
+function submitCompetition() {
+  if (api.community) return uni.navigateTo({url: '/pages/community/submissions'})
+  uni.showModal({ title: 'Not available in this pilot', content: 'Competition submission is outside the current student prototype scope.', showCancel: false })
+}
 loadCompetitions()
 </script>
 

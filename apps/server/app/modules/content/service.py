@@ -145,6 +145,15 @@ def delete_content(session, token, kind, object_id):
         obj.deleted = True
 
 
+def interaction_state(session, token, post_id):
+    with session.begin():
+        actor = require_actor(session, token, 'Student')
+        post_record(session, post_id)
+        kinds = set(session.scalars(select(PostInteraction.kind).where(
+            PostInteraction.actor_id == actor.id, PostInteraction.post_id == post_id)))
+        return {'liked': 'Like' in kinds, 'favorited': 'Favorite' in kinds}
+
+
 def interact(session, token, post_id, kind, enabled):
     with session.begin():
         actor = require_actor(session, token, 'Student')

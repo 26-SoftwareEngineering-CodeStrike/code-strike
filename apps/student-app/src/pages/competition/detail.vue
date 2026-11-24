@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import type { CompetitionDetail, RecruitmentSummary } from '@codestrike/contracts'
 import { ApiError } from '@codestrike/contracts/http'
 import CsBottomNav from '../../components/CsBottomNav.vue'
 import CsHeader from '../../components/CsHeader.vue'
+import CommunityFeed from '../../components/CommunityFeed.vue'
 import RecruitmentCard from '../../components/RecruitmentCard.vue'
 import StatePanel from '../../components/StatePanel.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
@@ -13,6 +14,8 @@ import { toStatePanel } from '../../api/error-presentation'
 
 type CommunityTab = 'Overview' | 'Discussion' | 'Resources' | 'Recruitment'
 const api = createStudentApiClient()
+const apiMode = Boolean(api.community)
+const refresh = ref(0)
 const competitionId = ref('competition-demo-1')
 const competition = ref<CompetitionDetail | null>(null)
 const recruitments = ref<RecruitmentSummary[]>([])
@@ -23,9 +26,18 @@ const errorTitle = ref('')
 const tabs: CommunityTab[] = ['Overview', 'Discussion', 'Resources', 'Recruitment']
 const isExpired = computed(() => competition.value?.deadlineStatus === 'AfterDeadline')
 
-onLoad((options) => { if (typeof options?.id === 'string' && options.id) competitionId.value = options.id; if (options?.tab === 'Recruitment') activeTab.value = 'Recruitment'; loadPage() })
+onLoad(options => {
+  if (typeof options?.id === 'string' && options.id) competitionId.value = options.id
+  if (tabs.includes(options?.tab as CommunityTab)) activeTab.value = options!.tab as CommunityTab
+  loadPage()
+})
+onShow(() => { refresh.value++ })
 async function loadPage() { loading.value = true; errorMessage.value = ''; errorTitle.value = ''; try { const [detail, recruitmentItems] = await Promise.all([api.getCompetition(competitionId.value), api.listRecruitments(competitionId.value)]); competition.value = detail; recruitments.value = recruitmentItems } catch (error) { const panel = toStatePanel(error); errorMessage.value = panel.message; errorTitle.value = error instanceof ApiError ? panel.title : '' } finally { loading.value = false } }
-function selectTab(tab: CommunityTab) { activeTab.value = tab }
+function selectTab(tab: CommunityTab) {
+  if (apiMode && tab !== activeTab.value && (tab === 'Discussion' || activeTab.value === 'Discussion')) {
+    uni.redirectTo({url: `/pages/competition/detail?id=${encodeURIComponent(competitionId.value)}&tab=${tab}`})
+  } else activeTab.value = tab
+}
 function openRecruitment(id: string) { uni.navigateTo({ url: `/pages/recruitment/detail?id=${id}` }) }
 function copyOfficialSource() { if (!competition.value) return; uni.setClipboardData({ data: competition.value.officialSourceUrl, success: () => uni.showToast({ title: 'Official source link copied', icon: 'none' }) }) }
 function showPostBoundary() { uni.showModal({ title: 'Posting is not available yet', content: 'Post creation is outside this pilot. Published discussions remain available to browse.', showCancel: false }) }
@@ -44,7 +56,7 @@ const formatDate = (value: string) => value.slice(0, 10)
           <view class="identity__rail"><text class="identity__category">{{ competition.category }}</text><StatusBadge :label="isExpired ? 'Registration closed' : 'Registration open'" :tone="isExpired ? 'warning' : 'positive'" /></view>
           <text class="identity__title">{{ competition.title }}</text>
           <text class="identity__description">{{ competition.description }}</text>
-          <view class="identity__stats"><view><text class="stat__value">{{ competition.community.discussionCount }}</text><text class="stat__label">Discussion posts</text></view><view><text class="stat__value">{{ competition.community.resourceCount }}</text><text class="stat__label">Shared resources</text></view><view><text class="stat__value">{{ competition.maximumTeamSize }}</text><text class="stat__label">Team limit</text></view></view>
+          <view class="identity__stats"><view v-if="!apiMode"><text class="stat__value">{{ competition.community.discussionCount }}</text><text class="stat__label">Discussion posts</text></view><view v-if="!apiMode"><text class="stat__value">{{ competition.community.resourceCount }}</text><text class="stat__label">Shared resources</text></view><view><text class="stat__value">{{ competition.maximumTeamSize }}</text><text class="stat__label">Team limit</text></view></view>
         </view>
 
         <view class="tabs" role="tablist" aria-label="Competition community sections"><view class="tabs__inner"><button v-for="tab in tabs" :key="tab" class="tabs__item" :class="{ 'tabs__item--active': activeTab === tab }" :aria-selected="activeTab === tab" @click="selectTab(tab)">{{ tab }}</button></view></view>
@@ -53,6 +65,7 @@ const formatDate = (value: string) => value.slice(0, 10)
           <view class="info-list"><view class="info-row"><text class="info-row__label">Eligibility</text><text class="info-row__value">{{ competition.eligibility }}</text></view><view class="info-row"><text class="info-row__label">Deadline</text><text class="info-row__value">{{ formatDate(competition.registrationDeadline) }}</text></view><view class="info-row"><text class="info-row__label">Team size</text><text class="info-row__value">Up to {{ competition.maximumTeamSize }} people, including the captain</text></view><button class="source-action" @click="copyOfficialSource">Copy official source link</button></view>
           <button class="next-card" @click="selectTab('Recruitment')"><view><text class="next-card__title">Find a team</text><text class="next-card__copy">Browse published recruitment for this competition</text></view><text class="next-card__arrow">›</text></button>
         </view>
+        <CommunityFeed v-else-if="activeTab === 'Discussion' && apiMode" :competition-id="competitionId" :refresh="refresh" />
         <view v-else-if="activeTab === 'Discussion'" class="panel-stack"><view class="community-item"><text class="community-item__meta">Pinned experience</text><text class="community-item__title">How we scoped our first prototype week</text><text class="community-item__copy">A published discussion shared with this competition community.</text></view><button class="secondary-action" @click="showPostBoundary">Write a post</button></view>
         <view v-else-if="activeTab === 'Resources'" class="panel-stack"><view class="community-item"><text class="community-item__meta">Approved resource</text><text class="community-item__title">Campus innovation submission checklist</text><text class="community-item__copy">A reference shared with students preparing their submission.</text></view></view>
         <view v-else class="panel-stack"><view class="section-title"><text>Recruiting teams</text><text>{{ recruitments.length }}</text></view><StatePanel v-if="recruitments.length === 0" compact title="No published recruitment" message="The community remains available even when no team is recruiting." /><RecruitmentCard v-for="item in recruitments" :key="item.id" :recruitment="item" @open="openRecruitment" /></view>

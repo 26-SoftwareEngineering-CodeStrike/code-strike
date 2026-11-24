@@ -15,6 +15,18 @@
       }
     },
     {
+      "path": "pages/community/post",
+      "style": { "navigationBarTitleText": "Discussion post", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/community/editor",
+      "style": { "navigationBarTitleText": "Write a post", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/community/submissions",
+      "style": { "navigationBarTitleText": "Competition submissions", "navigationStyle": "custom" }
+    },
+    {
       "path": "pages/recruitment/detail",
       "style": {
         "navigationBarTitleText": "Recruitment Detail",

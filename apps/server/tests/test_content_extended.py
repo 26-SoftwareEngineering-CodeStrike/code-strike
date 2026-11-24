@@ -3,6 +3,7 @@ from datetime import timedelta
 from sqlalchemy import select
 from test_content_moderation import competition, complete_profile, approve, png
 from app.modules.competitions.models import Competition
+from app.modules.content.models import Comment, ContentImage, Post, PostInteraction
 from app.modules.teams.models import Application, Team, now
 
 
@@ -31,15 +32,56 @@ def test_comments_revision_rejection_and_interactions(client, student_headers, o
         assert client.put(url, headers=other_headers).status_code == 200
     counts = client.get(path).json()
     assert counts['likes'] == counts['favorites'] == 1
+    state = path + '/interactions'
+    assert client.get(state, headers=other_headers).json() == {'liked': True, 'favorited': True}
+    assert client.get(state, headers=student_headers).json() == {'liked': False, 'favorited': False}
+    assert client.get(state).status_code == 401
     assert len(client.get('/api/v1/me/favorites', headers=other_headers).json()) == 1
     for kind in ['Like', 'Favorite']:
         assert client.delete(path+'/interactions/'+kind, headers=other_headers).status_code == 200
     assert client.get(path).json()['likes'] == 0
+    assert client.get(state, headers=other_headers).json() == {'liked': False, 'favorited': False}
     pending = client.patch(path, headers=student_headers, json={'text': 'Pending'}).json()
     assert client.post('/api/v1/moderation/'+post['revisionId'], headers=admin_headers,
                        json={'action': 'Remove', 'reason': 'Violation'}).status_code == 200
     assert client.get(path).status_code == 404
+    assert client.get(state, headers=other_headers).status_code == 404
     assert client.post('/api/v1/moderation/'+pending['revisionId'], headers=admin_headers, json={'action': 'Approve'}).status_code == 409
+
+
+def test_community_thread_readback(client, db_session_factory, make_user, admin_headers):
+    author_id, author = make_user(complete=True)
+    reader_id, reader = make_user()
+    comp = competition(client, admin_headers)
+    feed = f"/api/v1/competitions/{comp['id']}/posts"
+    post = client.post(feed, headers=author, json={
+        'text': 'How should we prepare?', 'images': [{'dataBase64': base64.b64encode(png()).decode()}],
+    }).json()
+    approve(client, admin_headers, post['revisionId'])
+    path = f"/api/v1/posts/{post['id']}"
+    comment = client.post(path+'/comments', headers=reader, json={'text': 'Practice together.'}).json()
+    approve(client, admin_headers, comment['revisionId'])
+    reply = client.post(path+'/comments', headers=author, json={'text': 'Agreed', 'parentId': comment['id']}).json()
+    approve(client, admin_headers, reply['revisionId'])
+    parents = {row['id']: row['parentId'] for row in client.get(path+'/comments').json()}
+    assert parents == {comment['id']: None, reply['id']: comment['id']}
+    assert client.put(path+'/interactions/Like', headers=reader).is_success
+    assert client.put(path+'/interactions/Favorite', headers=reader).is_success
+    assert client.delete(path, headers=reader).status_code == 403
+    comment_path = '/api/v1/comments/'+comment['id']
+    assert client.patch(comment_path, headers=author, json={'text': 'Changed'}).status_code == 403
+    assert client.delete(comment_path, headers=author).status_code == 403
+
+    # Read the committed records from a session independent of the request.
+    with db_session_factory() as session:
+        saved = session.get(Post, post['id'])
+        assert (saved.author_id, saved.public_revision_id) == (author_id, post['revisionId'])
+        assert session.get(ContentImage, post['imageIds'][0]).data == png()
+        assert session.get(Comment, reply['id']).parent_id == comment['id']
+        assert set(session.scalars(select(PostInteraction.kind).where(
+            PostInteraction.post_id == saved.id, PostInteraction.actor_id == reader_id))) == {'Like', 'Favorite'}
+    assert client.delete(comment_path, headers=reader).status_code == 204
+    assert comment['id'] not in {row['id'] for row in client.get(path+'/comments').json()}
 
 
 def test_image_limits_and_revision_privacy(client, student_headers, other_headers, admin_headers):

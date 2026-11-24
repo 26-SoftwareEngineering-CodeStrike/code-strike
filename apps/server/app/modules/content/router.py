@@ -5,7 +5,7 @@ from app.core.security import bearer_token
 from app.db.session import get_session
 from . import service
 from .schemas import PostInput, CommentInput, CommentEdit, InteractionKind
-from .schemas import PostOut, CommentOut
+from .schemas import PostOut, CommentOut, InteractionState
 
 router = APIRouter(tags=['community content'])
 optional_bearer = HTTPBearer(auto_error=False)
@@ -61,6 +61,11 @@ def delete_comment(comment_id: str, token: str = Depends(bearer_token), session:
 @router.put('/posts/{post_id}/interactions/{kind}')
 def interact(post_id: str, kind: InteractionKind, token: str = Depends(bearer_token), session: Session = Depends(get_session)):
     return service.interact(session, token, post_id, kind, True)
+
+
+@router.get('/posts/{post_id}/interactions', response_model=InteractionState)
+def interaction_state(post_id: str, token: str = Depends(bearer_token), session: Session = Depends(get_session)):
+    return service.interaction_state(session, token, post_id)
 
 
 @router.delete('/posts/{post_id}/interactions/{kind}')

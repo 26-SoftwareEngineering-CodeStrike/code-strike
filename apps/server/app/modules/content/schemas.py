@@ -47,6 +47,11 @@ class CommentEdit(Schema):
 InteractionKind = Literal['Like', 'Favorite']
 
 
+class InteractionState(Schema):
+    liked: bool
+    favorited: bool
+
+
 class PostOut(Schema):
     id: str
     competitionId: str
