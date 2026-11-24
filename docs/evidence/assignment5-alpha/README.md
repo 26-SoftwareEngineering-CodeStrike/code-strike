@@ -32,9 +32,10 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 | `5900b11` | `feat/3-auth-profile` | `feat(auth): integrate registration and profile flows (#3)` |
 | `8f84d65` | `feat/4-competitions-teams` | `feat(teams): integrate recruitment and application flows (#4)` |
 | `e05d333` | `sprint/alpha` | Merge pull request #12 from feat/4-competitions-teams |
+| `36315b8` | `sprint/alpha` | `docs(evidence): record the sprint essay 2 burn-up record (#4)` |
 
-`sprint/alpha` tip after the T4 merge: `e05d3331a22bcbe2af86e3bf56153cc1ac995f18`.
-The tip at the time of the T1 record was
+The T4 merge commit is `e05d3331a22bcbe2af86e3bf56153cc1ac995f18`; the burn-up record of
+Sprint Essay 2 follows it in `36315b8`. The tip at the time of the T1 record was
 `15e3b947433f6fa09c4f69ed4b9009d150bd8d97`
 (tree `13fac42430e0a5e3fdd52a07e0715e03bc98d422`).
 
