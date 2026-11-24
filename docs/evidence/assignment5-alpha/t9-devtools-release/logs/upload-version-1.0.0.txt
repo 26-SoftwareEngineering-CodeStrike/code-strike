@@ -1,0 +1,52 @@
+command : cli upload --project D:\Project\VSCode\code-strike\apps\student-app -v 1.0.0 -d "<description>" -i <info output> --port 50173
+          (cli.bat is D:\Program Files\Apps\Tencent\微信web开发者工具\cli.bat)
+branch  : sprint/alpha
+sha     : ec3740233a241f5da2060bc4408aa4ff6039989b
+utc     : 2026-11-24T06:46:34Z
+exit    : 0
+--------------------------------------------------------------
+description file : wx-upload-desc.txt (UTF-8)
+description       : CodeStrike 校园赛事与活动社区 alpha 版（Mock 数据）。17 个页面，1.0.0。供组织成员通过体验版体验，并配合开发者工具的版本管理与代码仓库协同改动。
+--------------------------------------------------------------
+- initialize
+
+(node:29916) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use an alternative API instead.
+(Use `微信开发者工具 --trace-deprecation ...` to show where the warning was created)
+✔ IDE server has started, listening on http://127.0.0.1:50173
+- preparing
+- Fetching AppID () permissions
+✔ Using AppID: wxa551256ce5fab6a7
+- Upload
+
+┌─────────┬────────────┬─────────────┐
+│ (index) │ size       │ size (Byte) │
+├─────────┼────────────┼─────────────┤
+│ TOTAL   │ '591.5 KB' │ 605666      │
+└─────────┴────────────┴─────────────┘
+
+✔ upload
+exit=0
+--------------------------------------------------------------
+info output (wx-upload-info.json) :
+
+{
+  "size": {
+    "total": 605666,
+    "packages": [
+      {
+        "name": "TOTAL",
+        "size": 605666
+      }
+    ]
+  }
+}
+
+--------------------------------------------------------------
+Note on the description
+--------------------------------------------------------------
+The version description was read from a UTF-8 file and passed to the command
+line as one argument. The console echoed it through the machine's code page,
+which renders the Chinese characters as mojibake; the characters that reached
+the platform were verified by reading the same string back out of PowerShell
+as UTF-8 and comparing it byte for byte with the source file. The comparison
+came out identical.

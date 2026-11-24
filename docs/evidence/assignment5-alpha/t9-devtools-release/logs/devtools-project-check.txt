@@ -1,0 +1,25 @@
+command : node scripts/verify-t9-devtools-project.mjs --login
+branch  : sprint/alpha
+sha     : ec3740233a241f5da2060bc4408aa4ff6039989b
+utc     : 2026-11-24T06:50:36Z
+exit    : 0
+--------------------------------------------------------------
+WeChat Developer Tools project setup
+============================================================
+project dir : D:\Project\VSCode\code-strike\apps\student-app
+
+PASS: project.config.json exists in the source tree — D:\Project\VSCode\code-strike\apps\student-app\project.config.json
+PASS: the AppID is the expected one — appid=wxa551256ce5fab6a7
+PASS: the project name is not empty — projectname="CodeStrike"
+PASS: the package type is a mini program — compileType=miniprogram
+PASS: the legal domain check is enabled — urlCheck=true
+PASS: the mini program root is declared — miniprogramRoot="dist/build/mp-weixin/"
+PASS: the mini program root exists — D:\Project\VSCode\code-strike\apps\student-app\dist\build\mp-weixin\
+PASS: the mini program root holds the built package — D:\Project\VSCode\code-strike\apps\student-app\dist\build\mp-weixin\
+PASS: the built package carries the same AppID — appid=wxa551256ce5fab6a7
+PASS: the project directory is inside a git repository — D:/Project/VSCode/code-strike
+PASS: the branch is readable from the project directory — sprint/alpha
+PASS: the developer tools command line is installed — D:\Program Files\Apps\Tencent\微信web开发者工具\cli.bat
+PASS: an account is signed in to the developer tools — {"login":true}
+
+RESULT: PASS (0 failures)
