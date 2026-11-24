@@ -1,0 +1,85 @@
+check      : The deployment posture of the backend
+command    : bash -c cd '/d/Project/VSCode/code-strike' && '/d/Project/VSCode/code-strike/.test-venv/Scripts/python.exe' '/d/Project/VSCode/code-strike/scripts/verify-t9-deployment-readiness.py'
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:50Z
+--- output ---
+CodeStrike deployment readiness audit
+========================================================================
+repository: code-strike
+this audit only reads files. nothing was deployed and no secret is printed.
+
+--- the backend process ---
+The API is a FastAPI application started with uvicorn:
+  .venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+
+The local runner reads the git ignored apps/server/.env and puts it in the
+environment, so the credentials never appear in a command line:
+  ENV_FILE="$ROOT/apps/server/.env"
+
+--- the environment file the production instance needs ---
+variables in the template: 6 of 8
+not in the template yet : APP_NAME, APP_ENV
+
+--- the settings that decide how strict the instance is ---
+  app_env        default: "development"
+  enable_docs    default: unknown
+  cors_origins   default: unknown
+
+  the OpenAPI document is served by default: True
+  a public instance should set ENABLE_DOCS=false, so the routes are not readable
+  APP_ENV is read into the settings (2 place) and used for behaviour (0 places)
+  it does not change any behaviour yet, so it cannot separate a production instance from a local one
+
+--- the API base url the client compiles in ---
+  default: http://127.0.0.1:8000/api/v1
+  a loopback address points at the phone itself on a real device and cannot reach the backend
+  a production build has to set VITE_API_BASE_URL to the https domain of the API
+
+--- the deployment artifacts ---
+  Dockerfile           absent
+  docker-compose.yml   absent
+  nginx.conf           absent
+  alembic migrations   present
+  a worker for the recruitment deadlines  present
+  an administrator provisioning script    present
+
+--- what the mini program needs from the WeChat console ---
+  request legal domain    the https domain of the API, without a path
+  uploadFile legal domain the https domain that receives the image uploads
+  downloadFile domain     the https domain that serves the stored images
+
+  The base url is compiled into the bundle at build time, so the domain has to
+  be known before the build and has to be the same domain that is registered.
+  A plain http address and a loopback address are both refused outside the
+  developer tools.
+
+--- where the images live ---
+  images are stored as a binary column in the database: True
+  the client sends them base64 encoded inside the JSON body, and the API serves them back
+  from GET /content/images/{image_id}
+  a production instance should move the bytes to object storage and keep only the
+  reference in the database, because the database grows with every picture and the
+  base64 body is roughly a third larger than the picture
+
+--- the separation between the local and the production environment ---
+  the template lists these origins: http://localhost:5173,http://localhost:5174
+  the origins are the origins of the browser client only. A mini program is not a
+  browser origin, so it is not affected by the CORS list.
+  The same separation has to be made in the database, in the credentials and in the
+  API base url, and none of those three are separated by a setting today.
+
+========================================================================
+findings: 9
+  [environment] APP_NAME has no entry in apps/server/.env.example
+  [environment] APP_ENV has no entry in apps/server/.env.example
+  [hardening] ENABLE_DOCS defaults to true, so the OpenAPI document is public unless it is turned off
+  [hardening] APP_ENV is read but never used for behaviour, so it cannot separate production from local
+  [legal domain] the default API base url is a loopback address, which cannot work on a device
+  [deployment] Dockerfile does not exist, so the instance has no container or reverse proxy definition yet
+  [deployment] docker-compose.yml does not exist, so the instance has no container or reverse proxy definition yet
+  [deployment] nginx.conf does not exist, so the instance has no container or reverse proxy definition yet
+  [images] images are stored as base64 in the request body and as a binary column in the database
+--- end of output ---
+exit code  : 0
+result     : PASS

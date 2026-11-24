@@ -1,0 +1,60 @@
+check      : The HTTP methods the client sends against the documented mini program method set
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-t9-weixin-compatibility.mjs
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:49Z
+--- output ---
+WeChat mini program HTTP method audit
+============================================================
+source scanned : apps\student-app\src, packages\api-contracts\src
+methods used   : DELETE, PATCH, POST, PUT
+documented set : OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+
+ok      POST    apps\student-app\src\api\client.ts:363  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:405  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:413  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:432  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:439  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:451  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:469  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:513  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:520  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:533  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:540  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:553  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:562  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:663  method: 'PUT',
+ok      PUT     apps\student-app\src\api\client.ts:671  method: 'PUT',
+ok      POST    apps\student-app\src\api\client.ts:687  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:696  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:716  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:796  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:801  await transport.request({ path: `/teams/${teamId}/leave`, method: 'POST', auth: 'required' })
+ok      POST    apps\student-app\src\api\client.ts:811  method: 'POST',
+ok      DELETE  apps\student-app\src\api\client.ts:818  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:830  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:838  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:851  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:858  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:881  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:889  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:903  method: 'PUT',
+ok      DELETE  apps\student-app\src\api\client.ts:911  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:918  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:924  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:934  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:943  await transport.request<{ message: string }>({ path: '/auth/logout', method: 'POST' })
+FINDING PATCH   apps\student-app\src\api\client.ts:974  method: 'PATCH',
+
+RESULT: FINDING — PATCH is outside the documented mini program method set.
+The runtime behaviour of that method on the simulator or a device is NOT VERIFIED
+by this check and has to be tested manually in the WeChat Developer Tools.
+
+The backend already answers the same route with a documented method:
+  PATCH /profiles/me -> partial update, only the fields that were sent
+  PUT   /profiles/me -> full replace, every field falls back to its empty default
+A switch to PUT therefore also needs the client to send the whole profile,
+otherwise the fields that are left out are cleared.
+--- end of output ---
+exit code  : 0
+result     : PASS

@@ -1,0 +1,27 @@
+check      : The built mini program package, API mode
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-t9-weixin-build.mjs
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:25Z
+--- output ---
+build output : D:\Project\VSCode\code-strike\apps\student-app\dist\build\mp-weixin
+expected app id: wxa551256ce5fab6a7
+compiled api base url: https://api.example.invalid/api/v1
+
+PASS: project.config.json carries the expected AppID — appid=wxa551256ce5fab6a7
+PASS: the project name is not empty — projectname="CodeStrike"
+PASS: the legal domain check is enabled in the built package — urlCheck=true
+PASS: the package is a mini program — compileType=miniprogram
+PASS: app.json lists its pages — 17 pages
+PASS: every page has its four compiled files — 17 pages complete
+PASS: the pages directory is present — 10 page directories
+PASS: the package declares no native tabBar — the custom bottom navigation is used instead
+PASS: the static directory is present — 1 files
+PASS: the main package is under the 2 MB limit — 342.1 KiB of 2048 KiB
+PASS: the compiled bundle carries exactly one transport mode — API mode (VITE_USE_MOCK=false)
+PASS: the compiled base url is usable on a device — https
+
+RESULT: PASS (0 failures)
+--- end of output ---
+exit code  : 0
+result     : PASS

@@ -1,0 +1,25 @@
+check      : Whether the WeChat Developer Tools are installed
+command    : bash -c cd '/d/Project/VSCode/code-strike' && node scripts/verify-t9-weixin-devtools.mjs
+branch     : feat/9-weixin-readiness
+sha        : d78ac52609a1f83c1f6cbecc29962d010f1af144
+executed   : 2026-11-24T02:48:49Z
+--- output ---
+WeChat Developer Tools availability
+============================================================
+
+install directories checked: 11
+install directories found : 0
+
+RESULT: NOT INSTALLED
+
+The tools are downloaded from the official page:
+  https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html
+
+The project is imported with:
+  WeChat Developer Tools -> Import project -> AppID: wxa551256ce5fab6a7
+  -> the directory apps/student-app/dist/build/mp-weixin
+
+Nothing was installed by this check.
+--- end of output ---
+exit code  : 0
+result     : PASS
