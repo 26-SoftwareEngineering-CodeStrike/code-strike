@@ -35,6 +35,8 @@ round's own commands. Re-running a baseline check does not move it into `sprint-
 | `8f84d65` | `feat/4-competitions-teams` | `feat(teams): integrate recruitment and application flows (#4)` |
 | `e05d333` | `sprint/alpha` | Merge pull request #12 from feat/4-competitions-teams |
 | `36315b8` | `sprint/alpha` | `docs(evidence): record the sprint essay 2 burn-up record (#4)` |
+| `2646807` | `feat/9-devtools-git-release` | `feat(student): open the mini program in the developer tools on the source tree (#9)` |
+| `e80a05a` | `feat/9-devtools-git-release` | `docs(evidence): record the developer tools setup and the uploaded version (#9)` |
 
 The T4 merge commit is `e05d3331a22bcbe2af86e3bf56153cc1ac995f18`; the burn-up record of
 Sprint Essay 2 follows it in `36315b8`. The tip at the time of the T1 record was
