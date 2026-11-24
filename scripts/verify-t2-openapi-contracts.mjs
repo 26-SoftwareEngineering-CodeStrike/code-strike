@@ -9,6 +9,7 @@ const capturedPath = new URL(
 const dtoSourcePaths = [
   new URL('packages/api-contracts/src/api/dto.ts', repoRoot),
   new URL('packages/api-contracts/src/api/community.ts', repoRoot),
+  new URL('packages/api-contracts/src/api/notifications.ts', repoRoot),
   new URL('packages/api-contracts/src/types.ts', repoRoot),
 ]
 
@@ -26,6 +27,10 @@ const MAPPING = {
   UserDto: 'UserOut',
   TokenDto: 'TokenOut',
   PlannerItemDto: 'ItemOut',
+  PlannerItemPageDto: 'ItemPage',
+  PlannerCreateResultDto: 'CreateResult',
+  PlannerSkippedOccurrenceDto: 'SkippedOccurrence',
+  NotificationReadRequest: 'ReadState',
   CommunityPostDto: 'PostOut',
   CommunityCommentDto: 'CommentOut',
   PostInteractionsDto: 'InteractionState',

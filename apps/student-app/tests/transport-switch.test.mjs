@@ -128,11 +128,16 @@ test('API mode fills the competition detail from the backend routes', async () =
 test('API mode reports the prototype operations the backend does not serve', async () => {
   const api = createStudentApiClient({ mode: 'api', transport: recordingTransport({}) })
 
-  // The team and application screens are served by the backend since T4, so a
-  // refused request comes back as a failed envelope instead of a rejection.
+  // The team, application and planner screens are served by the backend since
+  // T4/T7, so a refused request comes back as a failed envelope instead of a
+  // config rejection.
   const history = await api.listMyApplications()
   assert.equal(history.ok, false)
   assert.equal(typeof history.message, 'string')
+
+  const planner = await api.getPlannerView('2026-11-23', 'Day')
+  assert.equal(planner.ok, false)
+  assert.equal(typeof planner.message, 'string')
 
   for (const call of [
     () => api.listPrototypeActors(),
@@ -140,7 +145,6 @@ test('API mode reports the prototype operations the backend does not serve', asy
     () => api.selectPrototypeActor('visitor'),
     () => api.getRecruitmentDesignReview('team-alpha'),
     () => api.moderateRecruitment('team-alpha', 'Approve'),
-    () => api.getPlannerView('2026-11-23', 'Day'),
   ]) {
     await assert.rejects(call, (error) => {
       assert.ok(error instanceof ApiError)

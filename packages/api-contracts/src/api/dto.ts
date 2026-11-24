@@ -245,6 +245,74 @@ export interface PlannerItemDto {
   updatedAt: string
 }
 
+export interface PlannerSkippedOccurrenceDto {
+  date: string
+  reason: string
+}
+
+export interface PlannerCreateResultDto {
+  items: PlannerItemDto[]
+  skipped: PlannerSkippedOccurrenceDto[]
+}
+
+export interface PlannerItemPageDto {
+  items: PlannerItemDto[]
+  total: number
+  page: number
+  pageSize: number
+  startDate: string
+  endDate: string
+}
+
+export interface PlannerCourseCreateRequest {
+  kind: 'Course'
+  title: string
+  startWeek: number
+  weekday: number
+  startPeriod: number
+  endPeriod: number
+  room?: string | null
+  occurrenceCount?: number
+}
+
+export interface PlannerTimedPlanCreateRequest {
+  kind: 'TimedPlan'
+  title: string
+  date: string
+  startTime: string
+  endTime: string
+  occurrenceCount?: number
+}
+
+export interface PlannerTodoCreateRequest {
+  kind: 'Todo'
+  title: string
+  date: string
+  description?: string | null
+  deadline?: string | null
+  occurrenceCount?: number
+}
+
+export type PlannerItemCreateRequest =
+  | PlannerCourseCreateRequest
+  | PlannerTimedPlanCreateRequest
+  | PlannerTodoCreateRequest
+
+export interface PlannerItemPatchRequest {
+  title?: string
+  date?: string
+  startWeek?: number
+  weekday?: number
+  startPeriod?: number
+  endPeriod?: number
+  startTime?: string
+  endTime?: string
+  room?: string | null
+  description?: string | null
+  deadline?: string | null
+  completed?: boolean
+}
+
 export interface DashboardDto {
   competitionCount: number
   pendingApplicationCount: number

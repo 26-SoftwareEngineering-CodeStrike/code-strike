@@ -62,6 +62,9 @@ import { ApiError } from '@codestrike/contracts/http'
 import { createStudentHttpTransport } from './http-transport'
 import { createCommunityApi } from './community'
 import type { CommunityApi } from './community'
+import { createNotificationsApi } from './notifications'
+import type { NotificationsApi } from './notifications'
+import { createPlannerApi, defaultApiSchoolPeriods } from './planner'
 import { MockTransport } from './mock-transport'
 import {
   applySession,
@@ -74,6 +77,7 @@ import { appTokenStore } from './token-store'
 
 export interface StudentApiClient {
   readonly community: CommunityApi | null
+  readonly notifications: NotificationsApi | null
   /**
    * False in API mode. The Prototype Lab switches local Mock personas only and
    * must never be presented as a way of obtaining a server-side identity.
@@ -113,7 +117,7 @@ export interface StudentApiClient {
   getPlannerOccurrence(id: string): Promise<MockCommandResult<PlannerOccurrence>>
   updatePlannerOccurrence(id: string, input: UpdateOccurrenceInput): Promise<MockCommandResult<PlannerOccurrence>>
   deletePlannerOccurrence(id: string): Promise<MockCommandResult>
-  togglePlannerTodo(id: string): Promise<MockCommandResult<PlannerOccurrence>>
+  togglePlannerTodo(id: string, nextCompleted?: boolean): Promise<MockCommandResult<PlannerOccurrence>>
   register(input: RegisterRequest): Promise<TokenDto>
   login(input: LoginRequest): Promise<TokenDto>
   logout(): Promise<void>
@@ -287,9 +291,12 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
     })
   }
 
+  const planner = api ? createPlannerApi(transport) : null
+
   return {
     personaSwitchingAvailable: !api,
     community: api ? createCommunityApi(transport) : null,
+    notifications: api ? createNotificationsApi(transport) : null,
     listCompetitions: async (options) => {
       if (!api) {
         return transport.request<CompetitionSummary[]>({
@@ -868,59 +875,103 @@ function buildStudentApiClient(transport: ApiTransport, mode: TransportMode): St
       )
     },
     getPlannerView: (date, mode) =>
-      api
-        ? unsupportedInApiMode('getPlannerView')
+      planner
+        ? apiCommand(() => planner.view(date, mode), 'PLANNER_VIEW', 'Private planner loaded.')
         : transport.request<MockCommandResult<PlannerView>>({
             path: `/planner/views/${mode}/${date}`,
           }),
     listSchoolPeriods: () =>
       api
-        ? unsupportedInApiMode('listSchoolPeriods')
+        ? Promise.resolve(defaultApiSchoolPeriods())
         : transport.request<SchoolPeriod[]>({ path: '/planner/periods' }),
-    createCourse: (input) =>
-      api
-        ? unsupportedInApiMode('createCourse')
-        : transport.request<MockCommandResult<CourseCreationResult>>({
-            path: '/planner/courses',
-            method: 'POST',
-            body: input,
-          }),
-    createPlannerItem: (input) =>
-      api
-        ? unsupportedInApiMode('createPlannerItem')
-        : transport.request<MockCommandResult<PlannerOccurrence[]>>({
-            path: '/planner/items',
-            method: 'POST',
-            body: input,
-          }),
+    createCourse: async (input) => {
+      if (!planner) {
+        return transport.request<MockCommandResult<CourseCreationResult>>({
+          path: '/planner/courses',
+          method: 'POST',
+          body: input,
+        })
+      }
+      try {
+        const result = await planner.createCourse(input)
+        return {
+          ok: true,
+          code: 'COURSE_CREATED',
+          message: `Created ${result.createdCount} occurrence(s); skipped ${result.skippedDuplicateCount} duplicate occurrence(s).`,
+          data: result,
+        }
+      } catch (error) {
+        return toFailure<CourseCreationResult>(error)
+      }
+    },
+    createPlannerItem: async (input) => {
+      if (!planner) {
+        return transport.request<MockCommandResult<PlannerOccurrence[]>>({
+          path: '/planner/items',
+          method: 'POST',
+          body: input,
+        })
+      }
+      try {
+        const items = await planner.createItem(input)
+        return {
+          ok: true,
+          code: 'PLANNER_ITEM_CREATED',
+          message: `Created ${items.length} ${input.type === 'TimedPlan' ? 'timed plan' : 'to-do'} occurrence(s).`,
+          data: items,
+        }
+      } catch (error) {
+        return toFailure<PlannerOccurrence[]>(error)
+      }
+    },
     getPlannerOccurrence: (id) =>
-      api
-        ? unsupportedInApiMode('getPlannerOccurrence')
+      planner
+        ? apiCommand(() => planner.getOccurrence(id), 'PLANNER_OCCURRENCE', 'Occurrence loaded.')
         : transport.request<MockCommandResult<PlannerOccurrence>>({
             path: `/planner/occurrences/${id}`,
           }),
     updatePlannerOccurrence: (id, input) =>
-      api
-        ? unsupportedInApiMode('updatePlannerOccurrence')
+      planner
+        ? apiCommand(
+            () => planner.updateOccurrence(id, input),
+            'PLANNER_UPDATED',
+            'Updated this occurrence only.',
+          )
         : transport.request<MockCommandResult<PlannerOccurrence>>({
             path: `/planner/occurrences/${id}`,
             method: 'PUT',
             body: input,
           }),
     deletePlannerOccurrence: (id) =>
-      api
-        ? unsupportedInApiMode('deletePlannerOccurrence')
+      planner
+        ? apiCommandWithoutData(
+            () => planner.deleteOccurrence(id),
+            'PLANNER_DELETED',
+            'Deleted this occurrence only.',
+          )
         : transport.request<MockCommandResult>({
             path: `/planner/occurrences/${id}`,
             method: 'DELETE',
           }),
-    togglePlannerTodo: (id) =>
-      api
-        ? unsupportedInApiMode('togglePlannerTodo')
-        : transport.request<MockCommandResult<PlannerOccurrence>>({
-            path: `/planner/occurrences/${id}/complete`,
-            method: 'POST',
-          }),
+    togglePlannerTodo: async (id, nextCompleted) => {
+      if (!planner) {
+        return transport.request<MockCommandResult<PlannerOccurrence>>({
+          path: `/planner/occurrences/${id}/complete`,
+          method: 'POST',
+        })
+      }
+      try {
+        const updated = await planner.toggleTodo(id, nextCompleted)
+        return {
+          ok: true,
+          code: 'PLANNER_TODO_UPDATED',
+          message: updated.completed ? 'Marked to-do as completed.' : 'Marked to-do as not completed.',
+          data: updated,
+        }
+      } catch (error) {
+        return toFailure<PlannerOccurrence>(error)
+      }
+    },
     register: async (input) => {
       if (!api) return needsApiBackend('register')
       const token = await transport.request<TokenDto>({

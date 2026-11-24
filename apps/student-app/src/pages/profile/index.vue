@@ -147,6 +147,9 @@ function openLogin() {
 function openRegister() {
   uni.navigateTo({ url: '/pages/auth/register' })
 }
+function openNotifications() {
+  uni.navigateTo({ url: '/pages/notifications/index' })
+}
 </script>
 
 <template>
@@ -175,6 +178,7 @@ function openRegister() {
             <text class="identity__name">{{ sessionUser?.username }}</text>
             <text class="identity__role">{{ sessionUser?.role }} account</text>
           </view>
+          <button v-if="api.notifications" class="identity__inbox" @click="openNotifications">Notifications</button>
         </view>
 
         <view v-if="profile && !profile.complete" class="notice">
@@ -248,7 +252,8 @@ function openRegister() {
 .intro__copy { margin-top: 6px; color: #667085; font-size: 15px; line-height: 1.5; }
 .identity { display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border: 1px solid #dfe4ea; border-radius: 17px; }
 .identity__mark { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: 0 0 auto; color: #14213d; background: #c9f43d; border-radius: 13px; font-size: 13px; font-weight: 800; }
-.identity__copy { min-width: 0; }
+.identity__copy { flex: 1; min-width: 0; }
+.identity__inbox { flex: 0 0 auto; min-height: 40px; margin: 0; padding: 0 12px; color: #1e56b3; background: #eef4ff; border-radius: 10px; font-size: 13px; font-weight: 700; }
 .identity__name { display: block; overflow: hidden; color: #14213d; font-size: 19px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 .identity__role { display: block; margin-top: 2px; color: #667085; font-size: 13px; }
 .notice { margin-top: 14px; padding: 14px 16px; color: #6f4a00; background: #fff8e7; border: 1px solid #f1dfae; border-radius: 14px; }

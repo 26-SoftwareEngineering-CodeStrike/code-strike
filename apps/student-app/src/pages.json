@@ -109,6 +109,10 @@
     {
       "path": "pages/profile/index",
       "style": { "navigationBarTitleText": "My profile", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/notifications/index",
+      "style": { "navigationBarTitleText": "Notifications", "navigationStyle": "custom" }
     }
   ],
   "globalStyle": {

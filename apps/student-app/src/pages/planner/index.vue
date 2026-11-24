@@ -3,54 +3,144 @@ import { onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import type { PlannerOccurrence, PlannerViewMode, PrototypeActor } from '@codestrike/contracts'
 import { createStudentApiClient } from '../../api/client'
+import { formatPlannerDeadline, formatPlannerTime, todayLocalIso } from '../../api/planner'
 import CsBottomNav from '../../components/CsBottomNav.vue'
 import CsHeader from '../../components/CsHeader.vue'
 import PersonaSwitcher from '../../components/PersonaSwitcher.vue'
 import StatePanel from '../../components/StatePanel.vue'
 
 const api = createStudentApiClient()
+const personaAvailable = api.personaSwitchingAvailable
 const actors = ref<PrototypeActor[]>([])
 const actorId = ref('visitor')
-const selectedDate = ref('2026-10-27')
+const selectedDate = ref(personaAvailable ? '2026-10-27' : todayLocalIso())
 const mode = ref<PlannerViewMode>('Day')
 const items = ref<PlannerOccurrence[]>([])
 const loading = ref(true)
 const error = ref('')
+const needsSignIn = ref(false)
 const feedback = ref('')
 const labOpen = ref(false)
-const rangeLabel = computed(() => mode.value === 'Day' ? selectedDate.value : `Week containing ${selectedDate.value}`)
+const rangeLabel = computed(() =>
+  mode.value === 'Day' ? selectedDate.value : `Week containing ${selectedDate.value}`,
+)
 
 onShow(initialize)
-async function initialize() { const [available, current] = await Promise.all([api.listPrototypeActors(), api.getPrototypeActor()]); actors.value = available.filter((actor) => ['visitor', 'student-alex', 'student-incomplete', 'captain-alpha', 'alpha-successor', 'admin-reviewer'].includes(actor.id)); actorId.value = current.id; await load() }
-async function selectActor(id: string) { const result = await api.selectPrototypeActor(id); if (result.ok) actorId.value = id; feedback.value = ''; await load() }
-async function load() { loading.value = true; error.value = ''; const result = await api.getPlannerView(selectedDate.value, mode.value); items.value = result.ok && result.data ? result.data.occurrences : []; if (!result.ok) error.value = result.message; loading.value = false }
-function chooseMode(value: PlannerViewMode) { mode.value = value; load() }
-function chooseDate(event: { detail: { value: string } }) { selectedDate.value = event.detail.value; load() }
-function shift(days: number) { selectedDate.value = addDays(selectedDate.value, days); load() }
-function addDays(value: string, days: number) { const [year, month, day] = value.split('-').map(Number); const date = new Date(Date.UTC(year, month - 1, day)); date.setUTCDate(date.getUTCDate() + days); return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}` }
-function openCourse() { uni.navigateTo({ url: `/pages/planner/course?date=${selectedDate.value}` }) }
-function openItem(type: 'TimedPlan' | 'Todo') { uni.navigateTo({ url: `/pages/planner/item?date=${selectedDate.value}&type=${type}` }) }
-function openOccurrence(id: string) { uni.navigateTo({ url: `/pages/planner/occurrence?id=${id}` }) }
-async function toggle(item: PlannerOccurrence) { const result = await api.togglePlannerTodo(item.id); feedback.value = result.message; await load() }
-function typeLabel(type: PlannerOccurrence['type']) { return type === 'TimedPlan' ? 'Plan' : type === 'Todo' ? 'To-do' : 'Course' }
+
+async function initialize() {
+  if (personaAvailable) {
+    const [available, current] = await Promise.all([
+      api.listPrototypeActors(),
+      api.getPrototypeActor(),
+    ])
+    actors.value = available.filter((actor) =>
+      [
+        'visitor',
+        'student-alex',
+        'student-incomplete',
+        'captain-alpha',
+        'alpha-successor',
+        'admin-reviewer',
+      ].includes(actor.id),
+    )
+    actorId.value = current.id
+  } else {
+    const user = await api.restoreSession()
+    needsSignIn.value = user === null
+    if (!user) {
+      items.value = []
+      error.value = ''
+      loading.value = false
+      return
+    }
+  }
+  await load()
+}
+
+async function selectActor(id: string) {
+  const result = await api.selectPrototypeActor(id)
+  if (result.ok) actorId.value = id
+  feedback.value = ''
+  await load()
+}
+
+async function load() {
+  loading.value = true
+  error.value = ''
+  const result = await api.getPlannerView(selectedDate.value, mode.value)
+  items.value = result.ok && result.data ? result.data.occurrences : []
+  if (!result.ok) {
+    if (!personaAvailable && result.code === 'UNAUTHORIZED') {
+      needsSignIn.value = true
+    } else {
+      error.value = result.message
+    }
+  }
+  loading.value = false
+}
+
+function chooseMode(value: PlannerViewMode) {
+  mode.value = value
+  void load()
+}
+function chooseDate(event: { detail: { value: string } }) {
+  selectedDate.value = event.detail.value
+  void load()
+}
+function shift(days: number) {
+  selectedDate.value = addDays(selectedDate.value, days)
+  void load()
+}
+function addDays(value: string, days: number) {
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  date.setUTCDate(date.getUTCDate() + days)
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`
+}
+function signIn() {
+  uni.navigateTo({ url: '/pages/auth/login' })
+}
+function openCourse() {
+  uni.navigateTo({ url: `/pages/planner/course?date=${selectedDate.value}` })
+}
+function openItem(type: 'TimedPlan' | 'Todo') {
+  uni.navigateTo({ url: `/pages/planner/item?date=${selectedDate.value}&type=${type}` })
+}
+function openOccurrence(id: string) {
+  uni.navigateTo({ url: `/pages/planner/occurrence?id=${encodeURIComponent(id)}` })
+}
+async function toggle(item: PlannerOccurrence) {
+  const result = await api.togglePlannerTodo(item.id, !item.completed)
+  feedback.value = result.message
+  await load()
+}
+function typeLabel(type: PlannerOccurrence['type']) {
+  return type === 'TimedPlan' ? 'Plan' : type === 'Todo' ? 'To-do' : 'Course'
+}
+function timeLabel(item: PlannerOccurrence) {
+  if (item.startTime) return formatPlannerTime(item.startTime)
+  if (item.deadline) return `Due ${formatPlannerDeadline(item.deadline)}`
+  return 'Anytime'
+}
 </script>
 
 <template>
   <view class="page-shell">
-    <CsHeader demo eyebrow="Private schedule" title="Planner" @demo="labOpen = true" />
+    <CsHeader :demo="personaAvailable" eyebrow="Private schedule" title="Planner" @demo="labOpen = true" />
     <view class="content">
       <view class="planner-head"><view><text class="planner-head__title">Your day, at a glance</text><text class="planner-head__copy">Courses, plans and to-dos stay private to your account.</text></view><text class="privacy-mark">Private</text></view>
       <view class="toolbar"><view class="mode"><button :class="{ active: mode === 'Day' }" @click="chooseMode('Day')">Day</button><button :class="{ active: mode === 'Week' }" @click="chooseMode('Week')">Week</button></view><view class="date-row"><button aria-label="Previous date" @click="shift(mode === 'Day' ? -1 : -7)">‹</button><picker mode="date" :value="selectedDate" @change="chooseDate"><view class="date">{{ rangeLabel }}</view></picker><button aria-label="Next date" @click="shift(mode === 'Day' ? 1 : 7)">›</button></view></view>
 
       <StatePanel v-if="loading" title="Loading planner" message="Getting your schedule." />
+      <StatePanel v-else-if="needsSignIn" title="Sign in to open your planner" message="Your personal planner is private to your signed-in student account." action-label="Sign in" @action="signIn" />
       <StatePanel v-else-if="error" title="Planner access denied" :message="error" />
       <StatePanel v-else-if="items.length === 0" title="Nothing scheduled" message="Add a course, timed plan or to-do for this date." />
-      <view v-else class="timeline"><view v-for="item in items" :key="item.id" class="entry" :class="item.type.toLowerCase()" @click="openOccurrence(item.id)"><text class="entry__time">{{ item.startTime || (item.deadline ? `Due ${item.deadline}` : 'Anytime') }}</text><view class="entry__body"><view class="entry__rail"><text class="entry__type">{{ typeLabel(item.type) }}</text><text class="series">{{ item.occurrenceNumber }}/{{ item.occurrenceCount }}</text></view><text class="entry__title" :class="{ done: item.completed }">{{ item.title }}</text><text class="entry__meta">{{ item.actualDate }}<template v-if="item.startTime"> · until {{ item.endTime }}</template><template v-if="item.room"> · {{ item.room }}</template></text></view><button v-if="item.type === 'Todo'" class="complete" @click.stop="toggle(item)">{{ item.completed ? 'Undo' : 'Complete' }}</button></view></view>
+      <view v-else class="timeline"><view v-for="item in items" :key="item.id" class="entry" :class="item.type.toLowerCase()" @click="openOccurrence(item.id)"><text class="entry__time">{{ timeLabel(item) }}</text><view class="entry__body"><view class="entry__rail"><text class="entry__type">{{ typeLabel(item.type) }}</text><text v-if="personaAvailable || item.occurrenceCount > 1" class="series">{{ item.occurrenceNumber }}/{{ item.occurrenceCount }}</text></view><text class="entry__title" :class="{ done: item.completed }">{{ item.title }}</text><text class="entry__meta">{{ item.actualDate }}<template v-if="item.startTime"> · until {{ formatPlannerTime(item.endTime) }}</template><template v-if="item.room"> · {{ item.room }}</template></text></view><button v-if="item.type === 'Todo'" class="complete" @click.stop="toggle(item)">{{ item.completed ? 'Undo' : 'Complete' }}</button></view></view>
 
-      <view class="add-grid"><button class="course" @click="openCourse"><text>+</text> Course</button><button class="plan" @click="openItem('TimedPlan')"><text>+</text> Timed plan</button><button class="todo" @click="openItem('Todo')"><text>+</text> To-do</button></view>
+      <view v-if="!needsSignIn" class="add-grid"><button class="course" @click="openCourse"><text>+</text> Course</button><button class="plan" @click="openItem('TimedPlan')"><text>+</text> Timed plan</button><button class="todo" @click="openItem('Todo')"><text>+</text> To-do</button></view>
       <text v-if="feedback" class="feedback">{{ feedback }}</text>
     </view>
-    <PersonaSwitcher :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" />
+    <PersonaSwitcher v-if="personaAvailable" :actors="actors" :selected-id="actorId" overlay :open="labOpen" @select="selectActor" @close="labOpen = false" />
     <CsBottomNav active="Planner" />
   </view>
 </template>
