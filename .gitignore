@@ -28,6 +28,9 @@ apps/server/.venv/
 .DS_Store
 Thumbs.db
 
+# WeChat Developer Tools per-developer settings
+project.private.config.json
+
 # Logs and generated files
 *.log
 coverage/

@@ -1,0 +1,26 @@
+source   : the developer tools' own git extension log
+path     : %LOCALAPPDATA%/微信开发者工具/User Data/0a2947d626c01f225c7c0b7a947cc2d5/Default/Editor/user-data/logs/20261124T144043/window2/exthost/vscode.git/Git.log
+project  : D:\Project\VSCode\code-strike\apps\student-app
+branch   : sprint/alpha
+utc      : 2026-11-24T06:41:00Z
+--------------------------------------------------------------
+2026-11-24 14:40:50.763 [info] Using git "2.53.0.windows.2" from "D:\Program Files\Git\mingw64\bin\git.exe"
+2026-11-24 14:40:51.214 [info] > git rev-parse --show-toplevel [440ms]
+2026-11-24 14:40:51.286 [info] > git rev-parse --show-toplevel [57ms]
+2026-11-24 14:40:51.327 [info] > git rev-parse --show-toplevel [35ms]
+2026-11-24 14:40:51.470 [info] > git rev-parse --show-toplevel [138ms]
+2026-11-24 14:40:51.534 [info] > git rev-parse --show-toplevel [54ms]
+2026-11-24 14:40:51.581 [info] > git rev-parse --show-toplevel [41ms]
+2026-11-24 14:40:58.499 [info] > git rev-parse --show-toplevel [47ms]
+2026-11-24 14:40:58.540 [info] Open repository: d:\Project\VSCode\code-strike
+2026-11-24 14:40:58.602 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/sprint/alpha refs/remotes/sprint/alpha [45ms]
+2026-11-24 14:40:58.659 [info] > git status -z -uall [51ms]
+2026-11-24 14:50:14.214 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/sprint/alpha refs/remotes/sprint/alpha [48ms]
+2026-11-24 14:50:14.273 [info] > git status -z -uall [53ms]
+2026-11-24 14:50:23.220 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/sprint/alpha refs/remotes/sprint/alpha [43ms]
+2026-11-24 14:50:23.277 [info] > git status -z -uall [51ms]
+--------------------------------------------------------------
+This is the log of the git extension that ships inside the developer
+tools. It is the tools' own record that the project directory was
+resolved to the repository, that the branch was read and that the
+working tree status is being tracked.
