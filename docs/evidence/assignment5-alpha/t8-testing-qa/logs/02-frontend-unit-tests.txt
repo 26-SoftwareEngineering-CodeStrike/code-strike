@@ -1,0 +1,194 @@
+$ pnpm --filter @codestrike/student-app test:mock && pnpm --filter @codestrike/admin-web test
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/*.test.mjs
+(node:21292) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a competition DTO becomes a competition summary with a deterministic cover tone (0.9927ms)
+✔ a competition DTO becomes a competition detail and reports the community counts it was given (0.6768ms)
+✔ the backend match spelling is normalised for the view model (0.1054ms)
+✔ recruitment availability follows publication, deadline, switch and capacity (0.1374ms)
+✔ a team DTO becomes a recruitment summary with its skill names (0.1367ms)
+✔ a recruitment detail keeps the competition context it was given (0.1225ms)
+✔ member, contact and application DTOs become their view models (0.1467ms)
+✔ an applicant preview keeps exactly the five permitted fields (0.1493ms)
+✔ a review DTO becomes a captain pending application (0.1159ms)
+✔ a planner item DTO becomes a planner occurrence (0.1892ms)
+✔ the dashboard DTO becomes the dashboard view model (0.1281ms)
+(node:26340) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26340) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/community.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ edit and delete controls require the signed-in student who owns the revision (96.9618ms)
+✔ editing a post preserves existing image bytes and rejects a blank or invalid link-only revision (2.6439ms)
+✔ competition feed keeps public and private revisions distinct after reload, including later pages (1.7197ms)
+✔ private pending detail comes from the latest server revision and has no public thread yet (1.677ms)
+✔ fresh public detail restores exactly this viewer’s toggles and guests skip private reads (1.4625ms)
+✔ post, reply and comment mutations send authenticated backend payloads and propagate denials (1.8625ms)
+✔ server image bytes become a preview and edit payload, invalid media fails before rendering (1.1179ms)
+✔ submissions read the signed-in list, revise the original id and withdraw from server (0.8025ms)
+(node:19476) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19476) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/http-transport.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a successful GET targets the configured base URL and returns the parsed body (2.5247ms)
+✔ the bearer token is attached to every request once a session exists (0.2348ms)
+✔ no Authorization header is sent when no token is available (0.1176ms)
+✔ a request that requires authentication never reaches the server without a token (0.459ms)
+✔ the backend error envelope is mapped onto the ApiError (0.3234ms)
+✔ the documented status codes map onto their backend codes (0.3952ms)
+✔ an unreachable service becomes a network error and a slow service becomes a timeout (0.6137ms)
+✔ a JSON body is sent with the JSON content type and query parameters are encoded (0.2112ms)
+✔ a 401 response to a session request drops the stale token (0.2665ms)
+✔ a rejected sign-in attempt does not end the session of the signed-in student (0.5033ms)
+✔ the student transport reads the bearer token from its token store (0.5149ms)
+(node:26748) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ dynamic Published to Delisted transition immediately closes public list and detail (2.6419ms)
+✔ owner history keeps all five states distinct and historical approval is not membership (1.7008ms)
+✔ one Pending per student/team is enforced while different-team Pending is allowed (0.4245ms)
+✔ incomplete profile cannot create a Pending application or alter history (0.1612ms)
+✔ approval creates membership and invalidates same-competition Pending only (0.3897ms)
+✔ manual close and revision delisting block fresh applications but not eligible Pending approval (0.3298ms)
+✔ capacity, deadline and dissolution use exact invalidation semantics (0.4014ms)
+✔ an ended membership does not block an otherwise eligible reapplication (0.1516ms)
+✔ captain DTO contains exactly the five permitted applicant fields (0.3653ms)
+✔ captain scope changes immediately and privileged revision review is explicit (0.5617ms)
+✔ team creation validates profile and deadline then creates captain membership (0.7246ms)
+✔ recruitment draft stays separate until isolated admin approval (0.7276ms)
+✔ rejected recruitment revision requires captain resubmission before a later approval (0.3382ms)
+✔ moderation approval revalidates dissolution, deadline and changed capacity conditions (0.3257ms)
+✔ captain role is scoped per competition rather than blocking all student participation (0.2057ms)
+✔ one student can scope captain queues independently across two competitions (0.2351ms)
+✔ manual closure still allows approval of an existing eligible Pending application (0.1412ms)
+✔ member leave and captain removal end access and reduce derived member count without reopening (0.2629ms)
+✔ captain cannot leave and transfer changes both roles and permissions immediately (0.2608ms)
+✔ dissolution invalidates Pending while retaining application and membership history (0.3611ms)
+✔ team member and contact responses stay separated by current captain authorization (0.1629ms)
+(node:26748) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8280) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ notifications API reads inbox, fetches detail and updates read state with required auth (1.8122ms)
+✔ notification helpers classify admission, team and moderation events and map safe routes (0.1901ms)
+✔ planner Day and Week views paginate /planner/day and /planner/week and adapt items (0.467ms)
+✔ planner creation sends exact backend schemas for Course, TimedPlan and Todo (0.652ms)
+✔ planner single-occurrence update, toggle and delete send kind-scoped PATCH and DELETE (0.6348ms)
+✔ planner API maps backend errors into failed command envelopes and formats times cleanly (0.3401ms)
+(node:8280) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26856) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ incomplete signed-in student can use the private planner (1.9565ms)
+✔ visitor cannot read a student private planner (0.2195ms)
+✔ different students have isolated planner data (0.1572ms)
+✔ Day and Week views expose the same stable occurrence (8.8789ms)
+✔ actual start week includes the first finite weekly occurrence and then stops (1.2966ms)
+✔ course duplicate criterion uses name, actual date, start and end time and skips only duplicate instances (0.2712ms)
+✔ different-name overlapping course is retained (0.1689ms)
+✔ timed plan may overlap a course (0.261ms)
+✔ to-do without a deadline remains visible on its assigned date (0.1806ms)
+✔ editing one course occurrence keeps its stable ID and leaves adjacent weeks unchanged (0.3663ms)
+✔ deleting one course occurrence retains the rest of its series (0.1782ms)
+✔ completing one repeated to-do leaves the other occurrence unchanged (0.1148ms)
+✔ calendar date arithmetic remains stable across month, year and leap-day boundaries (0.0847ms)
+✔ Mock create, read, update, complete and delete operations stay consistent (0.1593ms)
+(node:26856) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/mock/business-state.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28112) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ creating a team sends the skill ids of the administrator catalogue (2.1989ms)
+✔ a skill name outside the catalogue is refused before the request is sent (0.2721ms)
+✔ the captain decision uses the Approved and Rejected vocabulary (0.2986ms)
+✔ the recruitment switch uses the state vocabulary (0.4463ms)
+✔ a recruitment revision is submitted with skill ids (0.3509ms)
+✔ applying, withdrawing and reapplying use the application routes (0.4114ms)
+✔ the captain queue is read from the team application route (0.2652ms)
+✔ the captain queue needs a team and never reads another team by accident (0.1037ms)
+✔ the member contact route is addressed by the user id (0.3026ms)
+✔ the team history is read from the membership history route (0.5783ms)
+✔ a refused request is reported with the backend code and message (0.2ms)
+(node:28112) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33824) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the transport mode is driven by environment configuration (0.6052ms)
+✔ the API base URL and timeout come from the environment (0.1068ms)
+(node:33824) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ mock mode keeps serving the prototype operations unchanged (970.384ms)
+✔ mock mode still reports the simulated feed failure (242.0326ms)
+✔ API mode calls the backend routes and returns adapted view models (0.6037ms)
+✔ API mode fills the competition detail from the backend routes (0.5816ms)
+✔ API mode reports the prototype operations the backend does not serve (0.7508ms)
+✔ API mode never offers the Prototype Lab as an identity (0.1661ms)
+✔ mock mode reports that the account features need the API backend (0.3738ms)
+✔ mock mode has no stored session to restore (0.1786ms)
+ℹ tests 92
+ℹ suites 0
+ℹ pass 92
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2050.6867
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/*.test.mjs
+(node:10288) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ sign-in accepts the backend Admin identity and server logout revokes the same token (1.6352ms)
+✔ a valid student login is revoked and never persisted as an admin session (1.3497ms)
+✔ restoration verifies the stored token at /auth/me and invalidates a demoted user (0.9915ms)
+✔ a protected 401 or 403 ends the current session, and a transient failure can be retried (0.5519ms)
+✔ a delayed response for an older token cannot evict a newer session (0.2314ms)
+✔ protected post images retain their binary bytes for moderation preview (31.457ms)
+✔ logout clears the local identity even if revocation fails (0.3254ms)
+✔ catalog management searches private and public records and writes only supplied fields (0.3292ms)
+✔ approved content and recruitment remain discoverable by status with fresh clients (0.5195ms)
+✔ submission browsing finds later mixed-queue pages and resumes without duplicates (0.3908ms)
+✔ post/comment/submission decisions use revision ids and the content action schema (0.4388ms)
+✔ recruitment decisions use their own wire values and removal targets the team (0.2257ms)
+✔ removed, withdrawn and processed revisions expose only permitted actions (0.3954ms)
+(node:32336) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the fetch adapter sends the bearer token, the JSON body and the configured headers (21.1345ms)
+✔ no Authorization header is sent when the admin has no session (0.4428ms)
+✔ a backend error envelope is mapped onto the ApiError (0.7154ms)
+✔ an unreachable service becomes a network error (0.2962ms)
+✔ the admin dashboard is served by the mock transport in mock mode (0.4059ms)
+✔ the admin dashboard requires a token and adapts the backend DTO in API mode (0.4339ms)
+✔ the admin dashboard is refused locally when no session exists (0.2307ms)
+✔ the Element Plus feedback names the failure and keeps the backend message (0.132ms)
+(node:42784) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ return from login preserves moderation filters and accepts only local admin screens (1.1425ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 425.9572

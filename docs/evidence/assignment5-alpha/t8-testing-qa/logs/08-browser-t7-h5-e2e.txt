@@ -1,0 +1,9 @@
+Saved t7-01-notifications-inbox.png
+Saved t7-02-notifications-filtered.png
+Saved t7-03-planner-day.png
+Saved t7-04-planner-reloaded.png
+Saved t7-05-planner-week.png
+Saved t7-06-planner-occurrence-edit.png
+Saved t7-07-planner-after-delete.png
+Saved t7-08-planner-course-created.png
+PASS: T7 notifications and personal planner H5 browser journey

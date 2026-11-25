@@ -1,0 +1,64 @@
+WeChat mini program HTTP method audit
+============================================================
+source scanned : apps\student-app\src, packages\api-contracts\src
+methods used   : DELETE, PATCH, POST, PUT
+documented set : OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+
+ok      POST    apps\student-app\src\api\client.ts:374  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:416  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:424  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:443  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:450  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:462  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:480  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:524  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:531  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:544  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:551  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:564  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:573  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:674  method: 'PUT',
+ok      PUT     apps\student-app\src\api\client.ts:682  method: 'PUT',
+ok      POST    apps\student-app\src\api\client.ts:698  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:707  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:727  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:807  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:812  await transport.request({ path: `/teams/${teamId}/leave`, method: 'POST', auth: 'required' })
+ok      POST    apps\student-app\src\api\client.ts:822  method: 'POST',
+ok      DELETE  apps\student-app\src\api\client.ts:829  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:841  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:849  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:862  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:869  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:891  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:911  method: 'POST',
+ok      PUT     apps\student-app\src\api\client.ts:942  method: 'PUT',
+ok      DELETE  apps\student-app\src\api\client.ts:954  method: 'DELETE',
+ok      POST    apps\student-app\src\api\client.ts:960  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:979  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:989  method: 'POST',
+ok      POST    apps\student-app\src\api\client.ts:998  await transport.request<{ message: string }>({ path: '/auth/logout', method: 'POST' })
+FINDING PATCH   apps\student-app\src\api\client.ts:1029  method: 'PATCH',
+ok      POST    apps\student-app\src\api\community.ts:68  transport.request<CommunityPostDto>({path: `/competitions/${id(competitionId)}/posts`, method: 'POST', body, ...required}),
+FINDING PATCH   apps\student-app\src\api\community.ts:70  transport.request<CommunityPostDto>({path: `/posts/${id(postId)}`, method: 'PATCH', body, ...required}),
+ok      DELETE  apps\student-app\src\api\community.ts:72  transport.request<void>({path: `/posts/${id(postId)}`, method: 'DELETE', ...required}),
+ok      POST    apps\student-app\src\api\community.ts:74  transport.request<CommunityCommentDto>({path: `/posts/${id(postId)}/comments`, method: 'POST', body: {text, parentId}, ...required}),
+FINDING PATCH   apps\student-app\src\api\community.ts:76  transport.request<CommunityCommentDto>({path: `/comments/${id(commentId)}`, method: 'PATCH', body: {text}, ...required}),
+ok      DELETE  apps\student-app\src\api\community.ts:78  transport.request<void>({path: `/comments/${id(commentId)}`, method: 'DELETE', ...required}),
+ok      DELETE  apps\student-app\src\api\community.ts:96  transport.request<void>({path: `/competition-submissions/${id(submissionId)}`, method: 'DELETE', ...required}),
+FINDING PATCH   apps\student-app\src\api\notifications.ts:83  method: 'PATCH',
+ok      POST    apps\student-app\src\api\planner.ts:191  method: 'POST',
+ok      POST    apps\student-app\src\api\planner.ts:208  method: 'POST',
+FINDING PATCH   apps\student-app\src\api\planner.ts:232  method: 'PATCH',
+ok      DELETE  apps\student-app\src\api\planner.ts:241  method: 'DELETE',
+FINDING PATCH   apps\student-app\src\api\planner.ts:255  method: 'PATCH',
+
+RESULT: FINDING — PATCH is outside the documented mini program method set.
+The runtime behaviour of that method on the simulator or a device is NOT VERIFIED
+by this check and has to be tested manually in the WeChat Developer Tools.
+
+The backend already answers the same route with a documented method:
+  PATCH /profiles/me -> partial update, only the fields that were sent
+  PUT   /profiles/me -> full replace, every field falls back to its empty default
+A switch to PUT therefore also needs the client to send the whole profile,
+otherwise the fields that are left out are cleared.

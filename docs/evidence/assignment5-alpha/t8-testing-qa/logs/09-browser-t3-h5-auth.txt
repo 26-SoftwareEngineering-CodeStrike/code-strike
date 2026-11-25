@@ -1,0 +1,26 @@
+=== T3 H5 ACCOUNT FLOW (t3ui_mwusg9wy) ===
+PASS: the sign-in page renders
+PASS: the sign-in page has no horizontal overflow at 390px
+PASS: the registration page renders
+PASS: the username field accepts the account name
+PASS: the password field accepts the password
+PASS: the confirmation field accepts the password
+PASS: the registration button is pressed
+PASS: the account is created and the profile page shows the username
+PASS: a fresh profile is reported as incomplete
+PASS: the name field accepts a value
+PASS: the college field accepts a value
+PASS: the major field accepts a value
+PASS: the academic year field accepts a value
+PASS: the sex field accepts a value
+PASS: the brief CV field accepts a value
+PASS: the WeChat field accepts a value
+PASS: a skill tag is selected
+PASS: the save button is pressed
+PASS: the save is confirmed on screen
+PASS: the profile is reported as complete after saving
+PASS: the session survives a reload of the profile page
+PASS: the profile is still complete after the reload
+PASS: the sign-out button is pressed
+PASS: signing out returns to the sign-in page
+--- T3 H5 ACCOUNT FLOW COMPLETE ---
