@@ -1,14 +1,26 @@
 <script setup lang="ts">
+import { currentTransportConfig } from '@codestrike/contracts'
+
 const props = defineProps<{ title: string; eyebrow?: string; back?: boolean; demo?: boolean }>()
 const emit = defineEmits<{ (event: 'demo'): void }>()
+const apiMode = currentTransportConfig().mode === 'api'
 
 function goBack() {
   uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/index/index' }) })
 }
 
 function useHeaderTool() {
-  if (props.demo) emit('demo')
-  else uni.showToast({ title: 'No new notifications', icon: 'none' })
+  if (props.demo) {
+    emit('demo')
+    return
+  }
+  if (apiMode) {
+    const pages = getCurrentPages()
+    if (pages[pages.length - 1]?.route === 'pages/notifications/index') return
+    uni.navigateTo({ url: '/pages/notifications/index' })
+    return
+  }
+  uni.showToast({ title: 'No new notifications', icon: 'none' })
 }
 </script>
 

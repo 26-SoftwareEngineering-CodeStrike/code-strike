@@ -212,6 +212,10 @@ export interface PlannerOccurrence {
   actualDate: string
   startTime?: string
   endTime?: string
+  startWeek?: number
+  weekday?: number
+  startPeriod?: number
+  endPeriod?: number
   room?: string
   description?: string
   deadline?: string
@@ -231,6 +235,7 @@ export interface PlannerView {
 export interface CreateCourseInput {
   name: string
   actualStartWeek: string
+  startWeek?: number
   weekday: number
   startPeriod: number
   endPeriod: number
@@ -254,9 +259,14 @@ export interface UpdateOccurrenceInput {
   actualDate: string
   startTime?: string
   endTime?: string
+  startWeek?: number
+  weekday?: number
+  startPeriod?: number
+  endPeriod?: number
   room?: string
   description?: string
   deadline?: string
+  clearDeadline?: boolean
 }
 
 export interface CourseCreationResult {
