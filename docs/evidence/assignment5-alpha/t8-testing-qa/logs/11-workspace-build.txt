@@ -1,0 +1,41 @@
+$ pnpm build:student:h5 && pnpm build:student:mp-weixin && pnpm build:admin
+$ pnpm --filter @codestrike/student-app build:h5
+$ uni build
+Compiler version: 5.26（vue3）
+Compiling...
+
+uni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.34.2026102909.html
+
+欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting
+DONE  Build complete.
+$ pnpm --filter @codestrike/student-app build:mp-weixin
+$ uni build -p mp-weixin
+Compiler version: 5.26（vue3）
+Compiling...
+
+uni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.34.2026102909.html
+DONE  Build complete.
+Run method: open Weixin Mini Program Devtools, import [36mdist\build\mp-weixin[39m run.
+$ pnpm --filter @codestrike/admin-web build
+$ vue-tsc -b && vite build
+[36mvite v8.3.5 [32mbuilding client environment for production...[36m[39m
+transforming...
+✓ 1636 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             0.63 kB │ gzip:   0.36 kB
+dist/assets/index-BkxW-IYX.css            365.28 kB │ gzip:  49.48 kB
+dist/assets/use-page-ChK1rcH5.js            0.75 kB │ gzip:   0.42 kB
+dist/assets/LoginView-BrfwA2x1.js           1.55 kB │ gzip:   0.82 kB
+dist/assets/CompetitionsView-D6JV9bzV.js    7.45 kB │ gzip:   2.73 kB
+dist/assets/ModerationView-B3WAnGc3.js     11.98 kB │ gzip:   4.14 kB
+dist/assets/message-l8nZRikR.js            70.28 kB │ gzip:  24.81 kB
+dist/assets/error-feedback-hO1-P8Hu.js     93.88 kB │ gzip:  36.36 kB
+dist/assets/index-DDA3lqwJ.js             866.76 kB │ gzip: 275.61 kB
+
+[32m✓ built in 767ms[39m
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m

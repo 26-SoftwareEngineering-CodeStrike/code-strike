@@ -1,0 +1,27 @@
+openapi version : 3.1.0
+paths / ops     : 59 / 79
+schemas         : 48
+--- shared DTO against the served schema ---
+PASS: HealthResponse <-> HealthResponse (3 properties)
+PASS: CompetitionDetailDto <-> CompetitionDetail (12 properties)
+PASS: TeamDto <-> TeamOut (12 properties)
+PASS: SkillDto <-> SkillOut (2 properties)
+PASS: ApplicationDto <-> ApplicationOut (8 properties)
+PASS: ApplicantPreviewDto <-> ApplicantPreview (5 properties)
+PASS: ReviewDto <-> ReviewOut (11 properties)
+PASS: MemberDto <-> MemberOut (6 properties)
+PASS: ContactDto <-> ContactOut (3 properties)
+PASS: UserDto <-> UserOut (4 properties)
+PASS: TokenDto <-> TokenOut (4 properties)
+PASS: PlannerItemDto <-> ItemOut (17 properties)
+PASS: PlannerItemPageDto <-> ItemPage (6 properties)
+PASS: PlannerCreateResultDto <-> CreateResult (2 properties)
+PASS: PlannerSkippedOccurrenceDto <-> SkippedOccurrence (2 properties)
+PASS: NotificationReadRequest <-> ReadState (1 properties)
+PASS: CommunityPostDto <-> PostOut (11 properties)
+PASS: CommunityCommentDto <-> CommentOut (9 properties)
+PASS: PostInteractionsDto <-> InteractionState (2 properties)
+--- captured document against the served document ---
+captured paths/schemas : 58/47
+served   paths/schemas : 59/48
+RESULT: PASS (0 failures)

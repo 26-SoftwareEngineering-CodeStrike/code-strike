@@ -1,0 +1,86 @@
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/e2e/*.test.mjs
+(node:20868) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20868) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a student registers and receives a session (469.6547ms)
+✔ a duplicate username is rejected by the backend (12.429ms)
+✔ the correct password signs the student in (466.9292ms)
+✔ a wrong password is refused (334.3392ms)
+✔ the current user is read back from the API (9.4305ms)
+✔ a fresh profile reports every missing required field (11.4762ms)
+✔ the profile is saved and read back from the API (36.4278ms)
+✔ skill tags are taken from the administrator catalog (31.0393ms)
+✔ a skill id outside the catalog is rejected (20.5352ms)
+✔ a complete profile is reported as complete (17.1877ms)
+✔ a student cannot extend the administrator catalog (10.8704ms)
+✔ a protected route without a token is refused (5.0097ms)
+✔ an invalid token is refused (69.6257ms)
+✔ signing out revokes the token (26.5795ms)
+(node:41092) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41092) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ community post lifecycle: private draft, protected image, comments, interactions and reload persistence (1725.8555ms)
+✔ student competition submissions stay private until admin approval and support revision/withdrawal (596.6694ms)
+(node:40476) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:40476) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the administrator signs in with the provisioned account (823.5331ms)
+✔ the skill catalogue is readable (16.6125ms)
+✔ the administrator publishes a competition and keeps one unpublished (153.8288ms)
+✔ an unpublished competition is absent from the public listing (14.3777ms)
+✔ the five test identities register and complete their profiles (2464.99ms)
+✔ the captain creates a team and submits the first recruitment revision (46.9049ms)
+✔ the unpublished recruitment never appears in the public list (37.5317ms)
+✔ the administrator approves the recruitment revision and it becomes public (44.759ms)
+✔ the captain finds the team in My Teams (29.6168ms)
+✔ the applicant discovers the published recruitment (16.7115ms)
+✔ the applicant applies and the application is Pending (27.5799ms)
+✔ a second Pending application from the same student is refused (12.8311ms)
+✔ the captain reviews the Pending application (13.6688ms)
+✔ a student who is not the captain cannot read the review queue (7.6867ms)
+✔ a team id in the URL does not grant the captain scope (8.1038ms)
+✔ the captain approves and the applicant becomes an active member (61.1451ms)
+✔ an approved applicant cannot apply to a second team in the same competition (72.5244ms)
+✔ a rejected application stays in the history (117.853ms)
+✔ an application can be withdrawn and the history keeps the record (122.2274ms)
+✔ an incomplete profile cannot apply (11.4544ms)
+✔ a Not Matched applicant may still apply (46.9887ms)
+✔ a non-member cannot read the protected contact details (9.5246ms)
+✔ a member who is not the captain cannot read the protected contact details (20.1306ms)
+✔ the captain reads the contact details of an active member (22.4898ms)
+✔ the application history survives a reload and comes from the API (31.5919ms)
+✔ the recruitment switch closes and reopens the applications (57.8765ms)
+✔ a delisted recruitment disappears from the public list (122.4323ms)
+✔ approving beyond the capacity is refused (177.9ms)
+✔ the last slot can only be taken once when two approvals race (166.3218ms)
+✔ the run records its identifiers for the database read-back (2.3821ms)
+(node:26684) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26684) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Rakan/Desktop/codestrike_project/code-strike-main/apps/student-app/src/api/client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Rakan\Desktop\codestrike_project\code-strike-main\apps\student-app\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ incomplete-profile student can create, reload, edit, complete and delete planner items (1000.6939ms)
+✔ course creation respects server timetable config or deduplicates cleanly (32.1295ms)
+✔ notifications reflect admission and moderation events, persist read state and enforce recipient privacy (1095.9456ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 49
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5416.8872

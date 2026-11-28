@@ -1,0 +1,22 @@
+Evidence directory: C:\Users\Rakan\AppData\Local\Temp\codestrike-t8-shots-8377bbe6\t5-t6\t5-t6-2026-11-24T14-26-37-554Z-130e1de4
+Saved 01-admin-dashboard-before.png
+Saved 02-admin-published-competition.png
+Saved 02b-admin-dashboard-after-creation.png
+Saved 03-h5-post-with-png.png
+Saved 04-h5-author-pending.png
+Saved 05-h5-public-before-approval.png
+Saved 06-admin-pending-count.png
+Saved 07-admin-post-review.png
+Saved 08-h5-public-approved-image.png
+Saved 09a-h5-interactions-on-reloaded.png
+Saved 09b-h5-interactions-off-reloaded.png
+Saved 09c-h5-author-pending-comment.png
+Saved 10-admin-comment-review.png
+Saved 11-h5-public-comment.png
+Saved 12-admin-edit-review.png
+Saved 13-h5-author-rejected.png
+Saved 14-h5-original-after-rejection.png
+Saved 15-admin-removal-review.png
+Saved 16-h5-public-after-removal.png
+Saved 17-admin-final-counts.png
+PASS: T5 student/public and T6 administrator browser journeys

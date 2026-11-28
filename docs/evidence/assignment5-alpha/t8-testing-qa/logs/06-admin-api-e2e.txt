@@ -1,0 +1,14 @@
+$ node --experimental-strip-types --experimental-loader ../../scripts/ts-extension-loader.mjs --test tests/e2e/*.test.mjs
+(node:41276) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./")); register("../../scripts/ts-extension-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ admin client rejects and revokes student logins, authenticates admins and manages competitions (751.5225ms)
+✔ admin moderation API reviews Content, Competition submission and Recruitment queues with protected images (656.6777ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1698.7786

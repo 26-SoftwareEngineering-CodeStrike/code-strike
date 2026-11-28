@@ -1,0 +1,4 @@
+$ pnpm --filter @codestrike/contracts type-check && pnpm --filter @codestrike/student-app type-check && pnpm --filter @codestrike/admin-web type-check
+$ tsc --noEmit
+$ vue-tsc --noEmit
+$ vue-tsc -b

@@ -1,0 +1,52 @@
+PASS: incomplete signed-in student persona is selectable
+PASS: incomplete-profile student can read their private planner
+PASS: Week mode control is interactive
+PASS: Day and Week views use the same occurrence state
+PASS: visitor cannot read a student planner
+PASS: UI-17 course entry opens from Planner
+PASS: course name can be entered
+PASS: course save action is interactive
+PASS: course creation reports created and skipped counts
+PASS: timed plan title can be entered
+PASS: timed plan save action is interactive
+PASS: overlapping timed plan is accepted with feedback
+PASS: to-do title can be entered
+PASS: to-do save action is interactive
+PASS: no-deadline to-do remains assigned to a date
+PASS: Planner view reflects Mock create operations
+PASS: occurrence detail opens
+PASS: UI-19 exposes single-occurrence scope and stable ID
+PASS: single to-do completion is interactive
+PASS: single occurrence completion has feedback
+PASS: /pages/planner/index has no horizontal overflow at 320px
+PASS: /pages/planner/index key content renders at 320px
+PASS: /pages/planner/index has no horizontal overflow at 390px
+PASS: /pages/planner/index key content renders at 390px
+PASS: /pages/planner/index has no horizontal overflow at 430px
+PASS: /pages/planner/index key content renders at 430px
+PASS: /pages/planner/index has no horizontal overflow at 680px
+PASS: /pages/planner/index key content renders at 680px
+PASS: /pages/planner/course?date=2026-10-27 has no horizontal overflow at 320px
+PASS: /pages/planner/course?date=2026-10-27 key content renders at 320px
+PASS: /pages/planner/course?date=2026-10-27 has no horizontal overflow at 390px
+PASS: /pages/planner/course?date=2026-10-27 key content renders at 390px
+PASS: /pages/planner/course?date=2026-10-27 has no horizontal overflow at 430px
+PASS: /pages/planner/course?date=2026-10-27 key content renders at 430px
+PASS: /pages/planner/course?date=2026-10-27 has no horizontal overflow at 680px
+PASS: /pages/planner/course?date=2026-10-27 key content renders at 680px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo has no horizontal overflow at 320px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo key content renders at 320px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo has no horizontal overflow at 390px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo key content renders at 390px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo has no horizontal overflow at 430px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo key content renders at 430px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo has no horizontal overflow at 680px
+PASS: /pages/planner/item?date=2026-10-27&type=Todo key content renders at 680px
+PASS: /pages/planner/occurrence?id=planner-todo-1 has no horizontal overflow at 320px
+PASS: /pages/planner/occurrence?id=planner-todo-1 key content renders at 320px
+PASS: /pages/planner/occurrence?id=planner-todo-1 has no horizontal overflow at 390px
+PASS: /pages/planner/occurrence?id=planner-todo-1 key content renders at 390px
+PASS: /pages/planner/occurrence?id=planner-todo-1 has no horizontal overflow at 430px
+PASS: /pages/planner/occurrence?id=planner-todo-1 key content renders at 430px
+PASS: /pages/planner/occurrence?id=planner-todo-1 has no horizontal overflow at 680px
+PASS: /pages/planner/occurrence?id=planner-todo-1 key content renders at 680px

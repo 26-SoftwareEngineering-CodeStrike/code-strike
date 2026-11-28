@@ -1,0 +1,253 @@
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui10 has no horizontal overflow at 320px
+PASS: ui10 primary content renders at 320px
+PASS: ui10 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui10 final action remains reachable at 320px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui12 has no horizontal overflow at 320px
+PASS: ui12 primary content renders at 320px
+PASS: ui12 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui12 final action remains reachable at 320px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui15 has no horizontal overflow at 320px
+PASS: ui15 primary content renders at 320px
+PASS: ui15 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304],[16,304],[16,304]]})
+PASS: ui15 final action remains reachable at 320px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui13 has no horizontal overflow at 320px
+PASS: ui13 primary content renders at 320px
+PASS: ui13 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304],[16,304],[16,304],[16,304],[16,304],[16,304],[16,304]]})
+PASS: ui13 final action remains reachable at 320px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui14 has no horizontal overflow at 320px
+PASS: ui14 primary content renders at 320px
+PASS: ui14 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304],[16,304]]})
+PASS: ui14 final action remains reachable at 320px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui17 has no horizontal overflow at 320px
+PASS: ui17 primary content renders at 320px
+PASS: ui17 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: ui17 final action remains reachable at 320px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui18 has no horizontal overflow at 320px
+PASS: ui18 primary content renders at 320px
+PASS: ui18 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304],[16,304]]})
+PASS: ui18 final action remains reachable at 320px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui19 has no horizontal overflow at 320px
+PASS: ui19 primary content renders at 320px
+PASS: ui19 keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304]]})
+PASS: ui19 final action remains reachable at 320px
+PASS: Prototype Lab opens for Admin reviewer
+PASS: Admin reviewer is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: review has no horizontal overflow at 320px
+PASS: review primary content renders at 320px
+PASS: review keeps the D1 alignment line at 320px ({"padding":[16,16],"rects":[[16,304],[16,304],[16,304]]})
+PASS: review final action remains reachable at 320px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui10 has no horizontal overflow at 390px
+PASS: ui10 primary content renders at 390px
+PASS: ui10 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui10 final action remains reachable at 390px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui12 has no horizontal overflow at 390px
+PASS: ui12 primary content renders at 390px
+PASS: ui12 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui12 final action remains reachable at 390px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui15 has no horizontal overflow at 390px
+PASS: ui15 primary content renders at 390px
+PASS: ui15 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374],[16,374],[16,374]]})
+PASS: ui15 final action remains reachable at 390px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui13 has no horizontal overflow at 390px
+PASS: ui13 primary content renders at 390px
+PASS: ui13 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374],[16,374],[16,374],[16,374],[16,374],[16,374],[16,374]]})
+PASS: ui13 final action remains reachable at 390px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui14 has no horizontal overflow at 390px
+PASS: ui14 primary content renders at 390px
+PASS: ui14 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374],[16,374]]})
+PASS: ui14 final action remains reachable at 390px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui17 has no horizontal overflow at 390px
+PASS: ui17 primary content renders at 390px
+PASS: ui17 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: ui17 final action remains reachable at 390px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui18 has no horizontal overflow at 390px
+PASS: ui18 primary content renders at 390px
+PASS: ui18 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374],[16,374]]})
+PASS: ui18 final action remains reachable at 390px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui19 has no horizontal overflow at 390px
+PASS: ui19 primary content renders at 390px
+PASS: ui19 keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374]]})
+PASS: ui19 final action remains reachable at 390px
+PASS: Prototype Lab opens for Admin reviewer
+PASS: Admin reviewer is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: review has no horizontal overflow at 390px
+PASS: review primary content renders at 390px
+PASS: review keeps the D1 alignment line at 390px ({"padding":[16,16],"rects":[[16,374],[16,374],[16,374]]})
+PASS: review final action remains reachable at 390px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui10 has no horizontal overflow at 430px
+PASS: ui10 primary content renders at 430px
+PASS: ui10 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui10 final action remains reachable at 430px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui12 has no horizontal overflow at 430px
+PASS: ui12 primary content renders at 430px
+PASS: ui12 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui12 final action remains reachable at 430px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui15 has no horizontal overflow at 430px
+PASS: ui15 primary content renders at 430px
+PASS: ui15 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414],[16,414],[16,414]]})
+PASS: ui15 final action remains reachable at 430px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui13 has no horizontal overflow at 430px
+PASS: ui13 primary content renders at 430px
+PASS: ui13 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414],[16,414],[16,414],[16,414],[16,414],[16,414],[16,414]]})
+PASS: ui13 final action remains reachable at 430px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui14 has no horizontal overflow at 430px
+PASS: ui14 primary content renders at 430px
+PASS: ui14 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414],[16,414]]})
+PASS: ui14 final action remains reachable at 430px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui17 has no horizontal overflow at 430px
+PASS: ui17 primary content renders at 430px
+PASS: ui17 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: ui17 final action remains reachable at 430px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui18 has no horizontal overflow at 430px
+PASS: ui18 primary content renders at 430px
+PASS: ui18 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414],[16,414]]})
+PASS: ui18 final action remains reachable at 430px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui19 has no horizontal overflow at 430px
+PASS: ui19 primary content renders at 430px
+PASS: ui19 keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414]]})
+PASS: ui19 final action remains reachable at 430px
+PASS: Prototype Lab opens for Admin reviewer
+PASS: Admin reviewer is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: review has no horizontal overflow at 430px
+PASS: review primary content renders at 430px
+PASS: review keeps the D1 alignment line at 430px ({"padding":[16,16],"rects":[[16,414],[16,414],[16,414]]})
+PASS: review final action remains reachable at 430px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui10 has no horizontal overflow at 680px
+PASS: ui10 primary content renders at 680px
+PASS: ui10 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui10 final action remains reachable at 680px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui12 has no horizontal overflow at 680px
+PASS: ui12 primary content renders at 680px
+PASS: ui12 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui12 final action remains reachable at 680px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui15 has no horizontal overflow at 680px
+PASS: ui15 primary content renders at 680px
+PASS: ui15 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639],[41,639],[41,639]]})
+PASS: ui15 final action remains reachable at 680px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui13 has no horizontal overflow at 680px
+PASS: ui13 primary content renders at 680px
+PASS: ui13 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,334],[346,639],[41,334],[346,639],[41,334],[346,639],[41,639],[41,639]]})
+PASS: ui13 final action remains reachable at 680px
+PASS: Prototype Lab opens for Team Alpha captain
+PASS: Team Alpha captain is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui14 has no horizontal overflow at 680px
+PASS: ui14 primary content renders at 680px
+PASS: ui14 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,334],[346,639],[41,334]]})
+PASS: ui14 final action remains reachable at 680px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui17 has no horizontal overflow at 680px
+PASS: ui17 primary content renders at 680px
+PASS: ui17 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: ui17 final action remains reachable at 680px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui18 has no horizontal overflow at 680px
+PASS: ui18 primary content renders at 680px
+PASS: ui18 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639],[41,639]]})
+PASS: ui18 final action remains reachable at 680px
+PASS: Prototype Lab opens for Student Alex
+PASS: Student Alex is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: ui19 has no horizontal overflow at 680px
+PASS: ui19 primary content renders at 680px
+PASS: ui19 keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639]]})
+PASS: ui19 final action remains reachable at 680px
+PASS: Prototype Lab opens for Admin reviewer
+PASS: Admin reviewer is explicitly selectable
+PASS: Prototype Lab closes explicitly
+PASS: review has no horizontal overflow at 680px
+PASS: review primary content renders at 680px
+PASS: review keeps the D1 alignment line at 680px ({"padding":[40,40],"rects":[[41,639],[41,639],[41,639]]})
+PASS: review final action remains reachable at 680px
+PASS: Visible actions meet the 44px touch target on the final review page ([["header__icon",44],["header__icon header__demo",44],["reject",53.6],["approve",53.6],["public-check",57.3]])
